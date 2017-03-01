@@ -1,0 +1,21 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+  uint8_t mask[] = { 0xdc, 0x2e, 0xeb, 0x7e };
+  uint8_t message[] =
+  {
+     0x8b, 0x4b, 0x89, 0x2d, 0xb3, 0x4d, 0x80, 0x1b,
+     0xa8, 0x0e, 0x99, 0x11, 0xbf, 0x45, 0x98, 0x00
+  };
+
+  int i;
+
+  for(i = 0; message[i] != '\0'; i++)
+    putchar(message[i]^mask[i%sizeof mask]);
+  putchar('\n');
+
+  return EXIT_SUCCESS;
+}

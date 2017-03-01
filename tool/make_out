@@ -1,0 +1,28 @@
+#!/bin/sh
+
+BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
+
+LIBRARY_NAME="libwssl.a"
+INCLUDE_FILE="${BASE_DIR}/out/wssl.h"
+
+mkdir -p ${BASE_DIR}/out
+cp ${BASE_DIR}/source/${LIBRARY_NAME} ${BASE_DIR}/out
+
+cat << _EOF_ > ${INCLUDE_FILE}
+#ifndef _WSSL_H_
+#define _WSSL_H_
+
+_EOF_
+
+cat ${BASE_DIR}/include/main.h | awk -f ${BASE_DIR}/tool/awk/make_out_include.awk >> ${INCLUDE_FILE}
+cat ${BASE_DIR}/include/types.h | awk -f ${BASE_DIR}/tool/awk/make_out_include.awk >> ${INCLUDE_FILE}
+#gcc -E -I ${DIR}/include ${DIR}/include/gibsoc_type_result.h | grep -v ^# >> ${INCLUDE_FILE}
+
+echo >> ${INCLUDE_FILE}
+cd ${BASE_DIR}/source
+for file in $(\ls *.c | sort)
+do
+  cat ${file} | awk -f ${BASE_DIR}/tool/awk/make_out_function.awk >> ${INCLUDE_FILE}
+  echo >> ${INCLUDE_FILE}
+done
+echo '#endif' >> ${INCLUDE_FILE}

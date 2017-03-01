@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Web Socket</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">/* <![CDATA[ */
+
+      body
+      {
+        background-color: white;
+        color: black;
+        font-family: "lucida grande", tahoma, verdana, arial, helvetica, sans-serif;
+        font-size: 16px;
+        padding: 1em;
+      }
+
+      .box
+      {
+        border-color: black;
+        border-style: solid;
+        border-width: 1px;
+        margin: 3px;
+        padding: 3px;
+      }
+
+    /* ]]> */</style>
+    <script type="text/javascript">/* <![CDATA[ */
+
+      var address = undefined;
+      var message = undefined;
+      var output = undefined;
+      var webSocket = undefined;
+
+      function init()
+      {
+        address = document.getElementById('address');
+        message = document.getElementById('message');
+        output = document.getElementById('output');
+      }
+
+      function write(message)
+      {
+        var newData = document.createElement('p');
+        newData.innerHTML = message;
+        output.insertBefore(newData, output.firstChild);
+      }
+
+      function connect()
+      {
+        if(webSocket !== undefined)
+          write('ERROR: already connected');
+        webSocket = new WebSocket(address.value);
+        webSocket.onopen = function(event)
+        {
+          write("onOpen");
+        };
+        webSocket.onclose = function(event)
+        {
+          write("onClose");
+          webSocket = undefined;
+        };
+        webSocket.onmessage = function(event)
+        {
+          write('onMessage: '+event.data);
+        };
+        webSocket.onerror = function(event)
+        {
+          write('onError: '+event.type);
+        };
+      }
+
+      function send()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.send(message.value);
+        write('Sent: '+message.value);
+      }
+
+      function disconnect()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.close();
+      }
+
+      function clean()
+      {
+        output.innerHTML = '';
+      }
+
+    /* ]]> */</script>
+  </head>
+  <body onload="init();">
+    <input type="text" id="address" value="ws://127.0.0.1:5000/"/>
+    <button onclick="connect();">Connect</button>
+    <input type="text" id="message" value="test"/>
+    <button onclick="send();">Send</button>
+    <button onclick="disconnect();">Disconnect</button>
+    <button onclick="clean();">Clean</button>
+    <div id="output" class="box"></div>
+  </body>
+</html>
