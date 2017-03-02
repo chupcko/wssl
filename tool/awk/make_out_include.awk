@@ -1,18 +1,5 @@
-BEGIN \
+/^_INCLUDE_BEGIN_$/, /^_INCLUDE_END_$/ \
 {
-  found = 0
+  if(!/^_INCLUDE_(BEGIN|END)_$/)
+    print
 }
-
-found == 0 && /^_INCLUDE_BEGIN_$/ \
-{
-  found = 1
-  next
-}
-
-found != 0 && /^_INCLUDE_END_$/ \
-{
-  found = 0
-  next
-}
-
-found != 0

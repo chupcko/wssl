@@ -2,11 +2,13 @@
 
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
+INCLUDE_NAME="wssl.h"
 LIBRARY_NAME="libwssl.a"
-INCLUDE_FILE="${BASE_DIR}/out/wssl.h"
+INCLUDE_FILE="${BASE_DIR}/out/${INCLUDE_NAME}"
+LIBRARY_FILE="${BASE_DIR}/out/${LIBRARY_NAME}"
+LIBRARY_ORGIN="${BASE_DIR}/source/${LIBRARY_NAME}"
 
 mkdir -p ${BASE_DIR}/out
-cp ${BASE_DIR}/source/${LIBRARY_NAME} ${BASE_DIR}/out
 
 cat << _EOF_ > ${INCLUDE_FILE}
 #ifndef _WSSL_H_
@@ -15,6 +17,7 @@ cat << _EOF_ > ${INCLUDE_FILE}
 _EOF_
 
 cat ${BASE_DIR}/include/main.h | awk -f ${BASE_DIR}/tool/awk/make_out_include.awk >> ${INCLUDE_FILE}
+cat ${BASE_DIR}/include/version.h | awk -f ${BASE_DIR}/tool/awk/make_out_include.awk >> ${INCLUDE_FILE}
 cat ${BASE_DIR}/include/types.h | awk -f ${BASE_DIR}/tool/awk/make_out_include.awk >> ${INCLUDE_FILE}
 #gcc -E -I ${DIR}/include ${DIR}/include/gibsoc_type_result.h | grep -v ^# >> ${INCLUDE_FILE}
 
@@ -26,3 +29,8 @@ do
   echo >> ${INCLUDE_FILE}
 done
 echo '#endif' >> ${INCLUDE_FILE}
+
+if [ -e ${LIBRARY_ORGIN} ]
+then
+  cp ${LIBRARY_ORGIN} ${LIBRARY_FILE}
+fi

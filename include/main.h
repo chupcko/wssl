@@ -25,6 +25,7 @@ _INCLUDE_BEGIN_
 
 _INCLUDE_END_
 
+#include "chain.h"
 #include "types.h"
 #include "version.h"
 

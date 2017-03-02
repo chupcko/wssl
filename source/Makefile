@@ -11,14 +11,13 @@ COMPILER_FLAGS = -O3 -Werror -I. -I$(INCLUDE_DIR)
 ARCHIVER = ar
 ARCHIVER_FLAGS = csr
 
-
 .DEFAULT_GOAL := all
 .PHONY: all
 all: $(TARGET)
 	../tool/make_out
 
 .PHONY: debug
-debug: COMPILER_FLAGS += -g
+debug: COMPILER_FLAGS += -g -DDEBUG
 debug: all
 
 .PHONY: clean
@@ -32,5 +31,6 @@ $(TARGET): $(OBJECTS)
 	$(ARCHIVER) $(ARCHIVER_FLAGS) $@ $^
 	
 .SUFFIXES:
+
 %.o: %.c $(INCLUDES)
 	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
