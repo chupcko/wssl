@@ -1,0 +1,6 @@
+#ifndef _CONFIGURATIONS_H_
+#define _CONFIGURATIONS_H_
+
+#define WSSL_SERVER_BACKLOG 16
+
+#endif
