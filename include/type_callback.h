@@ -27,12 +27,6 @@ typedef bool wssl_tick_callback_function_t
   _WSSL_MODIFY_ struct wssl_t*
 );
 
-typedef bool wssl_socket_event_callback_function_t
-(
-  _WSSL_MODIFY_ wssl_connection_info_t*,
-  _WSSL_IN_     int
-);
-
 #define WSSL_CALLBACK_FUNCTION_NONE NULL
 
 _INCLUDE_END_

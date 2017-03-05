@@ -12,8 +12,8 @@ wssl_result_t wssl_servers_stop
   WSSL_CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
   {
     server = (wssl_server_t*)server_link;
-    WSSL_CALL(wssl_server_stop(server));
+    WSSL_CALL(wssl_server_stop(wssl, server));
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

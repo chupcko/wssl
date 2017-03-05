@@ -15,7 +15,7 @@ typedef struct wssl_epoll_t
   union
   {
     struct wssl_server_t* server;
-    void*                 client;
+    struct wssl_client_t* client;
   };
 } wssl_epoll_t;
 

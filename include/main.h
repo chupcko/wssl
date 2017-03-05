@@ -42,8 +42,9 @@ _INCLUDE_END_
 #include "result.h"
 #include "type_epoll.h"
 #include "type_connection_info.h"
-#include "type_callback.h"
 #include "type_server.h"
+#include "type_client.h"
+#include "type_callback.h"
 #include "type_wssl.h"
 
 #include "prototype.h"

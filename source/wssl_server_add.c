@@ -12,14 +12,15 @@ wssl_result_t wssl_server_add
 
   server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
   if(server == (wssl_server_t*)NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERRNO, ENOMEM);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_MEMORY, "server", 0);
 
   snprintf(server->ip, WSSL_IP_SIZE, "%s", ip);
   server->port = port;
   server->epoll.type = WSSL_EPOLL_TYPE_SERVER;
   server->epoll.server = server;
+  wssl_chain_init(&server->clients);
 
-  wssl_chain_add_link_backward(&wssl->servers, &server->link);
+  wssl_chain_add_link_backward(&wssl->servers, &server->chain_link);
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
