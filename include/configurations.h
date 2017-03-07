@@ -4,5 +4,6 @@
 #define WSSL_SERVER_BACKLOG       16
 #define WSSL_EPOLL_EVENTS_NUMBER  16
 #define WSSL_EPOLL_SLEEP_MSECONDS 1000
+#define WSSL_BUFFER_SIZE          4096
 
 #endif

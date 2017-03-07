@@ -9,13 +9,13 @@ typedef struct wssl_chain_t
   struct wssl_chain_t* prev;
 } wssl_chain_t;
 
-#define WSSL_CHAIN_INIT_VALUE(name) \
-{                                   \
-  .next = &(name),                  \
-  .prev = &(name)                   \
-}                                   \
+#define WSSL_CHAIN_INIT_VALUE(what_name) \
+{                                        \
+  .next = &(what_name),                  \
+  .prev = &(what_name)                   \
+}                                        \
 
-#define WSSL_CHAIN_DECLARE(name) wssl_chain_t name = WSSL_CHAIN_INIT_VALUE(name)
+#define WSSL_CHAIN_DECLARE(what_name) wssl_chain_t what_name = WSSL_CHAIN_INIT_VALUE(what_name)
 
 static inline void wssl_chain_init(wssl_chain_t* chain)
 {
@@ -58,36 +58,36 @@ static inline void wssl_chain_delete_link(wssl_chain_t* link)
   link->prev = (wssl_chain_t*)WSSL_NULL;
 }
 
-#define WSSL_CHAIN_FOR_EACH_LINK_FORWARD(link, chain) for \
-(                                                         \
-  link = (chain)->next;                                   \
-  link != (chain);                                        \
-  link = link->next                                       \
-)                                                         \
+#define WSSL_CHAIN_FOR_EACH_LINK_FORWARD(what_link, what_chain) for \
+(                                                                   \
+  what_link = (what_chain)->next;                                   \
+  what_link != (what_chain);                                        \
+  what_link = what_link->next                                       \
+)                                                                   \
 
-#define WSSL_CHAIN_FOR_EACH_LINK_BACKWARD(link, chain) for \
-(                                                          \
-  link = (chain)->prev;                                    \
-  link != (chain);                                         \
-  link = link->prev                                        \
-)                                                          \
+#define WSSL_CHAIN_FOR_EACH_LINK_BACKWARD(what_link, what_chain) for \
+(                                                                    \
+  what_link = (what_chain)->prev;                                    \
+  what_link != (what_chain);                                         \
+  what_link = what_link->prev                                        \
+)                                                                    \
 
-#define WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(link, link_next, chain) for \
-(                                                                         \
-  link = (chain)->next,                                                   \
-  link_next = link->next;                                                 \
-  link != (chain);                                                        \
-  link = link_next,                                                       \
-  link_next = link->next                                                  \
-)                                                                         \
+#define WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(what_link, what_link_next, what_chain) for \
+(                                                                                        \
+  what_link = (what_chain)->next,                                                        \
+  what_link_next = what_link->next;                                                      \
+  what_link != (what_chain);                                                             \
+  what_link = what_link_next,                                                            \
+  what_link_next = what_link->next                                                       \
+)                                                                                        \
 
-#define WSSL_CHAIN_FOR_EACH_LINK_SAFE_BACKWARD(link, link_prev, chain) for \
-(                                                                          \
-  link = (chain)->prev,                                                    \
-  link_prev = link->prev;                                                  \
-  link != (chain);                                                         \
-  link = link_prev,                                                        \
-  link_prev = link->prev                                                   \
-)                                                                          \
+#define WSSL_CHAIN_FOR_EACH_LINK_SAFE_BACKWARD(what_link, what_link_prev, what_chain) for \
+(                                                                                         \
+  what_link = (what_chain)->prev,                                                         \
+  what_link_prev = what_link->prev;                                                       \
+  what_link != (what_chain);                                                              \
+  what_link = what_link_prev,                                                             \
+  what_link_prev = what_link->prev                                                        \
+)                                                                                         \
 
 #endif

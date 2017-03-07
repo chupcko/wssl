@@ -3,15 +3,15 @@
 
 _INCLUDE_BEGIN_
 
-typedef enum wssl_epoll_type_t
+typedef enum wssl_epoll_type_e
 {
   WSSL_EPOLL_TYPE_SERVER,
   WSSL_EPOLL_TYPE_CLIENT
-} wssl_epoll_type_t;
+} wssl_epoll_type_e;
 
 typedef struct wssl_epoll_t
 {
-  wssl_epoll_type_t type;
+  wssl_epoll_type_e type;
   union
   {
     struct wssl_server_t* server;

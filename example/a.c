@@ -1,3 +1,4 @@
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,14 +26,14 @@ do                                         \
 }                                          \
 while(0)                                   \
 
-void on_connect(wssl_connection_info_t* connection_info)
+void on_connect(wssl_client_t* client)
 {
-  printf("Connect %s:%d -> %s:%d\n", connection_info->client->ip, connection_info->client->port, connection_info->server->ip, connection_info->server->port);
+  printf("Connect %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n", client->id.prefix, client->id.suffix, client->ip, client->port, client->server->ip, client->server->port);
 }
 
-void on_disconnect(wssl_connection_info_t* connection_info)
+void on_disconnect(wssl_client_t* client)
 {
-  printf("Disconnect %s:%d -> %s:%d\n", connection_info->client->ip, connection_info->client->port, connection_info->server->ip, connection_info->server->port);
+  printf("Disconnect %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n", client->id.prefix, client->id.suffix, client->ip, client->port, client->server->ip, client->server->port);
 }
 
 bool on_tick(wssl_t* wssl)

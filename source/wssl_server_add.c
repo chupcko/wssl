@@ -11,8 +11,8 @@ wssl_result_t wssl_server_add
   wssl_server_t* server;
 
   server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
-  if(server == (wssl_server_t*)NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_MEMORY, "server", 0);
+  if(server == NULL)
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "server", 0);
 
   snprintf(server->ip, WSSL_IP_SIZE, "%s", ip);
   server->port = port;

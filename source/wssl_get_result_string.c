@@ -2,11 +2,11 @@
 
 static struct
 {
-  wssl_result_code_t code;
+  wssl_result_code_e code;
   char*              string;
 } Wssl_result_strings_table[] =
 {
-  #define CALL(name, number, string) { WSSL_RESULT_CODE_##name, string },
+  #define CALL(what_name, what_number, what_string) { WSSL_RESULT_CODE_##what_name, what_string },
   WSSL_RESULT_CODE_TABLE(CALL)
   #undef CALL
   { WSSL_RESULT_CODE_END_, NULL }

@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 _INCLUDE_BEGIN_
@@ -41,14 +42,15 @@ _INCLUDE_END_
 #include "chain.h"
 #include "result.h"
 #include "type_epoll.h"
-#include "type_connection_info.h"
 #include "type_server.h"
+#include "type_id.h"
+#include "type_buffer.h"
 #include "type_client.h"
 #include "type_callback.h"
 #include "type_wssl.h"
 
 #include "prototype.h"
 
-#define loop for(;;)
+#define LOOP for(;;)
 
 #endif

@@ -1,25 +1,25 @@
 #ifndef _RESULT_H_
 #define _RESULT_H_
 
-#define WSSL_RESULT_CODE_TABLE(call)            \
-  call(OK,      0,   "OK")                      \
-  call(ERRNO,  -101, "System error with errno") \
-  call(MEMORY, -102, "No memory")               \
+#define WSSL_RESULT_CODE_TABLE(what_call)                  \
+  what_call(OK,            0,   "OK")                      \
+  what_call(ERROR_ERRNO,  -101, "System error with errno") \
+  what_call(ERROR_MEMORY, -102, "No memory")               \
+  what_call(ERROR_FULL,   -103, "Buffer is full")          \
 
 _INCLUDE_BEGIN_
 
-typedef enum wssl_result_code_t
+typedef enum wssl_result_code_e
 {
-
-  #define CALL(name, number, string) WSSL_RESULT_CODE_##name = number,
+  #define CALL(what_name, what_number, what_string) WSSL_RESULT_CODE_##what_name = what_number,
   WSSL_RESULT_CODE_TABLE(CALL)
   #undef CALL
   WSSL_RESULT_CODE_END_
-} wssl_result_code_t;
+} wssl_result_code_e;
 
 typedef struct wssl_result_t
 {
-  wssl_result_code_t code;
+  wssl_result_code_e code;
   char*              where;
   int                last_errno;
 } wssl_result_t;
@@ -42,6 +42,6 @@ do                                         \
   if(_result_.code != WSSL_RESULT_CODE_OK) \
     return _result_;                       \
 }                                          \
-while(0)                                   \
+while(false)                               \
 
 #endif
