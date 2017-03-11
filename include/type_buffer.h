@@ -12,51 +12,69 @@ typedef struct wssl_buffer_t
 
 _INCLUDE_END_
 
-#define WSSL_BUFFER_INIT(what_buffer) \
-do                                    \
-{                                     \
-  (what_buffer).data = WSSL_NULL;     \
-  (what_buffer).size = 0;             \
-  (what_buffer).used = 0;             \
-}                                     \
-while(false)                          \
+static inline void wssl_buffer_init
+(
+  _WSSL_MODIFY_ wssl_buffer_t* buffer
+)
+{
+  buffer->data = WSSL_NULL;
+  buffer->size = 0;
+  buffer->used = 0;
+}
 
-#define WSSL_BUFFER_IS_SET(what_buffer) ((what_buffer).data != WSSL_NULL)
+static inline wssl_result_t wssl_buffer_create
+(
+  _WSSL_MODIFY_       wssl_buffer_t* buffer,
+  _WSSL_IN_     const wssl_size_t    size
+)
+{
+  buffer->data = (wssl_octet_t*)malloc((size_t)size);
+  if(buffer->data == NULL)
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer", 0);
+  buffer->size = size;
+  buffer->used = 0;
+}
 
-#define WSSL_BUFFER_IS_NOT_SET(what_buffer) ((what_buffer).data == WSSL_NULL)
+static inline bool wssl_buffer_is_created
+(
+  _WSSL_IN_ const wssl_buffer_t* buffer
+)
+{
+  return buffer->data != WSSL_NULL;
+}
 
-#define WSSL_BUFFER_CREATE(what_buffer, what_size, what_place)             \
-do                                                                         \
-{                                                                          \
-  (what_buffer).data = (wssl_octet_t*)malloc((size_t)(what_size));         \
-  if((what_buffer).data == NULL)                                           \
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, what_place, 0); \
-  (what_buffer).size = (what_size);                                        \
-  (what_buffer).used = 0;                                                  \
-}                                                                          \
-while(false)                                                               \
+static inline bool wssl_buffer_is_not_created
+(
+  _WSSL_IN_ const wssl_buffer_t* buffer
+)
+{
+  return buffer->data == WSSL_NULL;
+}
 
-#define WSSL_BUFFER_DELETE(what_buffer) \
-do                                      \
-{                                       \
-  free((void*)(what_buffer).data);      \
-  (what_buffer).data = WSSL_NULL;       \
-  (what_buffer).size = 0;               \
-  (what_buffer).used = 0;               \
-}                                       \
-while(false)                            \
+static inline void wssl_buffer_clean
+(
+  _WSSL_MODIFY_ wssl_buffer_t* buffer
+)
+{
+  free((void*)buffer->data);
+  buffer->data = WSSL_NULL;
+  buffer->size = 0;
+  buffer->used = 0;
+}
 
-#define WSSL_BUFFER_MOVE(what_buffer, what_processed) \
-do                                                    \
-{                                                     \
-  (what_buffer).used -= (what_processed);             \
-  memmove                                             \
-  (                                                   \
-    (void*)(what_buffer).data,                        \
-    (void*)&(what_buffer).data[(what_processed)],     \
-    (what_buffer).used                                \
-  );                                                  \
-}                                                     \
-while(false)
+static inline void wssl_buffer_shift
+(
+  _WSSL_MODIFY_        wssl_buffer_t* buffer,
+  _WSSL_IN_     const  wssl_size_t    processed
+)
+{
+  buffer->used -= processed;
+  memmove
+  (
+    (void*)buffer->data,
+    (void*)&buffer->data[processed],
+    (size_t)buffer->used
+  );
+}
 
 #endif

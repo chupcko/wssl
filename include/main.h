@@ -45,6 +45,7 @@ _INCLUDE_END_
 #include "type_server.h"
 #include "type_id.h"
 #include "type_buffer.h"
+#include "type_header.h"
 #include "type_client.h"
 #include "type_callback.h"
 #include "type_wssl.h"

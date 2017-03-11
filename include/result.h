@@ -26,12 +26,12 @@ typedef struct wssl_result_t
 
 _INCLUDE_END_
 
-#define WSSL_MAKE_RESULT(what_code, what_where, what_last_errnoa) (wssl_result_t) \
-{                                                                                 \
-  .code       = (what_code),                                                      \
-  .where      = (what_where),                                                     \
-  .last_errno = (what_last_errnoa)                                                \
-}                                                                                 \
+#define WSSL_MAKE_RESULT(what_code, what_where, what_last_errno) (wssl_result_t) \
+{                                                                                \
+  .code       = (what_code),                                                     \
+  .where      = (what_where),                                                    \
+  .last_errno = (what_last_errno)                                                \
+}                                                                                \
 
 #define WSSL_CALL(...)                     \
 do                                         \

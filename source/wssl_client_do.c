@@ -10,8 +10,8 @@ wssl_result_t wssl_client_do
   wssl_ssize_t recv_size;
   wssl_size_t processed;
 
-  if(WSSL_BUFFER_IS_NOT_SET(client->input_buffer))
-    WSSL_BUFFER_CREATE(client->input_buffer, WSSL_BUFFER_SIZE, "input_buffer");
+  if(wssl_buffer_is_not_created(&client->input_buffer))
+    wssl_buffer_create(&client->input_buffer, WSSL_BUFFER_SIZE);
 
   recv_size = (wssl_ssize_t)recv
   (
@@ -42,9 +42,9 @@ printf("\"%s\"\n", client->input_buffer.data);
 processed = 2;
 
   if(processed == recv_size)
-    WSSL_BUFFER_DELETE(client->input_buffer);
+    wssl_buffer_clean(&client->input_buffer);
   else if(processed > 0)
-    WSSL_BUFFER_MOVE(client->input_buffer, processed);
+    wssl_buffer_shift(&client->input_buffer, processed);
   else if(client->input_buffer.used == client->input_buffer.size-1)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "input_buffer", 0);
 

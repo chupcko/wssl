@@ -35,6 +35,7 @@ cat          ${BASE_DIR}/include/type_epoll.h    | include_filter >> ${INCLUDE_F
 cat          ${BASE_DIR}/include/type_server.h   | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/type_id.h       | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/type_buffer.h   | include_filter >> ${INCLUDE_FILE}
+cat          ${BASE_DIR}/include/type_header.h   | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/type_client.h   | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/type_callback.h | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/type_wssl.h     | include_filter >> ${INCLUDE_FILE}

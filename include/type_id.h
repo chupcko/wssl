@@ -9,26 +9,59 @@ typedef struct wssl_id_t
   uint32_t suffix;
 } wssl_id_t;
 
-#define WSSL_ID_IS_EQUAL(what_id_1, what_id_2) ((what_id_1).prefix == (what_id_2).prefix && (what_id_1).suffix == (what_id_2).suffix)
-
-#define WSSL_ID_IS_NOT_EQUAL(what_id_1, what_id_2) ((what_id_1).prefix != (what_id_2).prefix || (what_id_1).suffix != (what_id_2).suffix)
-
 #define WSSL_ID_INIT_VALUE \
 {                          \
   .prefix = 0,             \
   .suffix = 0              \
 }                          \
 
-static inline void wssl_id_init(wssl_id_t* id)
+static inline void wssl_id_init
+(
+  _WSSL_MODIFY_ wssl_id_t* id
+)
 {
   id->prefix = 0;
   id->suffix = 0;
 }
 
+static inline bool wssl_id_is_equal
+(
+  _WSSL_IN_ const wssl_id_t* id_1,
+  _WSSL_IN_ const wssl_id_t* id_2
+)
+{
+  return
+    id_1->prefix == id_2->prefix &&
+    id_1->suffix == id_2->suffix;
+}
+
+static inline bool wssl_id_is_not_equal
+(
+  _WSSL_IN_ const wssl_id_t* id_1,
+  _WSSL_IN_ const wssl_id_t* id_2
+)
+{
+  return
+    id_1->prefix != id_2->prefix ||
+    id_1->suffix != id_2->suffix;
+}
+
 _INCLUDE_END_
 
-#define WSSL_ID_NEW(what_id) ((what_id).prefix++)
+static inline void wssl_id_new
+(
+  _WSSL_MODIFY_ wssl_id_t* id
+)
+{
+  id->prefix++;
+}
 
-#define WSSL_ID_NEXT(what_id) ((what_id).suffix++)
+static inline void wssl_id_next
+(
+  _WSSL_MODIFY_ wssl_id_t* id
+)
+{
+  id->suffix++;
+}
 
 #endif

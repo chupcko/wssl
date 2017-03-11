@@ -16,8 +16,10 @@ wssl_result_t wssl_server_add
 
   snprintf(server->ip, WSSL_IP_SIZE, "%s", ip);
   server->port = port;
+
   server->epoll.type = WSSL_EPOLL_TYPE_SERVER;
   server->epoll.server = server;
+
   wssl_chain_init(&server->clients);
 
   wssl_chain_add_link_backward(&wssl->servers, &server->chain_link);

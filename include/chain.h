@@ -17,7 +17,10 @@ typedef struct wssl_chain_t
 
 #define WSSL_CHAIN_DECLARE(what_name) wssl_chain_t what_name = WSSL_CHAIN_INIT_VALUE(what_name)
 
-static inline void wssl_chain_init(wssl_chain_t* chain)
+static inline void wssl_chain_init
+(
+  wssl_chain_t* chain
+)
 {
   chain->next = chain;
   chain->prev = chain;
@@ -25,7 +28,11 @@ static inline void wssl_chain_init(wssl_chain_t* chain)
 
 _INCLUDE_END_
 
-static inline void wssl_chain_add_link_forward(wssl_chain_t* link, wssl_chain_t* new)
+static inline void wssl_chain_add_link_forward
+(
+  _WSSL_MODIFY_ wssl_chain_t* link,
+  _WSSL_MODIFY_ wssl_chain_t* new
+)
 {
   new->next = link->next;
   new->prev = link;
@@ -33,7 +40,11 @@ static inline void wssl_chain_add_link_forward(wssl_chain_t* link, wssl_chain_t*
   link->next = new;
 }
 
-static inline void wssl_chain_add_link_backward(wssl_chain_t* link, wssl_chain_t* new)
+static inline void wssl_chain_add_link_backward
+(
+  _WSSL_MODIFY_ wssl_chain_t* link,
+  _WSSL_MODIFY_ wssl_chain_t* new
+)
 {
   new->next = link;
   new->prev = link->prev;
@@ -41,14 +52,20 @@ static inline void wssl_chain_add_link_backward(wssl_chain_t* link, wssl_chain_t
   link->prev = new;
 }
 
-static inline bool wssl_chain_is_empty(wssl_chain_t* chain)
+static inline bool wssl_chain_is_empty
+(
+  _WSSL_IN_ const wssl_chain_t* chain
+)
 {
   return
     chain == chain->next ||
     chain == chain->prev;
 }
 
-static inline void wssl_chain_delete_link(wssl_chain_t* link)
+static inline void wssl_chain_delete_link
+(
+  _WSSL_MODIFY_ wssl_chain_t* link
+)
 {
   if(wssl_chain_is_empty(link))
     return;

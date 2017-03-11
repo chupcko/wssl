@@ -17,7 +17,7 @@ wssl_result_t wssl_client_add
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "client", 0);
 
   client->id = wssl->client_id;
-  WSSL_ID_NEXT(wssl->client_id);
+  wssl_id_next(&wssl->client_id);
 
   client_address_length = (socklen_t)sizeof client_address;
   client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
@@ -35,12 +35,14 @@ wssl_result_t wssl_client_add
   client->epoll.type = WSSL_EPOLL_TYPE_CLIENT;
   client->epoll.client = client;
 
-  WSSL_BUFFER_INIT(client->input_buffer);
-  WSSL_BUFFER_INIT(client->output_buffer);
+  wssl_buffer_init(&client->input_buffer);
+  wssl_buffer_init(&client->output_buffer);
 
   client->wssl = wssl;
   client->server = server;
   client->local_extra_data = WSSL_NULL;
+
+  wssl_header_init(&client->header);
 
   event.events = EPOLLIN;
   event.data.ptr = (void*)&client->epoll;

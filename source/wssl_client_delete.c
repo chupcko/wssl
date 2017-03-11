@@ -13,14 +13,16 @@ wssl_result_t wssl_client_delete
   if(epoll_ctl(wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL) < 0)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_ctl", errno);
 
-  if(WSSL_BUFFER_IS_SET(client->input_buffer))
-    WSSL_BUFFER_DELETE(client->input_buffer);
-  if(WSSL_BUFFER_IS_SET(client->output_buffer))
-    WSSL_BUFFER_DELETE(client->output_buffer);
-
   if(close(client->socket_descriptor) < 0)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "close", errno);
   client->socket_descriptor = WSSL_NO_DESCRIPTOR;
+
+  if(wssl_buffer_is_created(&client->input_buffer))
+    wssl_buffer_clean(&client->input_buffer);
+  if(wssl_buffer_is_created(&client->output_buffer))
+    wssl_buffer_clean(&client->output_buffer);
+
+  wssl_header_delete(&client->header);
 
   wssl_chain_delete_link(&client->chain_link);
 
