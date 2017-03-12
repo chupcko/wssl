@@ -9,9 +9,10 @@ wssl_result_t wssl_client_do
 {
   wssl_ssize_t recv_size;
   wssl_size_t processed;
+  wssl_size_t local_processed;
 
   if(wssl_buffer_is_not_created(&client->input_buffer))
-    wssl_buffer_create(&client->input_buffer, WSSL_BUFFER_SIZE);
+    WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE));
 
   recv_size = (wssl_ssize_t)recv
   (
@@ -37,11 +38,24 @@ wssl_result_t wssl_client_do
   client->input_buffer.used += recv_size;
   client->input_buffer.data[client->input_buffer.used] = '\0';
 
-  /*# obradi buffer */
-printf("\"%s\"\n", client->input_buffer.data);
-processed = 2;
+printf("# %d\n", client->input_buffer.used);
+  processed = 0;
+  while(processed < client->input_buffer.used)
+  {
+printf("## %d %d\n", processed, client->input_buffer.used-processed);
+    WSSL_CALL(wssl_client_processing(wssl, client, processed, client->input_buffer.used-processed, &local_processed));
+    if(local_processed < 0)
+    {
+      WSSL_CALL(wssl_client_delete(wssl, client));
+      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+    }
+    if(local_processed == 0)
+      break;
+    processed += (wssl_size_t)local_processed;
+  }
+printf("## %d %d\n", processed, client->input_buffer.used-processed);
 
-  if(processed == recv_size)
+  if(processed == client->input_buffer.used)
     wssl_buffer_clean(&client->input_buffer);
   else if(processed > 0)
     wssl_buffer_shift(&client->input_buffer, processed);

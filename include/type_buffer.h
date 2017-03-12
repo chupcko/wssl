@@ -33,6 +33,8 @@ static inline wssl_result_t wssl_buffer_create
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer", 0);
   buffer->size = size;
   buffer->used = 0;
+
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
 
 static inline bool wssl_buffer_is_created

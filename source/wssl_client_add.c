@@ -16,8 +16,7 @@ wssl_result_t wssl_client_add
   if(client == NULL)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "client", 0);
 
-  client->id = wssl->client_id;
-  wssl_id_next(&wssl->client_id);
+  client->id = wssl_get_next_client_id(wssl);
 
   client_address_length = (socklen_t)sizeof client_address;
   client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
@@ -42,6 +41,7 @@ wssl_result_t wssl_client_add
   client->server = server;
   client->local_extra_data = WSSL_NULL;
 
+  client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   wssl_header_init(&client->header);
 
   event.events = EPOLLIN;

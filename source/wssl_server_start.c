@@ -25,7 +25,7 @@ wssl_result_t wssl_server_start
   if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof(struct sockaddr)) < 0)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "bind", errno);
 
-  if(listen(server->socket_descriptor, WSSL_SERVER_BACKLOG) < 0)
+  if(listen(server->socket_descriptor, SERVER_BACKLOG_SIZE) < 0)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "listen", errno);
 
   event.events = EPOLLIN;

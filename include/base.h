@@ -14,4 +14,8 @@ typedef ssize_t wssl_ssize_t;
 
 _INCLUDE_END_
 
+#define INDENT_SIZE        2
+#define INDENT_FORMAT      "%*s"
+#define INDENT(what_level) ((what_level)*INDENT_SIZE), ""
+
 #endif

@@ -16,6 +16,7 @@ wssl_result_t wssl_server_add
 
   snprintf(server->ip, WSSL_IP_SIZE, "%s", ip);
   server->port = port;
+  server->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   server->epoll.type = WSSL_EPOLL_TYPE_SERVER;
   server->epoll.server = server;

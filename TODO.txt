@@ -1,4 +1,6 @@
+-dump zavrsi
 -header add, header field add
 -client state machine
 -client last time
 -nonblocking
+-redosled u strukturama

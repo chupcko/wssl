@@ -62,6 +62,16 @@ static inline bool wssl_chain_is_empty
     chain == chain->prev;
 }
 
+static inline bool wssl_chain_is_not_empty
+(
+  _WSSL_IN_ const wssl_chain_t* chain
+)
+{
+  return
+    chain != chain->next &&
+    chain != chain->prev;
+}
+
 static inline void wssl_chain_delete_link
 (
   _WSSL_MODIFY_ wssl_chain_t* link

@@ -31,4 +31,26 @@ static inline void wssl_header_init
   wssl_chain_init(&header->fields);
 }
 
+#define MAKE_HEADER_INSERT(what_member)                                                \
+static inline wssl_result_t wssl_header_insert_##what_member                           \
+(                                                                                      \
+  _WSSL_MODIFY_ wssl_header_t* header,                                                 \
+  _WSSL_IN_     char*          data,                                                   \
+  _WSSL_IN_     wssl_size_t    data_size                                               \
+)                                                                                      \
+{                                                                                      \
+  header->what_member = (char*)malloc((size_t)(data_size+1));                          \
+  if(header->what_member == NULL)                                                      \
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header " #what_member, 0); \
+  strncpy(header->what_member, data, data_size);                                       \
+  header->what_member[data_size] = '\0';                                               \
+                                                                                       \
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);                               \
+}                                                                                      \
+
+MAKE_HEADER_INSERT(method)
+MAKE_HEADER_INSERT(uri)
+MAKE_HEADER_INSERT(version)
+#undef MAKE_HEADER_INSERT
+
 #endif

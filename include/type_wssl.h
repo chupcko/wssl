@@ -6,7 +6,7 @@ _INCLUDE_BEGIN_
 typedef struct wssl_t
 {
   wssl_chain_t                         servers;
-  wssl_id_t                            client_id;
+  wssl_id_t                            next_client_id;
   int                                  epoll_descriptor;
   void*                                global_extra_data;
   wssl_connect_callback_function_t*    connect_callback_function;
@@ -18,7 +18,7 @@ typedef struct wssl_t
 #define WSSL_INIT_VALUE(what_name)                                          \
 {                                                                           \
   .servers                      = WSSL_CHAIN_INIT_VALUE(what_name.servers), \
-  .client_id                    = WSSL_ID_INIT_VALUE,                       \
+  .next_client_id               = WSSL_ID_INIT_VALUE,                       \
   .epoll_descriptor             = WSSL_NO_DESCRIPTOR,                       \
   .global_extra_data            = WSSL_NULL,                                \
   .connect_callback_function    = WSSL_CALLBACK_FUNCTION_NONE,              \
@@ -35,7 +35,7 @@ static inline void wssl_init
 )
 {
   wssl_chain_init(&wssl->servers);
-  wssl_id_init(&wssl->client_id);
+  wssl_id_init(&wssl->next_client_id);
   wssl->epoll_descriptor             = WSSL_NO_DESCRIPTOR;
   wssl->global_extra_data            = WSSL_NULL;
   wssl->connect_callback_function    = WSSL_CALLBACK_FUNCTION_NONE;
@@ -90,5 +90,15 @@ static inline void wssl_set_tick_callback_function
 }
 
 _INCLUDE_END_
+
+static inline wssl_id_t wssl_get_next_client_id
+(
+  _WSSL_MODIFY_ wssl_t* wssl
+)
+{
+  wssl_id_t id = wssl->next_client_id;
+  wssl_id_next(&wssl->next_client_id);
+  return id;
+}
 
 #endif

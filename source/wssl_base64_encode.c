@@ -9,15 +9,15 @@ int wssl_base64_encode
   _WSSL_IN_  const wssl_size_t   output_size
 )
 {
-  #define WSSL_BASE64_ENCODE_PUT(output, output_length, output_size, what) \
-  do                                                                       \
-  {                                                                        \
-    if(output_length >= output_size)                                       \
-      return -1;                                                           \
-    output[output_length] = what;                                          \
-    output_length++;                                                       \
-  }                                                                        \
-  while(0)                                                                 \
+  #define WSSL_BASE64_ENCODE_PUT(what_output, what_output_length, what_output_size, what_data) \
+  do                                                                                           \
+  {                                                                                            \
+    if(what_output_length >= what_output_size)                                                 \
+      return -1;                                                                               \
+    what_output[what_output_length] = what_data;                                               \
+    what_output_length++;                                                                      \
+  }                                                                                            \
+  while(0)                                                                                     \
 
   static char table[] =
   {

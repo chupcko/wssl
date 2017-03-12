@@ -48,6 +48,8 @@ void on_disconnect(wssl_client_t* client)
 bool on_tick(wssl_t* wssl)
 {
   printf("Tick\n");
+  wssl_dump(wssl, stdout, 1);
+  printf("\n");
   return Work;
 }
 
@@ -71,8 +73,16 @@ int main(void)
 
   CALL(wssl_server_add(&wssl, "0.0.0.0", 5000));
   CALL(wssl_server_add(&wssl, "0.0.0.0", 6000));
+  wssl_dump(&wssl, stdout, 0);
+  printf("\n");
+
   CALL(wssl_loop(&wssl));
+  wssl_dump(&wssl, stdout, 0);
+  printf("\n");
+
   CALL(wssl_clean(&wssl));
+  wssl_dump(&wssl, stdout, 0);
+  printf("\n");
 
   return EXIT_SUCCESS;
 }
