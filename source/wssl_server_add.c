@@ -23,6 +23,8 @@ wssl_result_t wssl_server_add
 
   wssl_chain_init(&server->clients);
 
+  server->wssl = wssl;
+
   wssl_chain_add_link_backward(&wssl->servers, &server->chain_link);
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);

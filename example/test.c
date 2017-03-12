@@ -48,7 +48,7 @@ void on_disconnect(wssl_client_t* client)
 bool on_tick(wssl_t* wssl)
 {
   printf("Tick\n");
-  wssl_dump(wssl, stdout, 1);
+  wssl_dump(wssl, stdout, 0);
   printf("\n");
   return Work;
 }

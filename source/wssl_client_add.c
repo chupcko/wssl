@@ -34,15 +34,16 @@ wssl_result_t wssl_client_add
   client->epoll.type = WSSL_EPOLL_TYPE_CLIENT;
   client->epoll.client = client;
 
+  client->local_extra_data = WSSL_NULL;
+
   wssl_buffer_init(&client->input_buffer);
   wssl_buffer_init(&client->output_buffer);
 
-  client->wssl = wssl;
-  client->server = server;
-  client->local_extra_data = WSSL_NULL;
-
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   wssl_header_init(&client->header);
+
+  client->wssl = wssl;
+  client->server = server;
 
   event.events = EPOLLIN;
   event.data.ptr = (void*)&client->epoll;

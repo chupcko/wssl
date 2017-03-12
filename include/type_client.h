@@ -32,13 +32,13 @@ typedef struct wssl_client_t
   char                   ip[WSSL_IP_SIZE];
   int                    port;
   wssl_epoll_t           epoll;
+  void*                  local_extra_data;
   wssl_buffer_t          input_buffer;
   wssl_buffer_t          output_buffer;
-  struct wssl_t*         wssl;
-  struct wssl_server_t*  server;
-  void*                  local_extra_data;
   wssl_client_state_e    state;
   wssl_header_t          header;
+  struct wssl_t*         wssl;
+  struct wssl_server_t*  server;
 } wssl_client_t;
 
 static inline void wssl_set_local_extra_data
