@@ -60,14 +60,10 @@ void wssl_header_dump
   if(wssl_chain_is_not_empty(&header->fields))
   {
     wssl_chain_t* header_field_link;
-    wssl_header_field_t* header_field;
 
     fprintf(file, "\n");
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(header_field_link, &header->fields)
-    {
-      header_field = (wssl_header_field_t*)header_field_link;
-      wssl_header_field_dump(header_field, file, indent_level+2);
-    }
+      wssl_header_field_dump((wssl_header_field_t*)header_field_link, file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

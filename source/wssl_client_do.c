@@ -38,11 +38,9 @@ wssl_result_t wssl_client_do
   client->input_buffer.used += recv_size;
   client->input_buffer.data[client->input_buffer.used] = '\0';
 
-printf("# %d\n", client->input_buffer.used);
   processed = 0;
   while(processed < client->input_buffer.used)
   {
-printf("## %d %d \"%s\"\n", processed, client->input_buffer.used-processed, &client->input_buffer.data[processed]);
     WSSL_CALL(wssl_client_processing(wssl, client, processed, client->input_buffer.used-processed, &local_processed));
     if(local_processed < 0)
     {
@@ -54,8 +52,6 @@ printf("## %d %d \"%s\"\n", processed, client->input_buffer.used-processed, &cli
     processed += (wssl_size_t)local_processed;
 wssl_client_dump(client, stdout, 0);
   }
-printf("### %d %d\n", processed, client->input_buffer.used-processed);
-
   if(processed == client->input_buffer.used)
     wssl_buffer_clean(&client->input_buffer);
   else if(processed > 0)

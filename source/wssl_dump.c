@@ -109,14 +109,10 @@ void wssl_dump
   if(wssl_chain_is_not_empty(&wssl->servers))
   {
     wssl_chain_t* server_link;
-    wssl_server_t* server;
 
     fprintf(file, "\n");
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
-    {
-      server = (wssl_server_t*)server_link;
-      wssl_server_dump(server, file, indent_level+2);
-    }
+      wssl_server_dump((wssl_server_t*)server_link, file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

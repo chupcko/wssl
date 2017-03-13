@@ -1,11 +1,12 @@
 #ifndef _RESULT_H_
 #define _RESULT_H_
 
-#define WSSL_RESULT_CODE_TABLE(what_call)                  \
-  what_call(OK,            0,   "OK"                     ) \
-  what_call(ERROR_ERRNO,  -101, "System error with errno") \
-  what_call(ERROR_MEMORY, -102, "No memory"              ) \
-  what_call(ERROR_FULL,   -103, "Buffer is full"         ) \
+#define WSSL_RESULT_CODE_TABLE(what_call)                       \
+  what_call(OK,                 0,   "OK"                     ) \
+  what_call(ERROR_ERRNO,       -101, "System error with errno") \
+  what_call(ERROR_MEMORY,      -102, "No memory"              ) \
+  what_call(ERROR_FULL,        -103, "Buffer is full"         ) \
+  what_call(ERROR_CONSISTENCY, -104, "Consistency error"      ) \
 
 _INCLUDE_BEGIN_
 
@@ -36,9 +37,8 @@ _INCLUDE_END_
 #define WSSL_CALL(...)                     \
 do                                         \
 {                                          \
-  wssl_result_t _result_;                  \
+  wssl_result_t _result_ = (__VA_ARGS__);  \
                                            \
-  _result_ = (__VA_ARGS__);                \
   if(_result_.code != WSSL_RESULT_CODE_OK) \
     return _result_;                       \
 }                                          \

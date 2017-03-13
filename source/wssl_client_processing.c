@@ -1,6 +1,6 @@
 #include "main.h"
 
-static inline wssl_ssize_t wssl_client_processing_find_word
+static inline wssl_ssize_t wssl_client_processing_find_word_until_space
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -9,8 +9,85 @@ static inline wssl_ssize_t wssl_client_processing_find_word
   wssl_ssize_t size;
 
   for(size = 0; size < data_size; size++)
-    if(isspace(data[size]) != 0)
-      return size;
+    switch(data[size])
+    {
+      case ' ':
+      case '\t':
+        return size;
+        break;
+      case '\r':
+      case '\n':
+        return -1;
+        break;
+    }
+  return data_size;
+}
+
+static inline wssl_ssize_t wssl_client_processing_find_word_until_crlf
+(
+  _WSSL_IN_ const char*       data,
+  _WSSL_IN_ const wssl_size_t data_size
+)
+{
+  wssl_ssize_t size;
+
+  for(size = 0; size < data_size; size++)
+    switch(data[size])
+    {
+      case '\r':
+      case '\n':
+        return size;
+        break;
+    }
+  return data_size;
+}
+
+static inline wssl_ssize_t wssl_client_processing_find_word_until_colon
+(
+  _WSSL_IN_ const char*       data,
+  _WSSL_IN_ const wssl_size_t data_size
+)
+{
+  wssl_ssize_t size;
+
+  for(size = 0; size < data_size; size++)
+    switch(data[size])
+    {
+      case ':':
+        return size;
+        break;
+      case ' ':
+      case '\t':
+      case '\r':
+      case '\n':
+        return -1;
+        break;
+    }
+  return data_size;
+}
+
+static inline wssl_ssize_t wssl_client_processing_eat_spaces
+(
+  _WSSL_IN_ const char*       data,
+  _WSSL_IN_ const wssl_size_t data_size
+)
+{
+  wssl_ssize_t size = 0;
+
+  for(size = 0; size < data_size; size++)
+    switch(data[size])
+    {
+      case ' ':
+      case '\t':
+        break;
+      case '\r':
+      case '\n':
+        return -1;
+        break;
+      default:
+        return size;
+        break;
+    }
   return data_size;
 }
 
@@ -23,12 +100,39 @@ static inline wssl_ssize_t wssl_client_processing_count_spaces
   wssl_ssize_t size = 0;
 
   for(size = 0; size < data_size; size++)
-    if(data[size] != ' ')
-      if(data[size] == '\r' || data[size] == '\n')
-        return -1;
-      else
+    switch(data[size])
+    {
+      case ' ':
+      case '\t':
+        break;
+      default:
         return size;
+        break;
+    }
   return data_size;
+}
+
+static inline wssl_ssize_t wssl_client_processing_eat_crlf
+(
+  _WSSL_IN_ const char*       data,
+  _WSSL_IN_ const wssl_size_t data_size
+)
+{
+  wssl_ssize_t size = 0;
+
+  for(size = 0; size < data_size; size++)
+    switch(data[size])
+    {
+      case '\r':
+        break;
+      case '\n':
+        return size+1;
+        break;
+      default:
+        return -1;
+        break;
+    }
+  return 0;
 }
 
 _FUNCTION_
@@ -47,7 +151,7 @@ wssl_result_t wssl_client_processing
   switch(client->state)
   {
     case WSSL_CLIENT_STATE_WAIT_METHOD:
-      size = wssl_client_processing_find_word((char*)&client->input_buffer.data[data_begin], data_size);
+      size = wssl_client_processing_find_word_until_space((char*)&client->input_buffer.data[data_begin], data_size);
       if(size > 0 && size < data_size)
       {
         WSSL_CALL(wssl_header_insert_method(&client->header, (char*)&client->input_buffer.data[data_begin], size));
@@ -58,7 +162,7 @@ wssl_result_t wssl_client_processing
         *processed = -1;
       break;
     case WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR:
-      size = wssl_client_processing_count_spaces((char*)&client->input_buffer.data[data_begin], data_size);
+      size = wssl_client_processing_eat_spaces((char*)&client->input_buffer.data[data_begin], data_size);
       if(size > 0 && size < data_size)
       {
         *processed = size;
@@ -68,7 +172,7 @@ wssl_result_t wssl_client_processing
         *processed = -1;
       break;
     case WSSL_CLIENT_STATE_WAIT_URI:
-      size = wssl_client_processing_find_word((char*)&client->input_buffer.data[data_begin], data_size);
+      size = wssl_client_processing_find_word_until_space((char*)&client->input_buffer.data[data_begin], data_size);
       if(size > 0 && size < data_size)
       {
         WSSL_CALL(wssl_header_insert_uri(&client->header, (char*)&client->input_buffer.data[data_begin], size));
@@ -79,7 +183,7 @@ wssl_result_t wssl_client_processing
         *processed = -1;
       break;
     case WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR:
-      size = wssl_client_processing_count_spaces((char*)&client->input_buffer.data[data_begin], data_size);
+      size = wssl_client_processing_eat_spaces((char*)&client->input_buffer.data[data_begin], data_size);
       if(size > 0 && size < data_size)
       {
         *processed = size;
@@ -89,38 +193,64 @@ wssl_result_t wssl_client_processing
         *processed = -1;
       break;
     case WSSL_CLIENT_STATE_WAIT_VERSION:
-      size = wssl_client_processing_find_word((char*)&client->input_buffer.data[data_begin], data_size);
+      size = wssl_client_processing_find_word_until_crlf((char*)&client->input_buffer.data[data_begin], data_size);
       if(size > 0 && size < data_size)
       {
         WSSL_CALL(wssl_header_insert_version(&client->header, (char*)&client->input_buffer.data[data_begin], size));
         *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
       }
-      else if(size <= 0)
-        *processed = -1;
       break;
     case WSSL_CLIENT_STATE_WAIT_CRLF:
-      if(data_size > 2)
-        if
-        (
-          (char)client->input_buffer.data[data_begin] == '\r' &&
-          (char)client->input_buffer.data[data_begin+1] == '\n'
-        )
-        {
-          *processed = 2;
-          client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
-        }
-        else
-          *processed = -1;
+      size = wssl_client_processing_eat_crlf((char*)&client->input_buffer.data[data_begin], data_size);
+      if(size > 0)
+      {
+        *processed = size;
+        client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
+      }
+      else if(size < 0)
+        *processed = -1;
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_KEY:
-      /*#*/
+      size = wssl_client_processing_eat_crlf((char*)&client->input_buffer.data[data_begin], data_size);
+      if(size > 0)
+      {
+        *processed = size;
+        client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
+      }
+      else
+      {
+        size = wssl_client_processing_find_word_until_colon((char*)&client->input_buffer.data[data_begin], data_size);
+        if(size > 0 && size < data_size)
+        {
+          WSSL_CALL(wssl_header_add_field(&client->header, (char*)&client->input_buffer.data[data_begin], size));
+          *processed = size;
+          client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
+        }
+        else if(size <= 0)
+          *processed = -1;
+      }
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR:
-      /*#*/
+      size = wssl_client_processing_count_spaces((char*)&client->input_buffer.data[data_begin+1], data_size-1);
+      if(size >= 0 && size < data_size-1)
+      {
+        *processed = size+1;
+        client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE;
+      }
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_VALUE:
-      /*#*/
+      size = wssl_client_processing_find_word_until_crlf((char*)&client->input_buffer.data[data_begin], data_size);
+      if(size >= 0 && size < data_size)
+      {
+        wssl_header_field_t* last_headed_field = wssl_header_get_last_field(&client->header);
+
+        if(last_headed_field == WSSL_NULL)
+          return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header field", 0);
+        WSSL_CALL(wssl_header_field_insert_value(last_headed_field, (char*)&client->input_buffer.data[data_begin], size));
+        *processed = size;
+        client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
+      }
       break;
     case WSSL_CLIENT_STATE_WAIT_FRAME:
       /*#*/

@@ -8,9 +8,7 @@ wssl_result_t wssl_server_add
   _WSSL_IN_     const int     port
 )
 {
-  wssl_server_t* server;
-
-  server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
+  wssl_server_t* server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
   if(server == NULL)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "server", 0);
 

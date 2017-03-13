@@ -13,7 +13,7 @@ void wssl_header_field_dump
     file,
     (
       INDENT_FORMAT "field=\n"
-      INDENT_FORMAT "key:"
+      INDENT_FORMAT "key :"
     ),
     INDENT(indent_level),
     INDENT(indent_level+1)

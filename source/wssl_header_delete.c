@@ -8,7 +8,6 @@ void wssl_header_delete
 {
   wssl_chain_t* header_field_link;
   wssl_chain_t* header_field_link_next;
-  wssl_header_field_t* header_field;
 
   if(header->method != WSSL_NULL)
     free((void*)header->method);
@@ -18,8 +17,5 @@ void wssl_header_delete
     free((void*)header->version);
 
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(header_field_link, header_field_link_next, &header->fields)
-  {
-    header_field = (wssl_header_field_t*)header_field_link;
-    wssl_header_field_delete(header_field);
-  }
+    wssl_header_field_delete((wssl_header_field_t*)header_field_link);
 }

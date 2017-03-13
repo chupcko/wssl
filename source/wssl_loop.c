@@ -8,7 +8,7 @@ wssl_result_t wssl_loop
 {
   struct epoll_event events[EPOLL_EVENTS_SIZE];
   int events_number;
-  int i;
+  int event_index;
   wssl_epoll_t* epoll;
 
   wssl->epoll_descriptor = epoll_create1(0);
@@ -21,9 +21,9 @@ wssl_result_t wssl_loop
     events_number = epoll_wait(wssl->epoll_descriptor, events, EPOLL_EVENTS_SIZE, EPOLL_SLEEP_MSECONDS);
     if(events_number < 0 && errno != EINTR)
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_wait", errno);
-    for(i = 0; i < events_number; i++)
+    for(event_index = 0; event_index < events_number; event_index++)
     {
-      epoll = (wssl_epoll_t*)events[i].data.ptr;
+      epoll = (wssl_epoll_t*)events[event_index].data.ptr;
       switch(epoll->type)
       {
         case WSSL_EPOLL_TYPE_SERVER:
