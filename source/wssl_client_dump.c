@@ -77,7 +77,7 @@ void wssl_client_dump
   (
     file,
     (
-      INDENT_FORMAT "state: %s\n"
+      INDENT_FORMAT "state: \"%s\"\n"
       INDENT_FORMAT "header:\n"
     ),
     INDENT(indent_level+1), wssl_get_client_state(client->state),

@@ -9,7 +9,7 @@ wssl_result_t wssl_client_do
 {
   wssl_ssize_t recv_size;
   wssl_size_t processed;
-  wssl_size_t local_processed;
+  wssl_ssize_t local_processed;
 
   if(wssl_buffer_is_not_created(&client->input_buffer))
     WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE));
@@ -42,7 +42,7 @@ printf("# %d\n", client->input_buffer.used);
   processed = 0;
   while(processed < client->input_buffer.used)
   {
-printf("## %d %d\n", processed, client->input_buffer.used-processed);
+printf("## %d %d \"%s\"\n", processed, client->input_buffer.used-processed, &client->input_buffer.data[processed]);
     WSSL_CALL(wssl_client_processing(wssl, client, processed, client->input_buffer.used-processed, &local_processed));
     if(local_processed < 0)
     {
@@ -52,8 +52,9 @@ printf("## %d %d\n", processed, client->input_buffer.used-processed);
     if(local_processed == 0)
       break;
     processed += (wssl_size_t)local_processed;
+wssl_client_dump(client, stdout, 0);
   }
-printf("## %d %d\n", processed, client->input_buffer.used-processed);
+printf("### %d %d\n", processed, client->input_buffer.used-processed);
 
   if(processed == client->input_buffer.used)
     wssl_buffer_clean(&client->input_buffer);
@@ -62,5 +63,6 @@ printf("## %d %d\n", processed, client->input_buffer.used-processed);
   else if(client->input_buffer.used == client->input_buffer.size-1)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "input_buffer", 0);
 
+wssl_client_dump(client, stdout, 0);
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

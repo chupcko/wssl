@@ -2,17 +2,17 @@
 #define _TYPE_CLIENT_H_
 
 #define WSSL_CLIENT_STATE_TABLE(what_call)                            \
-  what_call(WAIT_METHOD,                "wait_method"               ) \
-  what_call(WAIT_URI_SEPARATOR,         "wait_uri_separator"        ) \
-  what_call(WAIT_URI,                   "wait_uri"                  ) \
-  what_call(WAIT_VERSION_SEPARATOR,     "wait_version_separator"    ) \
-  what_call(WAIT_VERSION,               "wait_version"              ) \
-  what_call(WAIT_CR_LF,                 "wait_cr_lf"                ) \
-  what_call(WAIT_FIELD_KEY,             "wait_field_key"            ) \
-  what_call(WAIT_FIELD_VALUE_SEPARATOR, "wait_field_value_separator") \
-  what_call(WAIT_FIELD_VALUE,           "wait_field_value"          ) \
-  what_call(WAIT_FRAME,                 "wait_frame"                ) \
-  what_call(DELETE,                     "delete"                    ) \
+  what_call(WAIT_METHOD,                "Wait method"               ) \
+  what_call(WAIT_URI_SEPARATOR,         "Wait URI separator"        ) \
+  what_call(WAIT_URI,                   "Wait uri"                  ) \
+  what_call(WAIT_VERSION_SEPARATOR,     "Wait version separator"    ) \
+  what_call(WAIT_VERSION,               "Wait version"              ) \
+  what_call(WAIT_CRLF,                  "Wait CRLF"                 ) \
+  what_call(WAIT_FIELD_KEY,             "Wait field key"            ) \
+  what_call(WAIT_FIELD_VALUE_SEPARATOR, "Wait field value separator") \
+  what_call(WAIT_FIELD_VALUE,           "Wait field value"          ) \
+  what_call(WAIT_FRAME,                 "Wait frame"                ) \
+  what_call(DELETE,                     "Delete"                    ) \
 
 _INCLUDE_BEGIN_
 

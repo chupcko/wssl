@@ -20,14 +20,14 @@ void wssl_buffer_dump
   );
   if(wssl_buffer_is_created(buffer))
   {
-    wssl_size_t i;
+    wssl_size_t data_index;
 
     fprintf(file, "\"");
-    for(i = 0; i < buffer->used; i++)
+    for(data_index = 0; data_index < buffer->used; data_index++)
     {
-      if(i != 0)
+      if(data_index != 0)
         fprintf(file, " ");
-      fprintf(file, "%02" PRIx8, buffer->data[i]);
+      fprintf(file, "%02" PRIx8, buffer->data[data_index]);
     }
     fprintf(file, "\"");
   }
