@@ -18,7 +18,7 @@ wssl_result_t wssl_loop
 
   LOOP
   {
-    events_number = epoll_wait(wssl->epoll_descriptor, events, EPOLL_EVENTS_SIZE, EPOLL_SLEEP_MSECONDS);
+    events_number = epoll_wait(wssl->epoll_descriptor, events, EPOLL_EVENTS_SIZE, EPOLL_SLEEP_IN_MSECONDS);
     if(events_number < 0 && errno != EINTR)
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_wait", errno);
     for(event_index = 0; event_index < events_number; event_index++)

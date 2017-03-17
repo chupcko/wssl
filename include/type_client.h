@@ -29,7 +29,7 @@ typedef struct wssl_client_t
   wssl_chain_t          chain_link;
   wssl_id_t             id;
   int                   socket_descriptor;
-  char                  ip[WSSL_IP_SIZE];
+  char                  ip[WSSL_IP_SIZE_IN_CHAR];
   int                   port;
   wssl_epoll_t          epoll;
   void*                 local_extra_data;

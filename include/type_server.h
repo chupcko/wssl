@@ -6,7 +6,7 @@ _INCLUDE_BEGIN_
 typedef struct wssl_server_t
 {
   wssl_chain_t   chain_link;
-  char           ip[WSSL_IP_SIZE];
+  char           ip[WSSL_IP_SIZE_IN_CHAR];
   int            port;
   int            socket_descriptor;
   wssl_epoll_t   epoll;

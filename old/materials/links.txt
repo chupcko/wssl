@@ -3,3 +3,6 @@ http://lucumr.pocoo.org/2012/9/24/websockets-101/
 https://en.wikipedia.org/wiki/Base64
 https://tools.ietf.org/html/rfc6455
 http://www.websocket.org/echo.html
+
+https://en.wikipedia.org/wiki/SHA-1
+http://www.metamorphosite.com/one-way-hash-encryption-sha1-data-software

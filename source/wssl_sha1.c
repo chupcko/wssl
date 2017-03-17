@@ -1,19 +1,4 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <inttypes.h>
-#include <time.h>
-
-typedef uint8_t wssl_octet_t;
-typedef int wssl_size_t;
-
-#define WSSL_OCTET_SIZE_IN_BITS 8
-
-#define WSSL_SHA1_RESULT_SIZE_IN_BITS   160
-#define WSSL_SHA1_RESULT_SIZE_IN_OCTETS (WSSL_SHA1_RESULT_SIZE_IN_BITS/WSSL_OCTET_SIZE_IN_BITS)
-typedef wssl_octet_t wssl_sha1_result_t[WSSL_SHA1_RESULT_SIZE_IN_OCTETS];
+#include "main.h"
 
 typedef uint32_t sha1_word_t;
 typedef uint64_t sha1_length_t;
@@ -33,8 +18,8 @@ typedef sha1_word_t sha1_intermediate_result_t[SHA1_RESULT_SIZE_IN_WORDS];
 
 static inline sha1_word_t sha1_word_rotate_left
 (
-  const sha1_word_t word,
-  const wssl_size_t i
+  _WSSL_IN_ const sha1_word_t word,
+  _WSSL_IN_ const wssl_size_t i
 )
 {
   return (word<<i)|(word>>(SHA1_WORD_SIZE_IN_BITS-i));
@@ -42,8 +27,8 @@ static inline sha1_word_t sha1_word_rotate_left
 
 static void sha1_processing_chunk
 (
-  const sha1_chunk_t chunk,
-  sha1_intermediate_result_t intermediate_result
+  _WSSL_IN_  const sha1_chunk_t               chunk,
+  _WSSL_OUT_       sha1_intermediate_result_t intermediate_result
 )
 {
   sha1_intermediate_result_t r;
@@ -96,11 +81,12 @@ static void sha1_processing_chunk
     intermediate_result[i] += r[i];
 }
 
+_LIBRARY_FUNCTION_
 void wssl_sha1
 (
-  const wssl_octet_t* data,
-  const wssl_size_t data_size,
-  wssl_sha1_result_t result
+  _WSSL_IN_  const wssl_octet_t*      data,
+  _WSSL_IN_  const wssl_size_t        data_size,
+  _WSSL_OUT_       wssl_sha1_result_t result
 )
 {
   sha1_intermediate_result_t intermediate_result =
@@ -146,116 +132,3 @@ void wssl_sha1
       intermediate_result[i] >>= WSSL_OCTET_SIZE_IN_BITS;
     }
 }
-
-
-
-
-
-void d(wssl_sha1_result_t result)
-{
-  int i;
-
-  for(i = 0; i < WSSL_SHA1_RESULT_SIZE_IN_OCTETS; i++)
-    printf("%02" PRIx8, result[i]);
-  printf("\n");
-}
-
-#define N 100000
-#define SIZE 10000
-
-#include <openssl/sha.h>
-
-void test_single(wssl_octet_t* data, wssl_size_t data_size)
-{
-  wssl_sha1_result_t result_wssl;
-  wssl_sha1_result_t result_openssl;
-  int i;
-
-  wssl_sha1(data, data_size, result_wssl);
-  SHA1(data, data_size, result_openssl);
-
-  for(i = 0; i < WSSL_SHA1_RESULT_SIZE_IN_OCTETS; i++)
-    if(result_wssl[i] != result_openssl[i])
-    {
-      d(result_wssl);
-      d(result_openssl);
-    }
-}
-
-void test(void)
-{
-  int i;
-  wssl_octet_t data[SIZE];
-  wssl_size_t data_size;
-  int j;
-
-  for(i = 0; i < N; i++)
-  {
-    data_size = rand()%SIZE;
-    for(j = 0; j < data_size; j++)
-      data[j] = rand()&0xff;
-    test_single(data, data_size);
-  }
-}
-
-int main(void)
-{
-  srand(time(NULL));
-
-  test();
-  printf("DONE\n");
-
-  wssl_sha1_result_t result;
-
-  #define MESSAGE ""
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefgh"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefg"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgha"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefg"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-
-  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgha"
-  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
-  d(result);
-  #undef MESSAGE
-  return EXIT_SUCCESS;
-}
-
-/*
-da39a3ee5e6b4b0d3255bfef95601890afd80709
-425af12a0743502b322e93a015bcf868e324d56a
-6b70fc1b4da1922a70686a0c4dcef6512ff5c65c
-dc81d69ad00bff0c312e703e40a19ab8e732416e
-b3a5ac39b037fc395fad28de3cd7b2bd3e564d11
-8495e26e0b2ad0cf2aebff079beb982648954212
-cbd8c1ee0779118216562290579a902da9c7080a
-4021e411111ddeb75c3a7c6e93db91b5c2a93aa3
-*/

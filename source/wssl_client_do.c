@@ -12,7 +12,7 @@ wssl_result_t wssl_client_do
   wssl_ssize_t local_processed;
 
   if(wssl_buffer_is_not_created(&client->input_buffer))
-    WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE));
+    WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE_IN_OCTETS));
 
   recv_size = (wssl_ssize_t)recv
   (

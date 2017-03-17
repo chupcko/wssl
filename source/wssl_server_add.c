@@ -12,7 +12,7 @@ wssl_result_t wssl_server_add
   if(server == NULL)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "server", 0);
 
-  snprintf(server->ip, WSSL_IP_SIZE, "%s", ip);
+  snprintf(server->ip, WSSL_IP_SIZE_IN_CHAR, "%s", ip);
   server->port = port;
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
 

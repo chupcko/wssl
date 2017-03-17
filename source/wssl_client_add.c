@@ -28,7 +28,7 @@ wssl_result_t wssl_client_add
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "accept", last_errno);
   }
 
-  inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE);
+  inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
   client->port = ntohs(client_address.sin_port);
 
   client->epoll.type = WSSL_EPOLL_TYPE_CLIENT;
