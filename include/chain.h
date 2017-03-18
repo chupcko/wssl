@@ -19,7 +19,7 @@ typedef struct wssl_chain_t
 
 static inline void wssl_chain_init
 (
-  wssl_chain_t* chain
+  _WSSL_MODIFY_ wssl_chain_t* chain
 )
 {
   chain->next = chain;

@@ -1,5 +1,5 @@
-#ifndef _TYPE_WSSL_H_
-#define _TYPE_WSSL_H_
+#ifndef _WSSL_H_
+#define _WSSL_H_
 
 _INCLUDE_BEGIN_
 

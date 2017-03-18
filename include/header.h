@@ -1,5 +1,5 @@
-#ifndef _TYPE_HEADER_H_
-#define _TYPE_HEADER_H_
+#ifndef _HEADER_H_
+#define _HEADER_H_
 
 _INCLUDE_BEGIN_
 

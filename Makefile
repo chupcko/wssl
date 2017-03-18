@@ -7,7 +7,7 @@ debug: source-debug example-debug
 
 .PHONY: clean
 clean: source-clean example-clean
-	rm -rf out core
+	rm -r -f out core
 
 define GENERATE_GOALS_CORE =
   GOALS += $(1)-$(2:all=)

@@ -1,5 +1,5 @@
-#ifndef _TYPE_ID_H_
-#define _TYPE_ID_H_
+#ifndef _ID_H_
+#define _ID_H_
 
 _INCLUDE_BEGIN_
 

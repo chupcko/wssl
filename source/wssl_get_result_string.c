@@ -18,7 +18,7 @@ const char* wssl_get_result_string
   _WSSL_IN_ const wssl_result_t result
 )
 {
-  int table_index;
+  wssl_size_t table_index;
 
   for(table_index = 0; Wssl_result_strings_table[table_index].string != NULL; table_index++)
     if(Wssl_result_strings_table[table_index].code == result.code)

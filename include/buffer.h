@@ -1,5 +1,5 @@
-#ifndef _TYPE_BUFFER_H_
-#define _TYPE_BUFFER_H_
+#ifndef _BUFFER_H_
+#define _BUFFER_H_
 
 _INCLUDE_BEGIN_
 
@@ -64,10 +64,30 @@ static inline void wssl_buffer_clean
   buffer->used = 0;
 }
 
+static inline wssl_result_t wssl_buffer_append
+(
+  _WSSL_MODIFY_       wssl_buffer_t* buffer,
+  _WSSL_IN_     const wssl_octet_t*  data,
+  _WSSL_IN_     const wssl_size_t    data_size
+)
+{
+  if(buffer->used+data_size > buffer->size)
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "buffer", 0);
+  memcpy
+  (
+    (void*)&buffer->data[buffer->used],
+    (void*)data,
+    (size_t)data_size
+  );
+  buffer->used += data_size;
+
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+}
+
 static inline void wssl_buffer_shift
 (
-  _WSSL_MODIFY_        wssl_buffer_t* buffer,
-  _WSSL_IN_     const  wssl_size_t    processed
+  _WSSL_MODIFY_       wssl_buffer_t* buffer,
+  _WSSL_IN_     const wssl_size_t    processed
 )
 {
   buffer->used -= processed;

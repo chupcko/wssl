@@ -1,22 +1,29 @@
 #include "main.h"
 
-#define BASE64_ENCODE_PUT(what_output, what_output_length, what_output_size, what_data) \
-do                                                                                           \
-{                                                                                            \
-  if(what_output_length >= what_output_size)                                                 \
-    return -1;                                                                               \
-  what_output[what_output_length] = what_data;                                               \
-  what_output_length++;                                                                      \
-}                                                                                            \
-while(0)                                                                                     \
+static inline wssl_result_t wssl_base64_encode_put
+(
+  _WSSL_MODIFY_       char*        output,
+  _WSSL_MODIFY_       wssl_size_t* output_index,
+  _WSSL_IN_     const wssl_size_t  output_size,
+  _WSSL_IN_     const char         data
+)
+{
+  if(*output_index >= output_size)
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64", 0);
+  output[*output_index] = data;
+  (*output_index)++;
+
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+}
 
 _FUNCTION_
-int wssl_base64_encode
+wssl_result_t wssl_base64_encode
 (
   _WSSL_IN_  const wssl_octet_t* input,
-  _WSSL_IN_  const int           input_size,
+  _WSSL_IN_  const wssl_size_t   input_size,
   _WSSL_OUT_       char*         output,
-  _WSSL_IN_  const wssl_size_t   output_size
+  _WSSL_IN_  const wssl_size_t   output_size,
+  _WSSL_OUT_       wssl_size_t*  output_length
 )
 {
   static char table[] =
@@ -27,31 +34,33 @@ int wssl_base64_encode
     'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
   };
 
-  int output_length = 0;
-  int i;
+  *output_length = 0;
+  wssl_size_t i;
 
   for(i = 0; input_size-i >= 3; i += 3)
   {
-    BASE64_ENCODE_PUT(output, output_length, output_size, table[(input[i]>>2)&0x3f]);
-    BASE64_ENCODE_PUT(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]);
-    BASE64_ENCODE_PUT(output, output_length, output_size, table[((input[i+1]&0xf)<<2) | ((input[i+2]>>6)&0x3)]);
-    BASE64_ENCODE_PUT(output, output_length, output_size, table[input[i+2]&0x3f]);
+    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
+    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]));
+    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i+1]&0xf)<<2) | ((input[i+2]>>6)&0x3)]));
+    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[input[i+2]&0x3f]));
   }
   switch(input_size-i)
   {
     case 2:
-      BASE64_ENCODE_PUT(output, output_length, output_size, table[(input[i]>>2)&0x3f]);
-      BASE64_ENCODE_PUT(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]);
-      BASE64_ENCODE_PUT(output, output_length, output_size, table[(input[i+1]&0xf)<<2]);
-      BASE64_ENCODE_PUT(output, output_length, output_size, '=');
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]));
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i+1]&0xf)<<2]));
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
       break;
     case 1:
-      BASE64_ENCODE_PUT(output, output_length, output_size, table[(input[i]>>2)&0x3f]);
-      BASE64_ENCODE_PUT(output, output_length, output_size, table[(input[i]&0x3)<<4]);
-      BASE64_ENCODE_PUT(output, output_length, output_size, '=');
-      BASE64_ENCODE_PUT(output, output_length, output_size, '=');
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]&0x3)<<4]));
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
+      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
       break;
   }
-  BASE64_ENCODE_PUT(output, output_length, output_size, '\0');
-  return output_length-1;
+  if(*output_length >= output_size)
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64", 0);
+  output[*output_length] = '\0';
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

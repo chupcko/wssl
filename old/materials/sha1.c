@@ -73,13 +73,13 @@ static void sha1_processing_chunk
     switch(i/SHA1_ROUND_NUMBER_QUARTER)
     {
       case 0:
-        t += ((r[1]&r[2])|(~r[1]&r[3]))+0x5a827999;
+        t += (r[3]^(r[1]&(r[2]^r[3])))+0x5a827999;
         break;
       case 1:
         t += (r[1]^r[2]^r[3])+0x6ed9eba1;
         break;
       case 2:
-        t += ((r[1]&r[2])|(r[1]&r[3])|(r[2]&r[3]))+0x8f1bbcdc;
+        t += ((r[1]&r[2])|(r[3]&(r[1]|r[2])))+0x8f1bbcdc;
         break;
       case 3:
         t += (r[1]^r[2]^r[3])+0xca62c1d6;

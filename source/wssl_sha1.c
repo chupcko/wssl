@@ -9,7 +9,7 @@ typedef uint64_t sha1_length_t;
 #define SHA1_CHUNK_SIZE_IN_BITS    512
 #define SHA1_CHUNK_SIZE_IN_OCTETS  (SHA1_CHUNK_SIZE_IN_BITS/WSSL_OCTET_SIZE_IN_BITS)
 #define SHA1_CHUNK_SIZE_IN_WORDS   (SHA1_CHUNK_SIZE_IN_OCTETS/SHA1_WORD_SIZE_IN_OCTETS)
-#define SHA1_RESULT_SIZE_IN_WORDS  (WSSL_SHA1_RESULT_SIZE_IN_BITS/SHA1_WORD_SIZE_IN_BITS)
+#define SHA1_RESULT_SIZE_IN_WORDS  (SHA1_RESULT_SIZE_IN_BITS/SHA1_WORD_SIZE_IN_BITS)
 #define SHA1_ROUND_NUMBER          (SHA1_CHUNK_SIZE_IN_WORDS*SHA1_RESULT_SIZE_IN_WORDS)
 #define SHA1_ROUND_NUMBER_QUARTER  (SHA1_ROUND_NUMBER/4)
 
@@ -58,13 +58,13 @@ static void sha1_processing_chunk
     switch(i/SHA1_ROUND_NUMBER_QUARTER)
     {
       case 0:
-        t += ((r[1]&r[2])|(~r[1]&r[3]))+0x5a827999;
+        t += (r[3]^(r[1]&(r[2]^r[3])))+0x5a827999;
         break;
       case 1:
         t += (r[1]^r[2]^r[3])+0x6ed9eba1;
         break;
       case 2:
-        t += ((r[1]&r[2])|(r[1]&r[3])|(r[2]&r[3]))+0x8f1bbcdc;
+        t += ((r[1]&r[2])|(r[3]&(r[1]|r[2])))+0x8f1bbcdc;
         break;
       case 3:
         t += (r[1]^r[2]^r[3])+0xca62c1d6;
@@ -81,7 +81,7 @@ static void sha1_processing_chunk
     intermediate_result[i] += r[i];
 }
 
-_LIBRARY_FUNCTION_
+_FUNCTION_
 void wssl_sha1
 (
   _WSSL_IN_  const wssl_octet_t*      data,

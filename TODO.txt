@@ -1,5 +1,5 @@
+-handshake
+-frame
 -test
--sending primer
 -client last time
--nonblocking
 -dodaj string sa duzinom

@@ -1,5 +1,5 @@
-#ifndef _TYPE_CALLBACK_H_
-#define _TYPE_CALLBACK_H_
+#ifndef _CALLBACK_H_
+#define _CALLBACK_H_
 
 _INCLUDE_BEGIN_
 

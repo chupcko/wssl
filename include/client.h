@@ -1,5 +1,5 @@
-#ifndef _TYPE_CLIENT_H_
-#define _TYPE_CLIENT_H_
+#ifndef _CLIENT_H_
+#define _CLIENT_H_
 
 #define WSSL_CLIENT_STATE_TABLE(what_call)                            \
   what_call(WAIT_METHOD,                "Wait method"               ) \
@@ -27,21 +27,22 @@ typedef enum wssl_client_state_e
 typedef struct wssl_client_t
 {
   wssl_chain_t          chain_link;
+  wssl_server_t*        server;
+  struct wssl_t*        wssl;
   wssl_id_t             id;
   int                   socket_descriptor;
   char                  ip[WSSL_IP_SIZE_IN_CHAR];
   int                   port;
-  wssl_epoll_t          epoll;
+  wssl_epoll_data_t     epoll_data;
+  struct epoll_event    epoll_event;
   void*                 local_extra_data;
   wssl_buffer_t         input_buffer;
   wssl_buffer_t         output_buffer;
   wssl_client_state_e   state;
   wssl_header_t         header;
-  struct wssl_t*        wssl;
-  struct wssl_server_t* server;
 } wssl_client_t;
 
-static inline void wssl_set_local_extra_data
+static inline void wssl_client_set_local_extra_data
 (
   _WSSL_MODIFY_ wssl_client_t* client,
   _WSSL_IN_     void*          local_extra_data

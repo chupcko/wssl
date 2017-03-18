@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,6 +27,7 @@
 
 _INCLUDE_BEGIN_
 
+#include <sys/epoll.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -44,14 +46,15 @@ _INCLUDE_END_
 #include "base.h"
 #include "chain.h"
 #include "result.h"
-#include "type_epoll.h"
-#include "type_server.h"
-#include "type_id.h"
-#include "type_buffer.h"
-#include "type_header.h"
-#include "type_client.h"
-#include "type_callback.h"
-#include "type_wssl.h"
+#include "epoll_data.h"
+#include "server.h"
+#include "id.h"
+#include "buffer.h"
+#include "header.h"
+#include "client.h"
+#include "callback.h"
+#include "wssl.h"
+#include "inline.h"
 
 #include "prototype.h"
 

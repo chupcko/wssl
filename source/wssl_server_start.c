@@ -3,7 +3,6 @@
 _FUNCTION_
 wssl_result_t wssl_server_start
 (
-  _WSSL_MODIFY_ wssl_t*        wssl,
   _WSSL_MODIFY_ wssl_server_t* server
 )
 {
@@ -29,8 +28,8 @@ wssl_result_t wssl_server_start
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "listen", errno);
 
   event.events = EPOLLIN;
-  event.data.ptr = (void*)&server->epoll;
-  if(epoll_ctl(wssl->epoll_descriptor, EPOLL_CTL_ADD, server->socket_descriptor, &event) < 0)
+  event.data.ptr = (void*)&server->epoll_data;
+  if(epoll_ctl(server->wssl->epoll_descriptor, EPOLL_CTL_ADD, server->socket_descriptor, &event) < 0)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_ctl", errno);
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);

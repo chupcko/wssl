@@ -22,7 +22,7 @@ debug: all
 
 .PHONY: clean
 clean:
-	rm -f $(PROTOTYPE) $(OBJECTS) $(TARGET)
+	rm -r -f $(PROTOTYPE) $(OBJECTS) $(TARGET) $(OUT_DIR) core
 
 $(OUT_DIR): $(TARGET)
 	../tool/make_out

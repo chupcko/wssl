@@ -23,7 +23,7 @@ debug: all
 
 .PHONY: clean
 clean:
-	rm -f $(OBJECTS) $(TARGETS)
+	rm -f $(OBJECTS) $(TARGETS) core
 
 .SECONDARY:
 .SUFFIXES:

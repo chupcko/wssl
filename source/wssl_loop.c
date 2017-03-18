@@ -7,9 +7,9 @@ wssl_result_t wssl_loop
 )
 {
   struct epoll_event events[EPOLL_EVENTS_SIZE];
-  int events_number;
-  int event_index;
-  wssl_epoll_t* epoll;
+  wssl_size_t events_number;
+  wssl_size_t event_index;
+  wssl_epoll_data_t* epoll_data;
 
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)
@@ -23,14 +23,17 @@ wssl_result_t wssl_loop
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_wait", errno);
     for(event_index = 0; event_index < events_number; event_index++)
     {
-      epoll = (wssl_epoll_t*)events[event_index].data.ptr;
-      switch(epoll->type)
+      epoll_data = (wssl_epoll_data_t*)events[event_index].data.ptr;
+      switch(epoll_data->type)
       {
-        case WSSL_EPOLL_TYPE_SERVER:
-          WSSL_CALL(wssl_client_add(wssl, epoll->server));
+        case WSSL_EPOLL_DATA_TYPE_SERVER:
+          WSSL_CALL(wssl_client_add(epoll_data->server));
           break;
-        case WSSL_EPOLL_TYPE_CLIENT:
-          WSSL_CALL(wssl_client_do(wssl, epoll->client));
+        case WSSL_EPOLL_DATA_TYPE_CLIENT:
+          if((events[event_index].events&EPOLLIN) != 0)
+            WSSL_CALL(wssl_client_do_recv(epoll_data->client));
+          if((events[event_index].events&EPOLLOUT) != 0)
+            WSSL_CALL(wssl_client_do_send(epoll_data->client));
           break;
       }
     }
