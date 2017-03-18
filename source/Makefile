@@ -8,7 +8,7 @@ PROTOTYPE = $(INCLUDE_DIR)/prototype.h
 INCLUDES = $(filter-out $(PROTOTYPE), $(wildcard $(INCLUDE_DIR)/*.h)) $(PROTOTYPE)
 
 COMPILER := gcc
-COMPILER_FLAGS = -O3 -Werror -I. -I$(INCLUDE_DIR)
+COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(INCLUDE_DIR)
 ARCHIVER := ar
 ARCHIVER_FLAGS := csr
 

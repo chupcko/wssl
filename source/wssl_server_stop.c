@@ -6,9 +6,6 @@ wssl_result_t wssl_server_stop
   _WSSL_MODIFY_ wssl_server_t* server
 )
 {
-  wssl_chain_t* client_link;
-  wssl_chain_t* client_link_next;
-
   if(epoll_ctl(server->wssl->epoll_descriptor, EPOLL_CTL_DEL, server->socket_descriptor, NULL) < 0)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_ctl", errno);
 
@@ -16,6 +13,8 @@ wssl_result_t wssl_server_stop
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "close", errno);
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
+  wssl_chain_t* client_link;
+  wssl_chain_t* client_link_next;
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients)
     WSSL_CALL(wssl_client_delete((wssl_client_t*)client_link));
 

@@ -22,7 +22,6 @@ wssl_result_t wssl_client_send
       (size_t)data_size,
       0
     );
-
     if(send_size < 0)
       switch(errno)
       {
@@ -48,5 +47,6 @@ wssl_result_t wssl_client_send
       WSSL_CALL(wssl_client_epoll_event_add_out(client));
     }
   }
+
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

@@ -9,7 +9,6 @@ char* wssl_header_get_field_value
 {
   wssl_chain_t* header_field_link;
   wssl_header_field_t* header_field;
-
   WSSL_CHAIN_FOR_EACH_LINK_FORWARD(header_field_link, &header->fields)
   {
     header_field = (wssl_header_field_t*)header_field_link;

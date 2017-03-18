@@ -33,9 +33,9 @@ wssl_result_t wssl_base64_encode
     'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
     'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
   };
+  wssl_size_t i;
 
   *output_length = 0;
-  wssl_size_t i;
 
   for(i = 0; input_size-i >= 3; i += 3)
   {
@@ -59,8 +59,10 @@ wssl_result_t wssl_base64_encode
       WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
       break;
   }
+
   if(*output_length >= output_size)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64", 0);
   output[*output_length] = '\0';
+
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

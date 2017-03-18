@@ -31,11 +31,11 @@ static void sha1_processing_chunk
   _WSSL_OUT_       sha1_intermediate_result_t intermediate_result
 )
 {
+  wssl_size_t i;
+  wssl_size_t j;
   sha1_intermediate_result_t r;
   sha1_word_t w[SHA1_ROUND_NUMBER];
   sha1_word_t t;
-  wssl_size_t i;
-  wssl_size_t j;
 
   for(i = 0; i < SHA1_RESULT_SIZE_IN_WORDS; i++)
     r[i] = intermediate_result[i];
@@ -97,15 +97,14 @@ void wssl_sha1
     0x10325476,
     0xc3d2e1f0
   };
-  wssl_size_t size;
-  sha1_chunk_t chunk;
-  sha1_length_t length;
   wssl_size_t i;
   wssl_size_t j;
 
+  wssl_size_t size;
   for(size = 0; size <= data_size-SHA1_CHUNK_SIZE_IN_OCTETS; size += SHA1_CHUNK_SIZE_IN_OCTETS)
     sha1_processing_chunk(&data[size], intermediate_result);
 
+  sha1_chunk_t chunk;
   bzero((void*)chunk, SHA1_CHUNK_SIZE_IN_OCTETS);
   if(data_size-size > 0)
     memcpy((void*)chunk, (void*)&data[size], (size_t)(data_size-size));
@@ -117,7 +116,7 @@ void wssl_sha1
     bzero((void*)chunk, SHA1_CHUNK_SIZE_IN_OCTETS);
   }
 
-  length = (sha1_length_t)data_size*WSSL_OCTET_SIZE_IN_BITS;
+  sha1_length_t length = (sha1_length_t)data_size*WSSL_OCTET_SIZE_IN_BITS;
   for(i = 0; i < SHA1_LENGTH_SIZE_IN_OCTETS; i++)
   {
     chunk[SHA1_CHUNK_SIZE_IN_OCTETS-1-i] = (wssl_octet_t)(length&0xff);

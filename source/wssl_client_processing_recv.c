@@ -7,7 +7,6 @@ static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_space
 )
 {
   wssl_ssize_t size;
-
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -30,7 +29,6 @@ static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_crlf
 )
 {
   wssl_ssize_t size;
-
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -49,7 +47,6 @@ static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
 )
 {
   wssl_ssize_t size;
-
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -72,8 +69,7 @@ static inline wssl_ssize_t wssl_client_processing_recv_eat_spaces
   _WSSL_IN_ const wssl_size_t data_size
 )
 {
-  wssl_ssize_t size = 0;
-
+  wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -97,8 +93,7 @@ static inline wssl_ssize_t wssl_client_processing_recv_count_spaces
   _WSSL_IN_ const wssl_size_t data_size
 )
 {
-  wssl_ssize_t size = 0;
-
+  wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -118,8 +113,7 @@ static inline wssl_ssize_t wssl_client_processing_recv_eat_crlf
   _WSSL_IN_ const wssl_size_t data_size
 )
 {
-  wssl_ssize_t size = 0;
-
+  wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -243,7 +237,6 @@ wssl_result_t wssl_client_processing_recv
       if(size >= 0 && size < data_size)
       {
         wssl_header_field_t* last_headed_field = wssl_header_get_last_field(&client->header);
-
         if(last_headed_field == WSSL_NULL)
           return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header field", 0);
         WSSL_CALL(wssl_header_field_insert_value(last_headed_field, (char*)data, size));

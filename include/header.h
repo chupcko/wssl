@@ -44,7 +44,6 @@ static inline wssl_result_t wssl_header_insert_##what_member                    
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header " #what_member, 0); \
   strncpy(header->what_member, data, data_size);                                       \
   header->what_member[data_size] = '\0';                                               \
-                                                                                       \
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);                               \
 }                                                                                      \
 
@@ -102,7 +101,6 @@ static inline wssl_result_t wssl_header_field_insert_value
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header field key", 0);
   strncpy(header_field->value, data, data_size);
   header_field->value[data_size] = '\0';
-
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
 

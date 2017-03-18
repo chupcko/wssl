@@ -19,7 +19,6 @@ const char* wssl_get_result_string
 )
 {
   wssl_size_t table_index;
-
   for(table_index = 0; Wssl_result_strings_table[table_index].string != NULL; table_index++)
     if(Wssl_result_strings_table[table_index].code == result.code)
       return Wssl_result_strings_table[table_index].string;

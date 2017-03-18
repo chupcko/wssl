@@ -6,12 +6,7 @@ wssl_result_t wssl_client_add
   _WSSL_MODIFY_ wssl_server_t* server
 )
 {
-  wssl_client_t* client;
-  struct sockaddr_in client_address;
-  socklen_t client_address_length;
-  int fcntl_flags;
-
-  client = (wssl_client_t*)malloc(sizeof(wssl_client_t));
+  wssl_client_t* client = (wssl_client_t*)malloc(sizeof(wssl_client_t));
   if(client == NULL)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "client", 0);
 
@@ -20,7 +15,8 @@ wssl_result_t wssl_client_add
 
   client->id = wssl_get_next_client_id(client->wssl);
 
-  client_address_length = (socklen_t)sizeof client_address;
+  struct sockaddr_in client_address;
+  socklen_t client_address_length = (socklen_t)sizeof client_address;
   client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
   if(client->socket_descriptor  < 0)
   {
@@ -33,7 +29,7 @@ wssl_result_t wssl_client_add
   inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
   client->port = ntohs(client_address.sin_port);
 
-  fcntl_flags = fcntl(client->socket_descriptor, F_GETFL, 0);
+  int fcntl_flags = fcntl(client->socket_descriptor, F_GETFL, 0);
   if
   (
     fcntl_flags < 0 ||

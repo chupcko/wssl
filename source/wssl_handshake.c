@@ -12,20 +12,21 @@ wssl_result_t handshake
 {
   wssl_size_t data_size = input_size+sizeof HANDSHAKE_MAGIC;
   wssl_octet_t* data = (wssl_octet_t*)malloc((size_t)data_size);
-  wssl_ssize_t data_length;
-  wssl_sha1_result_t sha1_result;
-
   if(data == NULL)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "handshake", 0);
-  data_length = snprintf(data, data_size, "%s" HANDSHAKE_MAGIC, input);
+
+  wssl_ssize_t data_length = snprintf(data, data_size, "%s" HANDSHAKE_MAGIC, input);
   if(data_length < 0)
   {
     free((void*)data);
     *output_length = 0;
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "handshake", 0);
   }
+
+  wssl_sha1_result_t sha1_result;
   wssl_sha1((wssl_octet_t*)data, (wssl_size_t)data_length, sha1_result);
   free((void*)data);
+
   WSSL_CALL(wssl_base64_encode(sha1_result, SHA1_RESULT_SIZE_IN_OCTETS, output, output_size, output_length));
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);

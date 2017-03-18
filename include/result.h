@@ -38,7 +38,6 @@ _INCLUDE_END_
 do                                         \
 {                                          \
   wssl_result_t _result_ = (__VA_ARGS__);  \
-                                           \
   if(_result_.code != WSSL_RESULT_CODE_OK) \
     return _result_;                       \
 }                                          \

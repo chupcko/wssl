@@ -7,7 +7,7 @@ OBJECTS = $(SOURCES:.c=.o)
 TARGETS = $(SOURCES:.c=.t)
 
 COMPILER := gcc
-COMPILER_FLAGS = -O3 -Werror -I. -I$(WSSL_DIR)
+COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(WSSL_DIR)
 LINKER := gcc
 LINKER_FLAGS =
 LIBRARIES = $(WSSL_DIR)/libwssl.a

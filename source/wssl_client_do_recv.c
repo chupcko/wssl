@@ -6,12 +6,10 @@ wssl_result_t wssl_client_do_recv
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  wssl_ssize_t recv_size;
-
   if(wssl_buffer_is_not_created(&client->input_buffer))
     WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE_IN_OCTETS));
 
-  recv_size = (wssl_ssize_t)recv
+  wssl_ssize_t recv_size = (wssl_ssize_t)recv
   (
     client->socket_descriptor,
     (void*)&client->input_buffer.data[client->input_buffer.used],
@@ -69,5 +67,6 @@ wssl_result_t wssl_client_do_recv
     else if(client->input_buffer.used == client->input_buffer.size)
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "input_buffer", 0);
   }
+
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

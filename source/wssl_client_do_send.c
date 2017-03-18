@@ -15,7 +15,6 @@ wssl_result_t wssl_client_do_send
       (size_t)client->output_buffer.used,
       0
     );
-
     if(send_size < 0)
       switch(errno)
       {
@@ -39,5 +38,6 @@ wssl_result_t wssl_client_do_send
     else
       wssl_buffer_shift(&client->output_buffer, (wssl_size_t)send_size);
   }
+
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
