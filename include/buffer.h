@@ -63,6 +63,19 @@ static inline void wssl_buffer_clean
   buffer->used = 0;
 }
 
+static inline void wssl_buffer_printf
+(
+  _WSSL_MODIFY_       wssl_buffer_t* buffer,
+  _WSSL_IN_     const char*          format,
+                                     ...
+)
+{
+  va_list arguments;
+  va_start(arguments, format);
+  buffer->used = vsnprintf((char*)buffer->data, (size_t)buffer->size, format, arguments);
+  va_end(arguments);
+}
+
 static inline wssl_result_t wssl_buffer_append
 (
   _WSSL_MODIFY_       wssl_buffer_t* buffer,

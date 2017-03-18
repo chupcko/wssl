@@ -15,22 +15,21 @@ do                                        \
 }                                         \
 while(false)                              \
 
-#define CALL(...)                          \
-do                                         \
-{                                          \
-  wssl_result_t _result_ = (__VA_ARGS__);  \
-                                           \
-  if(_result_.code != WSSL_RESULT_CODE_OK) \
-    ERROR                                  \
-    (                                      \
-      "\"%s\" on \"%s\" with %d:\"%s\"\n", \
-      wssl_get_result_string(_result_),    \
-      _result_.where,                      \
-      _result_.last_errno,                 \
-      strerror(_result_.last_errno)        \
-    );                                     \
-}                                          \
-while(false)                               \
+#define CALL(...)                            \
+do                                           \
+{                                            \
+  wssl_result_t _result_ = (__VA_ARGS__);    \
+  if(wssl_result_is_not_ok(_result_))        \
+    ERROR                                    \
+    (                                        \
+      "\"%s\" on \"%s\" with %d:\"%s\"\n",   \
+      wssl_result_get_code_string(_result_), \
+      _result_.where,                        \
+      _result_.last_errno,                   \
+      strerror(_result_.last_errno)          \
+    );                                       \
+}                                            \
+while(false)                                 \
 
 int main(void)
 {

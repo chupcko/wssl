@@ -4,14 +4,17 @@ _FUNCTION_
 wssl_result_t wssl_client_send
 (
   _WSSL_MODIFY_       wssl_client_t* client,
+  _WSSL_OUT_          bool*          client_deleted,
   _WSSL_IN_     const wssl_octet_t*  data,
   _WSSL_IN_     const wssl_size_t    data_size
 )
 {
+  *client_deleted = false;
+
   if(wssl_buffer_is_created(&client->output_buffer))
   {
     WSSL_CALL(wssl_buffer_append(&client->output_buffer, data, data_size));
-    WSSL_CALL(wssl_client_do_send(client));
+    WSSL_CALL(wssl_client_do_send(client, client_deleted));
   }
   else
   {
@@ -26,23 +29,27 @@ wssl_result_t wssl_client_send
       switch(errno)
       {
         case EAGAIN:
-          WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE_IN_OCTETS));
+          WSSL_CALL(wssl_buffer_create(&client->input_buffer, client->wssl->buffer_size_in_octets));
           WSSL_CALL(wssl_buffer_append(&client->output_buffer, data, data_size));
           WSSL_CALL(wssl_client_epoll_event_add_out(client));
           break;
         case ECONNRESET:
         case EPIPE:
           WSSL_CALL(wssl_client_delete(client));
+          *client_deleted = true;
           break;
         default:
           return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "send", errno);
           break;
       }
     else if(send_size == 0)
+    {
       WSSL_CALL(wssl_client_delete(client));
+      *client_deleted = true;
+    }
     else if((wssl_size_t)send_size < data_size)
     {
-      WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE_IN_OCTETS));
+      WSSL_CALL(wssl_buffer_create(&client->input_buffer, client->wssl->buffer_size_in_octets));
       WSSL_CALL(wssl_buffer_append(&client->output_buffer, &data[send_size], data_size-send_size));
       WSSL_CALL(wssl_client_epoll_event_add_out(client));
     }

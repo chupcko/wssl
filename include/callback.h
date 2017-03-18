@@ -15,6 +15,11 @@ typedef void wssl_disconnect_callback_function_t
   _WSSL_MODIFY_ wssl_client_t*
 );
 
+typedef bool wssl_header_callback_function_t
+(
+  _WSSL_MODIFY_ wssl_client_t*
+);
+
 typedef bool wssl_receiving_callback_function_t
 (
   _WSSL_MODIFY_ wssl_client_t*,

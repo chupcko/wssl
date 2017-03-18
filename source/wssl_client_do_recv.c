@@ -3,11 +3,14 @@
 _FUNCTION_
 wssl_result_t wssl_client_do_recv
 (
-  _WSSL_MODIFY_ wssl_client_t* client
+  _WSSL_MODIFY_ wssl_client_t* client,
+  _WSSL_OUT_    bool*          client_deleted
 )
 {
+  *client_deleted = false;
+
   if(wssl_buffer_is_not_created(&client->input_buffer))
-    WSSL_CALL(wssl_buffer_create(&client->input_buffer, BUFFER_SIZE_IN_OCTETS));
+    WSSL_CALL(wssl_buffer_create(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
   wssl_ssize_t recv_size = (wssl_ssize_t)recv
   (
@@ -24,20 +27,23 @@ wssl_result_t wssl_client_do_recv
       case ECONNRESET:
       case EPIPE:
         WSSL_CALL(wssl_client_delete(client));
+        *client_deleted = true;
         break;
       default:
         return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "recv", errno);
         break;
     }
   else if(recv_size == 0)
+  {
     WSSL_CALL(wssl_client_delete(client));
+    *client_deleted = true;
+  }
   else
   {
     wssl_size_t processed = 0;
-    wssl_ssize_t local_processed;
+    wssl_size_t local_processed;
 
     client->input_buffer.used += (wssl_size_t)recv_size;
-
     while(processed < client->input_buffer.used)
     {
       WSSL_CALL
@@ -45,20 +51,17 @@ wssl_result_t wssl_client_do_recv
         wssl_client_processing_recv
         (
           client,
+          client_deleted,
           &client->input_buffer.data[processed],
           client->input_buffer.used-processed,
           &local_processed
         )
       );
-      if(local_processed < 0)
-      {
-        WSSL_CALL(wssl_client_delete(client));
+      if(*client_deleted)
         return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
-      }
-      else if(local_processed == 0)
+      if(local_processed == 0)
         break;
-      else
-        processed += (wssl_size_t)local_processed;
+      processed += local_processed;
     }
     if(processed == client->input_buffer.used)
       wssl_buffer_clean(&client->input_buffer);

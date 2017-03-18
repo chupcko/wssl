@@ -25,6 +25,22 @@ typedef struct wssl_result_t
   int                last_errno;
 } wssl_result_t;
 
+static inline bool wssl_result_is_ok
+(
+  wssl_result_t result
+)
+{
+  return result.code == WSSL_RESULT_CODE_OK;
+}
+
+static inline bool wssl_result_is_not_ok
+(
+  wssl_result_t result
+)
+{
+  return result.code != WSSL_RESULT_CODE_OK;
+}
+
 _INCLUDE_END_
 
 #define WSSL_MAKE_RESULT(what_code, what_where, what_last_errno) (wssl_result_t) \
@@ -34,13 +50,13 @@ _INCLUDE_END_
   .last_errno = (what_last_errno)                                                \
 }                                                                                \
 
-#define WSSL_CALL(...)                     \
-do                                         \
-{                                          \
-  wssl_result_t _result_ = (__VA_ARGS__);  \
-  if(_result_.code != WSSL_RESULT_CODE_OK) \
-    return _result_;                       \
-}                                          \
-while(false)                               \
+#define WSSL_CALL(...)                    \
+do                                        \
+{                                         \
+  wssl_result_t _result_ = (__VA_ARGS__); \
+  if(wssl_result_is_not_ok(_result_))     \
+    return _result_;                      \
+}                                         \
+while(false)                              \
 
 #endif

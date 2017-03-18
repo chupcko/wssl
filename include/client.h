@@ -12,7 +12,6 @@
   what_call(WAIT_FIELD_VALUE_SEPARATOR, "Wait field value separator") \
   what_call(WAIT_FIELD_VALUE,           "Wait field value"          ) \
   what_call(WAIT_FRAME,                 "Wait frame"                ) \
-  what_call(DELETE,                     "Delete"                    ) \
 
 _INCLUDE_BEGIN_
 

@@ -13,7 +13,7 @@ static struct
 };
 
 _LIBRARY_FUNCTION_
-const char* wssl_get_client_state
+const char* wssl_client_get_state_string
 (
   _WSSL_IN_ const wssl_client_state_e state
 )

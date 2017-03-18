@@ -3,9 +3,12 @@
 _FUNCTION_
 wssl_result_t wssl_client_do_send
 (
-  _WSSL_MODIFY_ wssl_client_t* client
+  _WSSL_MODIFY_ wssl_client_t* client,
+  _WSSL_OUT_    bool*          client_deleted
 )
 {
+  *client_deleted = false;
+
   if(wssl_buffer_is_created(&client->output_buffer))
   {
     wssl_ssize_t send_size = (wssl_ssize_t)send
@@ -23,13 +26,17 @@ wssl_result_t wssl_client_do_send
         case ECONNRESET:
         case EPIPE:
           WSSL_CALL(wssl_client_delete(client));
+          *client_deleted = true;
           break;
         default:
           return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "send", errno);
           break;
       }
     else if(send_size == 0)
+    {
       WSSL_CALL(wssl_client_delete(client));
+      *client_deleted = true;
+    }
     else if((wssl_size_t)send_size == client->output_buffer.used)
     {
       wssl_buffer_clean(&client->output_buffer);

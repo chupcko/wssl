@@ -1,7 +1,7 @@
 #include "main.h"
 
 _FUNCTION_
-wssl_result_t handshake
+wssl_result_t wssl_handshake
 (
   _WSSL_IN_  const char*        input,
   _WSSL_IN_  const wssl_size_t  input_size,

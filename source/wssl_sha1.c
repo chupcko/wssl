@@ -98,10 +98,10 @@ void wssl_sha1
     0xc3d2e1f0
   };
   wssl_size_t i;
-  wssl_size_t j;
+  wssl_ssize_t j;
 
-  wssl_size_t size;
-  for(size = 0; size <= data_size-SHA1_CHUNK_SIZE_IN_OCTETS; size += SHA1_CHUNK_SIZE_IN_OCTETS)
+  wssl_ssize_t size;
+  for(size = 0; size+SHA1_CHUNK_SIZE_IN_OCTETS <= data_size; size += SHA1_CHUNK_SIZE_IN_OCTETS)
     sha1_processing_chunk(&data[size], intermediate_result);
 
   sha1_chunk_t chunk;
