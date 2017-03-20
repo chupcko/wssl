@@ -9,8 +9,8 @@ wssl_result_t wssl_client_do_recv
 {
   *client_deleted = false;
 
-  if(wssl_buffer_is_not_created(&client->input_buffer))
-    WSSL_CALL(wssl_buffer_create(&client->input_buffer, client->wssl->buffer_size_in_octets));
+  if(wssl_buffer_is_not_allocated(&client->input_buffer))
+    WSSL_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
   wssl_ssize_t recv_size = (wssl_ssize_t)recv
   (
@@ -57,6 +57,7 @@ wssl_result_t wssl_client_do_recv
           &local_processed
         )
       );
+      /*# ako je obrisan izadji */
       if(*client_deleted)
         return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
       if(local_processed == 0)
@@ -64,7 +65,7 @@ wssl_result_t wssl_client_do_recv
       processed += local_processed;
     }
     if(processed == client->input_buffer.used)
-      wssl_buffer_clean(&client->input_buffer);
+      wssl_buffer_free(&client->input_buffer);
     else if(processed > 0)
       wssl_buffer_shift(&client->input_buffer, processed);
     else if(client->input_buffer.used == client->input_buffer.size)

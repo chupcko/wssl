@@ -9,9 +9,11 @@ wssl_result_t wssl_client_send
   _WSSL_IN_     const wssl_size_t    data_size
 )
 {
+/* ako je obrisan izadji */
+
   *client_deleted = false;
 
-  if(wssl_buffer_is_created(&client->output_buffer))
+  if(wssl_buffer_is_allocated(&client->output_buffer))
   {
     WSSL_CALL(wssl_buffer_append(&client->output_buffer, data, data_size));
     WSSL_CALL(wssl_client_do_send(client, client_deleted));
@@ -29,7 +31,7 @@ wssl_result_t wssl_client_send
       switch(errno)
       {
         case EAGAIN:
-          WSSL_CALL(wssl_buffer_create(&client->input_buffer, client->wssl->buffer_size_in_octets));
+          WSSL_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
           WSSL_CALL(wssl_buffer_append(&client->output_buffer, data, data_size));
           WSSL_CALL(wssl_client_epoll_event_add_out(client));
           break;
@@ -49,7 +51,7 @@ wssl_result_t wssl_client_send
     }
     else if((wssl_size_t)send_size < data_size)
     {
-      WSSL_CALL(wssl_buffer_create(&client->input_buffer, client->wssl->buffer_size_in_octets));
+      WSSL_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
       WSSL_CALL(wssl_buffer_append(&client->output_buffer, &data[send_size], data_size-send_size));
       WSSL_CALL(wssl_client_epoll_event_add_out(client));
     }

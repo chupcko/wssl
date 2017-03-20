@@ -1,7 +1,7 @@
 #include "main.h"
 
 _FUNCTION_
-void wssl_header_delete
+void wssl_header_clean
 (
   _WSSL_MODIFY_ wssl_header_t* header
 )

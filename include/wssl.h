@@ -44,19 +44,19 @@ static inline void wssl_init
   _WSSL_MODIFY_ wssl_t* wssl
 )
 {
-  wssl->epoll_descriptor             = WSSL_NO_DESCRIPTOR;
-  wssl->server_name                  = WSSL_DEFAULT_SERVER_NAME;
-  wssl->buffer_size_in_octets        = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,
-  wssl->epoll_sleep_in_mseconds      = WSSL_DEFAULT_EPOLL_SLEEP_IN_MSECONDS,
-  wssl->global_extra_data            = WSSL_NULL;
-  wssl->connect_callback_function    = WSSL_CALLBACK_FUNCTION_NONE;
+  wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
+  wssl->server_name = WSSL_DEFAULT_SERVER_NAME;
+  wssl->buffer_size_in_octets = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,
+  wssl->epoll_sleep_in_mseconds = WSSL_DEFAULT_EPOLL_SLEEP_IN_MSECONDS,
+  wssl->global_extra_data = WSSL_NULL;
+  wssl->connect_callback_function = WSSL_CALLBACK_FUNCTION_NONE;
   wssl->disconnect_callback_function = WSSL_CALLBACK_FUNCTION_NONE;
-  wssl->header_callback_function     = WSSL_CALLBACK_FUNCTION_NONE;
-  wssl->receiving_callback_function  = WSSL_CALLBACK_FUNCTION_NONE;
-  wssl->tick_callback_function       = WSSL_CALLBACK_FUNCTION_NONE;
+  wssl->header_callback_function = WSSL_CALLBACK_FUNCTION_NONE;
+  wssl->receiving_callback_function = WSSL_CALLBACK_FUNCTION_NONE;
+  wssl->tick_callback_function = WSSL_CALLBACK_FUNCTION_NONE;
   wssl_id_init(&wssl->next_client_id);
   wssl_chain_init(&wssl->servers);
-  wssl->random_seed                  = 0;
+  wssl->random_seed = 0;
 }
 
 static inline void wssl_set_server_name

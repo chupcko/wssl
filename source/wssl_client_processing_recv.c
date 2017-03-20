@@ -22,7 +22,7 @@ static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_space
   return data_size;
 }
 
-static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_crlf
+static inline wssl_size_t wssl_client_processing_recv_find_word_until_crlf
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -87,7 +87,7 @@ static inline wssl_ssize_t wssl_client_processing_recv_eat_spaces
   return data_size;
 }
 
-static inline wssl_ssize_t wssl_client_processing_recv_count_spaces
+static inline wssl_size_t wssl_client_processing_recv_count_spaces
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -134,12 +134,13 @@ wssl_result_t wssl_client_processing_recv
 (
   _WSSL_MODIFY_       wssl_client_t* client,
   _WSSL_OUT_          bool*          client_deleted,
-  _WSSL_IN_     const wssl_octet_t*  data,
+  _WSSL_IN_           wssl_octet_t*  data,
   _WSSL_IN_     const wssl_size_t    data_size,
   _WSSL_OUT_          wssl_size_t*   processed
 )
 {
   wssl_ssize_t size;
+  wssl_frame_t frame;
 
   *client_deleted = false;
   *processed = 0;
@@ -205,7 +206,7 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0 && size < data_size)
       {
         WSSL_CALL(wssl_header_insert_version(&client->header, (char*)data, size));
-        *processed = (wssl_size_t)size;
+        *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
       }
       break;
@@ -250,7 +251,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_count_spaces((char*)&data[1], data_size-1);
       if(size >= 0 && size < data_size-1)
       {
-        *processed = (wssl_size_t)size+1;
+        *processed = size+1;
         client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE;
       }
       break;
@@ -262,12 +263,43 @@ wssl_result_t wssl_client_processing_recv
         if(last_headed_field == WSSL_NULL)
           return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header field", 0);
         WSSL_CALL(wssl_header_field_insert_value(last_headed_field, (char*)data, size));
-        *processed = (wssl_size_t)size;
+        *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
       }
       break;
     case WSSL_CLIENT_STATE_WAIT_FRAME:
-      /*#*/
+      size = wssl_frame_get(client->wssl, &client->frame, data, data_size);
+      if(size > 0)
+      {
+        wssl_frame_mask_unmask(&frame);
+        if(client->frame.fin)
+        {
+          WSSL_CALL(wssl_client_processing_frame(client, client_deleted));
+          wssl_frame_init(&client->frame);
+        }
+        else
+        {
+          /* alociraj i kopiraj  count++ */
+          client->state = WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
+        }
+        *processed = size;
+      }
+      break;
+    case WSSL_CLIENT_STATE_WAIT_FIN_FRAME:
+      wssl_frame_init(&frame);
+      size = wssl_frame_get(client->wssl, &frame, data, data_size);
+      if(size > 0)
+      {
+        wssl_frame_mask_unmask(&frame);
+        /*# realociraj dodaj  count++ */
+        /*# proveri da li je izasao */
+        if(frame.fin)
+        {
+          WSSL_CALL(wssl_client_processing_frame(client, client_deleted));
+          wssl_frame_free(&client->frame);
+        }
+        *processed = size;
+      }
       break;
   }
 

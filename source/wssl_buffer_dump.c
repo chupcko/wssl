@@ -18,7 +18,7 @@ void wssl_buffer_dump
     INDENT(indent_level),
     INDENT(indent_level+1)
   );
-  if(wssl_buffer_is_created(buffer))
+  if(wssl_buffer_is_allocated(buffer))
   {
     wssl_size_t data_index;
 

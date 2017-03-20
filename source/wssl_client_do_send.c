@@ -7,9 +7,11 @@ wssl_result_t wssl_client_do_send
   _WSSL_OUT_    bool*          client_deleted
 )
 {
+/*# ako je obrisan izadji */
+
   *client_deleted = false;
 
-  if(wssl_buffer_is_created(&client->output_buffer))
+  if(wssl_buffer_is_allocated(&client->output_buffer))
   {
     wssl_ssize_t send_size = (wssl_ssize_t)send
     (
@@ -39,7 +41,7 @@ wssl_result_t wssl_client_do_send
     }
     else if((wssl_size_t)send_size == client->output_buffer.used)
     {
-      wssl_buffer_clean(&client->output_buffer);
+      wssl_buffer_free(&client->output_buffer);
       WSSL_CALL(wssl_client_epoll_event_delete_out(client));
     }
     else

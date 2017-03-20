@@ -48,7 +48,7 @@ wssl_result_t wssl_client_processing_header
   *client_deleted = false;
 
   wssl_buffer_t buffer;
-  WSSL_CALL(wssl_buffer_create(&buffer, client->wssl->buffer_size_in_octets));
+  WSSL_CALL(wssl_buffer_allocate(&buffer, client->wssl->buffer_size_in_octets));
 
   bool must_client_delete = false;
   char* sec_websocket_key;
@@ -99,7 +99,7 @@ wssl_result_t wssl_client_processing_header
   }
 
   wssl_result_t result = wssl_client_send(client, client_deleted, buffer.data, buffer.used);
-  wssl_buffer_clean(&buffer);
+  wssl_buffer_free(&buffer);
   if(wssl_result_is_not_ok(result))
     return result;
   if

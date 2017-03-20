@@ -62,6 +62,8 @@ wssl_result_t wssl_client_add
   wssl_buffer_init(&client->output_buffer);
 
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
+  client->delete_reason = WSSL_CLIENT_DELETE_REASON_NO_DELETE;
+
   wssl_header_init(&client->header);
   wssl_frame_init(&client->frame);
 

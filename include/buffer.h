@@ -22,7 +22,7 @@ static inline void wssl_buffer_init
   buffer->used = 0;
 }
 
-static inline wssl_result_t wssl_buffer_create
+static inline wssl_result_t wssl_buffer_allocate
 (
   _WSSL_MODIFY_       wssl_buffer_t* buffer,
   _WSSL_IN_     const wssl_size_t    size
@@ -36,7 +36,7 @@ static inline wssl_result_t wssl_buffer_create
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
 
-static inline bool wssl_buffer_is_created
+static inline bool wssl_buffer_is_allocated
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -44,7 +44,7 @@ static inline bool wssl_buffer_is_created
   return buffer->data != WSSL_NULL;
 }
 
-static inline bool wssl_buffer_is_not_created
+static inline bool wssl_buffer_is_not_allocated
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -52,7 +52,7 @@ static inline bool wssl_buffer_is_not_created
   return buffer->data == WSSL_NULL;
 }
 
-static inline void wssl_buffer_clean
+static inline void wssl_buffer_free
 (
   _WSSL_MODIFY_ wssl_buffer_t* buffer
 )

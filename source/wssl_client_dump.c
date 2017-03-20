@@ -58,7 +58,7 @@ void wssl_client_dump
     ),
     INDENT(indent_level+1)
   );
-  if(wssl_buffer_is_created(&client->input_buffer))
+  if(wssl_buffer_is_allocated(&client->input_buffer))
   {
     fprintf(file, "\n");
     wssl_buffer_dump(&client->input_buffer, file, indent_level+2);
@@ -66,7 +66,7 @@ void wssl_client_dump
   else
     fprintf(file, " none\n");
   fprintf(file, INDENT_FORMAT "output_buffer:", INDENT(indent_level+1));
-  if(wssl_buffer_is_created(&client->output_buffer))
+  if(wssl_buffer_is_allocated(&client->output_buffer))
   {
     fprintf(file, "\n");
     wssl_buffer_dump(&client->output_buffer, file, indent_level+2);
@@ -77,8 +77,8 @@ void wssl_client_dump
   (
     file,
     (
-      INDENT_FORMAT "state: \"%s\"\n"
-      INDENT_FORMAT "header:\n"
+      INDENT_FORMAT "state: \"%s\"\n"/*# dodaj delete reason */
+      INDENT_FORMAT "header:\n"/*# dodaj frame*/
     ),
     INDENT(indent_level+1), wssl_client_get_state_string(client->state),
     INDENT(indent_level+1)
