@@ -58,8 +58,8 @@ wssl_result_t wssl_loop
 
     if
     (
-      wssl->tick_callback_function != WSSL_CALLBACK_FUNCTION_NONE &&
-      !(*wssl->tick_callback_function)(wssl)
+      wssl->tick_callback != WSSL_CALLBACK_NONE &&
+      !(*wssl->tick_callback)(wssl)
     )
       break;
   }

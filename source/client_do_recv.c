@@ -63,7 +63,7 @@ wssl_result_t wssl_client_do_recv
     else if(processed > 0)
       wssl_buffer_shift(&client->input_buffer, processed);
     else if(client->input_buffer.used == client->input_buffer.size)
-      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "input_buffer", 0);
+      wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_FULL_RECV_BUFFER);
   }
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);

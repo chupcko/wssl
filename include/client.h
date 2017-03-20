@@ -15,17 +15,19 @@
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
   what_call(TO_DELETE,                  "To delete"                 ) \
 
-#define WSSL_CLIENT_DELETE_REASON_TABLE(what_call)  \
-  what_call(NO_DELETE,         "No delete")         \
-  what_call(DISCONNECTED,      "Disconnecte")       \
-  what_call(CLOSED,            "Closed")            \
-  what_call(MISSING_METHOD,    "Missing method")    \
-  what_call(MISSING_URI,       "Missing URI")       \
-  what_call(MISSING_VERSION,   "Missing URI")       \
-  what_call(MISSING_CRLF,      "Missing CRLF")      \
-  what_call(MISSING_FIELD_KEY, "Missing field key") \
-  what_call(BAD_HANDSHAKE,     "Bad handshake")     \
-  what_call(STOPED,            "Stoped")            \
+#define WSSL_CLIENT_DELETE_REASON_TABLE(what_call)    \
+  what_call(NO_DELETE,         "No delete")           \
+  what_call(FULL_RECV_BUFFER,  "Recv buffer is full") \
+  what_call(DISCONNECTED,      "Disconnecte")         \
+  what_call(CLOSED,            "Closed")              \
+  what_call(MISSING_METHOD,    "Missing method")      \
+  what_call(MISSING_URI,       "Missing URI")         \
+  what_call(MISSING_VERSION,   "Missing URI")         \
+  what_call(MISSING_CRLF,      "Missing CRLF")        \
+  what_call(MISSING_FIELD_KEY, "Missing field key")   \
+  what_call(BAD_HANDSHAKE,     "Bad handshake")       \
+  what_call(BAD_FRAME_OPCODE,  "Bad frame opcode")    \
+  what_call(STOPED,            "Stoped")              \
 
 _INCLUDE_BEGIN_
 

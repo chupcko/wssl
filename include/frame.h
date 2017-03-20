@@ -88,4 +88,41 @@ static inline void wssl_frame_mask_unmask
   }
 }
 
+static inline wssl_result_t wssl_frame_allocate
+(
+  _WSSL_MODIFY_ wssl_frame_t* frame
+)
+{
+  wssl_octet_t* payload = (wssl_octet_t*)malloc((size_t)frame->payload_size+1);
+  if(payload == NULL)
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame", 0);
+  memcpy((void*)payload, (void*)frame->payload, (size_t)frame->payload_size);
+  frame->payload = payload;
+  frame->payload[frame->payload_size] = '\0';
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+}
+
+static inline wssl_result_t wssl_frame_reallocate
+(
+  _WSSL_MODIFY_       wssl_frame_t* frame_destination,
+  _WSSL_IN_     const wssl_frame_t* frame_source
+)
+{
+  wssl_octet_t* payload = (wssl_octet_t*)realloc
+  (
+    (void*)frame_destination->payload,
+    (size_t)(frame_destination->payload_size+frame_source->payload_size)+1
+  );
+  if(payload == NULL)
+  {
+    free((void*)frame_destination->payload);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame", 0);
+  }
+  memcpy((void*)&payload[frame_destination->payload_size], (void*)frame_source->payload, (size_t)frame_source->payload_size);
+  frame_destination->payload = payload;
+  frame_destination->payload_size += frame_source->payload_size;
+  frame_destination->payload[frame_destination->payload_size] = '\0';
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+}
+
 #endif

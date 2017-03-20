@@ -41,6 +41,7 @@ cat          ${BASE_DIR}/include/frame.h          | include_filter >> ${INCLUDE_
 include_exec ${BASE_DIR}/include/client.h         | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/callback.h       | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/wssl.h           | include_filter >> ${INCLUDE_FILE}
+include_exec ${BASE_DIR}/include/inline.h         | include_filter >> ${INCLUDE_FILE}
 
 echo >> ${INCLUDE_FILE}
 cd ${BASE_DIR}/source

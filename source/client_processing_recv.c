@@ -252,16 +252,14 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
       {
         wssl_frame_mask_unmask(&frame);
+        WSSL_CALL(wssl_frame_allocate(&client->frame));
         if(client->frame.fin)
         {
           WSSL_CALL(wssl_client_processing_frame(client));
-          wssl_frame_init(&client->frame);
+          wssl_frame_free(&client->frame);
         }
         else
-        {
-          /* alociraj i kopiraj  count++ */
           client->state = WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
-        }
         *processed = size;
       }
       break;
@@ -271,12 +269,13 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
       {
         wssl_frame_mask_unmask(&frame);
-        /*# realociraj dodaj  count++ */
+        WSSL_CALL(wssl_frame_reallocate(&client->frame, &frame));
         /*# proveri da li je izasao */
         if(frame.fin)
         {
           WSSL_CALL(wssl_client_processing_frame(client));
           wssl_frame_free(&client->frame);
+          client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
         }
         *processed = size;
       }

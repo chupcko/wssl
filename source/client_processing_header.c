@@ -9,8 +9,8 @@ static inline bool wssl_client_processing_header_check
   if
   (
     (
-      client->wssl->header_callback_function != WSSL_CALLBACK_FUNCTION_NONE &&
-      !(*client->wssl->header_callback_function)(client)
+      client->wssl->header_callback != WSSL_CALLBACK_NONE &&
+      !(*client->wssl->header_callback)(client)
     ) ||
     client->header.method == WSSL_NULL ||
     strcmp(client->header.method, "GET") != 0 ||

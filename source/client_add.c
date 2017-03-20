@@ -69,8 +69,8 @@ wssl_result_t wssl_client_add
 
   wssl_chain_add_link_backward(&server->clients, &client->chain_link);
 
-  if(client->wssl->connect_callback_function != WSSL_CALLBACK_FUNCTION_NONE)
-    (*client->wssl->connect_callback_function)(client);
+  if(client->wssl->connect_callback != WSSL_CALLBACK_NONE)
+    (*client->wssl->connect_callback)(client);
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
