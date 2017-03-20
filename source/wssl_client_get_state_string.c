@@ -9,7 +9,7 @@ static struct
   #define CALL(what_name, what_string) { WSSL_CLIENT_STATE_##what_name, what_string },
   WSSL_CLIENT_STATE_TABLE(CALL)
   #undef CALL
-  { WSSL_CLIENT_STATE_END_, NULL }
+  { WSSL_CLIENT_STATE_END_, WSSL_NULL }
 };
 
 _LIBRARY_FUNCTION_
@@ -19,7 +19,7 @@ const char* wssl_client_get_state_string
 )
 {
   wssl_size_t table_index;
-  for(table_index = 0; Wssl_client_state_table[table_index].string != NULL; table_index++)
+  for(table_index = 0; Wssl_client_state_table[table_index].string != WSSL_NULL; table_index++)
     if(Wssl_client_state_table[table_index].state == state)
       return Wssl_client_state_table[table_index].string;
   return "Unknown";

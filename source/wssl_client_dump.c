@@ -77,11 +77,15 @@ void wssl_client_dump
   (
     file,
     (
-      INDENT_FORMAT "state: \"%s\"\n"/*# dodaj delete reason */
-      INDENT_FORMAT "header:\n"/*# dodaj frame*/
+      INDENT_FORMAT "state: \"%s\"\n"
+      INDENT_FORMAT "delete_reason: \"%s\"\n"
+      INDENT_FORMAT "header:\n"
     ),
     INDENT(indent_level+1), wssl_client_get_state_string(client->state),
+    INDENT(indent_level+1), wssl_client_get_delete_reason_string(client->delete_reason),
     INDENT(indent_level+1)
   );
   wssl_header_dump(&client->header, file, indent_level+2);
+  fprintf(file, INDENT_FORMAT "frame:\n", INDENT(indent_level+1));
+  wssl_frame_dump(&client->frame, file, indent_level+2);
 }

@@ -9,7 +9,7 @@ static struct
   #define CALL(what_name, what_number, what_string) { WSSL_RESULT_CODE_##what_name, what_string },
   WSSL_RESULT_CODE_TABLE(CALL)
   #undef CALL
-  { WSSL_RESULT_CODE_END_, NULL }
+  { WSSL_RESULT_CODE_END_, WSSL_NULL }
 };
 
 _LIBRARY_FUNCTION_
@@ -19,7 +19,7 @@ const char* wssl_result_get_code_string
 )
 {
   wssl_size_t table_index;
-  for(table_index = 0; Wssl_result_code_strings_table[table_index].string != NULL; table_index++)
+  for(table_index = 0; Wssl_result_code_strings_table[table_index].string != WSSL_NULL; table_index++)
     if(Wssl_result_code_strings_table[table_index].code == result.code)
       return Wssl_result_code_strings_table[table_index].string;
   return "Unknown";

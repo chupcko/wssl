@@ -41,12 +41,9 @@ static inline bool wssl_client_processing_header_check
 _FUNCTION_
 wssl_result_t wssl_client_processing_header
 (
-  _WSSL_MODIFY_ wssl_client_t* client,
-  _WSSL_OUT_    bool*          client_deleted
+  _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  *client_deleted = false;
-
   wssl_buffer_t buffer;
   WSSL_CALL(wssl_buffer_allocate(&buffer, client->wssl->buffer_size_in_octets));
 
@@ -98,19 +95,16 @@ wssl_result_t wssl_client_processing_header
     must_client_delete = true;
   }
 
-  wssl_result_t result = wssl_client_send(client, client_deleted, buffer.data, buffer.used);
+  wssl_result_t result = wssl_client_send(client, buffer.data, buffer.used);
   wssl_buffer_free(&buffer);
   if(wssl_result_is_not_ok(result))
     return result;
   if
   (
-    !*client_deleted &&
+    wssl_client_is_not_to_delete(client) &&
     must_client_delete
   )
-  {
-    WSSL_CALL(wssl_client_delete(client));
-    *client_deleted = true;
-  }
+    wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_BAD_HANDSHAKE);
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

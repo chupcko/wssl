@@ -10,7 +10,6 @@ wssl_result_t wssl_loop
   struct epoll_event events[EPOLL_EVENTS_SIZE];
   wssl_size_t event_index;
   wssl_epoll_data_t* epoll_data;
-  bool client_deleted;
 
   wssl_generate_random_seed(wssl);
 
@@ -48,13 +47,11 @@ wssl_result_t wssl_loop
             break;
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
             if((events[event_index].events&EPOLLIN) != 0)
-              WSSL_CALL(wssl_client_do_recv(epoll_data->client, &client_deleted));
-            if
-            (
-              !client_deleted &&
-              (events[event_index].events&EPOLLOUT) != 0
-            )
-              WSSL_CALL(wssl_client_do_send(epoll_data->client, &client_deleted));
+              WSSL_CALL(wssl_client_do_recv(epoll_data->client));
+            if((events[event_index].events&EPOLLOUT) != 0)
+              WSSL_CALL(wssl_client_do_send(epoll_data->client));
+            if(wssl_client_is_to_delete(epoll_data->client))
+              WSSL_CALL(wssl_client_delete(epoll_data->client));
           break;
         }
       }

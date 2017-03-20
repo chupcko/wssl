@@ -20,9 +20,8 @@ void wssl_buffer_dump
   );
   if(wssl_buffer_is_allocated(buffer))
   {
-    wssl_size_t data_index;
-
     fprintf(file, "\"");
+    wssl_size_t data_index;
     for(data_index = 0; data_index < buffer->used; data_index++)
     {
       if(data_index != 0)

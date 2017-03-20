@@ -28,7 +28,7 @@ static inline wssl_size_t wssl_client_processing_recv_find_word_until_crlf
   _WSSL_IN_ const wssl_size_t data_size
 )
 {
-  wssl_ssize_t size;
+  wssl_size_t size;
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -93,7 +93,7 @@ static inline wssl_size_t wssl_client_processing_recv_count_spaces
   _WSSL_IN_ const wssl_size_t data_size
 )
 {
-  wssl_ssize_t size;
+  wssl_size_t size;
   for(size = 0; size < data_size; size++)
     switch(data[size])
     {
@@ -133,7 +133,6 @@ _FUNCTION_
 wssl_result_t wssl_client_processing_recv
 (
   _WSSL_MODIFY_       wssl_client_t* client,
-  _WSSL_OUT_          bool*          client_deleted,
   _WSSL_IN_           wssl_octet_t*  data,
   _WSSL_IN_     const wssl_size_t    data_size,
   _WSSL_OUT_          wssl_size_t*   processed
@@ -142,7 +141,6 @@ wssl_result_t wssl_client_processing_recv
   wssl_ssize_t size;
   wssl_frame_t frame;
 
-  *client_deleted = false;
   *processed = 0;
 
   switch(client->state)
@@ -156,10 +154,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR;
       }
       else if(size <= 0)
-      {
-        WSSL_CALL(wssl_client_delete(client));
-        *client_deleted = true;
-      }
+        wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_MISSING_METHOD);
       break;
     case WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
@@ -169,10 +164,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_URI;
       }
       else if(size <= 0)
-      {
-        WSSL_CALL(wssl_client_delete(client));
-        *client_deleted = true;
-      }
+        wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_MISSING_URI);
       break;
     case WSSL_CLIENT_STATE_WAIT_URI:
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
@@ -183,10 +175,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR;
       }
       else if(size <= 0)
-      {
-        WSSL_CALL(wssl_client_delete(client));
-        *client_deleted = true;
-      }
+        wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_MISSING_URI);
       break;
     case WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
@@ -196,10 +185,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION;
       }
       else if(size <= 0)
-      {
-        WSSL_CALL(wssl_client_delete(client));
-        *client_deleted = true;
-      }
+        wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_MISSING_VERSION);
       break;
     case WSSL_CLIENT_STATE_WAIT_VERSION:
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
@@ -218,10 +204,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
       }
       else if(size < 0)
-      {
-        WSSL_CALL(wssl_client_delete(client));
-        *client_deleted = true;
-      }
+        wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_MISSING_CRLF);
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_KEY:
       size = wssl_client_processing_recv_eat_crlf((char*)data, data_size);
@@ -229,7 +212,7 @@ wssl_result_t wssl_client_processing_recv
       {
         *processed = (wssl_size_t)size;
         client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
-        WSSL_CALL(wssl_client_processing_header(client, client_deleted));
+        WSSL_CALL(wssl_client_processing_header(client));
       }
       else
       {
@@ -241,10 +224,7 @@ wssl_result_t wssl_client_processing_recv
           client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
         }
         else if(size <= 0)
-        {
-          WSSL_CALL(wssl_client_delete(client));
-          *client_deleted = true;
-        }
+          wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_MISSING_FIELD_KEY);
       }
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR:
@@ -274,7 +254,7 @@ wssl_result_t wssl_client_processing_recv
         wssl_frame_mask_unmask(&frame);
         if(client->frame.fin)
         {
-          WSSL_CALL(wssl_client_processing_frame(client, client_deleted));
+          WSSL_CALL(wssl_client_processing_frame(client));
           wssl_frame_init(&client->frame);
         }
         else
@@ -295,7 +275,7 @@ wssl_result_t wssl_client_processing_recv
         /*# proveri da li je izasao */
         if(frame.fin)
         {
-          WSSL_CALL(wssl_client_processing_frame(client, client_deleted));
+          WSSL_CALL(wssl_client_processing_frame(client));
           wssl_frame_free(&client->frame);
         }
         *processed = size;

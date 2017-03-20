@@ -3,8 +3,7 @@
 _FUNCTION_
 wssl_result_t wssl_client_processing_frame
 (
-  _WSSL_MODIFY_ wssl_client_t* client,
-  _WSSL_OUT_    bool*          client_deleted
+  _WSSL_MODIFY_ wssl_client_t* client
 )
 {
   /*# odradi frame  */

@@ -4,7 +4,7 @@
 #define WSSL_CLIENT_STATE_TABLE(what_call)                            \
   what_call(WAIT_METHOD,                "Wait method"               ) \
   what_call(WAIT_URI_SEPARATOR,         "Wait URI separator"        ) \
-  what_call(WAIT_URI,                   "Wait uri"                  ) \
+  what_call(WAIT_URI,                   "Wait URI"                  ) \
   what_call(WAIT_VERSION_SEPARATOR,     "Wait version separator"    ) \
   what_call(WAIT_VERSION,               "Wait version"              ) \
   what_call(WAIT_CRLF,                  "Wait CRLF"                 ) \
@@ -15,8 +15,17 @@
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
   what_call(TO_DELETE,                  "To delete"                 ) \
 
-#define WSSL_CLIENT_DELETE_REASON_TABLE(what_call) \
-  what_call(NO_DELETE, "No delete")                \
+#define WSSL_CLIENT_DELETE_REASON_TABLE(what_call)  \
+  what_call(NO_DELETE,         "No delete")         \
+  what_call(DISCONNECTED,      "Disconnecte")       \
+  what_call(CLOSED,            "Closed")            \
+  what_call(MISSING_METHOD,    "Missing method")    \
+  what_call(MISSING_URI,       "Missing URI")       \
+  what_call(MISSING_VERSION,   "Missing URI")       \
+  what_call(MISSING_CRLF,      "Missing CRLF")      \
+  what_call(MISSING_FIELD_KEY, "Missing field key") \
+  what_call(BAD_HANDSHAKE,     "Bad handshake")     \
+  what_call(STOPED,            "Stoped")            \
 
 _INCLUDE_BEGIN_
 
@@ -63,6 +72,22 @@ static inline void wssl_client_set_local_extra_data
 )
 {
   client->local_extra_data = local_extra_data;
+}
+
+static inline bool wssl_client_is_to_delete
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return client->state == WSSL_CLIENT_STATE_TO_DELETE;
+}
+
+static inline bool wssl_client_is_not_to_delete
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return client->state != WSSL_CLIENT_STATE_TO_DELETE;
 }
 
 static inline void wssl_client_to_delete

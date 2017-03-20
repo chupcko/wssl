@@ -1,6 +1,16 @@
 #ifndef _INLINE_H_
 #define _INLINE_H_
 
+static inline const char* wssl_get_bool_string
+(
+  _WSSL_IN_ const bool value
+)
+{
+  if(value)
+    return "true";
+  return "false";
+}
+
 static inline wssl_result_t wssl_client_epoll_event_add_out
 (
   _WSSL_MODIFY_ wssl_client_t* client

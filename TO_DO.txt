@@ -1,6 +1,4 @@
 -frame
--nemoj da brises client odmah, nego na sigurnom
--razlog za disconenct
 -eventualno da size i ssize budu isti
 -test
 -client last time

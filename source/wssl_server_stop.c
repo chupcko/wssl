@@ -15,8 +15,13 @@ wssl_result_t wssl_server_stop
 
   wssl_chain_t* client_link;
   wssl_chain_t* client_link_next;
+  wssl_client_t* client;
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients)
-    WSSL_CALL(wssl_client_delete((wssl_client_t*)client_link));
+  {
+    client = (wssl_client_t*)client_link;
+    client->delete_reason = WSSL_CLIENT_DELETE_REASON_STOPED;
+    WSSL_CALL(wssl_client_delete(client));
+  }
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }
