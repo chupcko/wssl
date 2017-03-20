@@ -1,4 +1,0 @@
-- timeout na konekciju i prijem headera
-- bolji parsing headera
-- callback na dobijanje hedera
-- izvestaji na signal ?

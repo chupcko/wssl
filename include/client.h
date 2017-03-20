@@ -39,6 +39,7 @@ typedef struct wssl_client_t
   wssl_buffer_t         output_buffer;
   wssl_client_state_e   state;
   wssl_header_t         header;
+  wssl_frame_t          frame;
 } wssl_client_t;
 
 static inline void wssl_client_set_local_extra_data

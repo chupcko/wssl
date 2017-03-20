@@ -37,6 +37,7 @@ cat          ${BASE_DIR}/include/server.h         | include_filter >> ${INCLUDE_
 cat          ${BASE_DIR}/include/id.h             | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/buffer.h         | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/header.h         | include_filter >> ${INCLUDE_FILE}
+cat          ${BASE_DIR}/include/frame.h          | include_filter >> ${INCLUDE_FILE}
 include_exec ${BASE_DIR}/include/client.h         | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/callback.h       | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/wssl.h           | include_filter >> ${INCLUDE_FILE}

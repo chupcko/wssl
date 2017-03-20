@@ -105,7 +105,7 @@ void wssl_sha1
     sha1_processing_chunk(&data[size], intermediate_result);
 
   sha1_chunk_t chunk;
-  bzero((void*)chunk, SHA1_CHUNK_SIZE_IN_OCTETS);
+  memset((void*)chunk, 0, SHA1_CHUNK_SIZE_IN_OCTETS);
   if(data_size-size > 0)
     memcpy((void*)chunk, (void*)&data[size], (size_t)(data_size-size));
   chunk[data_size-size] = 0x80;
@@ -113,7 +113,7 @@ void wssl_sha1
   if(data_size-size >= SHA1_CHUNK_SIZE_IN_OCTETS-SHA1_LENGTH_SIZE_IN_OCTETS)
   {
     sha1_processing_chunk(chunk, intermediate_result);
-    bzero((void*)chunk, SHA1_CHUNK_SIZE_IN_OCTETS);
+    memset((void*)chunk, 0, SHA1_CHUNK_SIZE_IN_OCTETS);
   }
 
   sha1_length_t length = (sha1_length_t)data_size*WSSL_OCTET_SIZE_IN_BITS;

@@ -1,6 +1,0 @@
-#ifndef _CONFIGURATION_H_
-#define _CONFIGURATION_H_
-
-#define WEBSOCKET_SERVER_PORT 5000
-
-#endif

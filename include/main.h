@@ -10,6 +10,8 @@
 #undef _INCLUDE_END_
 #define _INCLUDE_END_
 
+#define _POSIX_C_SOURCE 200809L
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/epoll.h>
@@ -22,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
+#include <time.h>
 #include <unistd.h>
 
 _INCLUDE_BEGIN_
@@ -51,6 +53,7 @@ _INCLUDE_END_
 #include "id.h"
 #include "buffer.h"
 #include "header.h"
+#include "frame.h"
 #include "client.h"
 #include "callback.h"
 #include "wssl.h"

@@ -17,23 +17,25 @@ typedef struct wssl_t
   wssl_tick_callback_function_t*       tick_callback_function;
   wssl_id_t                            next_client_id;
   wssl_chain_t                         servers;
+  unsigned int                         random_seed;
 } wssl_t;
 
-#define WSSL_INIT_VALUE(what_name)                                         \
-{                                                                          \
-  .epoll_descriptor             = WSSL_NO_DESCRIPTOR,                      \
-  .server_name                  = WSSL_DEFAULT_SERVER_NAME,                \
-  .buffer_size_in_octets        = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,      \
-  .epoll_sleep_in_mseconds      = WSSL_DEFAULT_EPOLL_SLEEP_IN_MSECONDS,    \
-  .global_extra_data            = WSSL_NULL,                               \
-  .connect_callback_function    = WSSL_CALLBACK_FUNCTION_NONE,             \
-  .disconnect_callback_function = WSSL_CALLBACK_FUNCTION_NONE,             \
-  .header_callback_function     = WSSL_CALLBACK_FUNCTION_NONE,             \
-  .receiving_callback_function  = WSSL_CALLBACK_FUNCTION_NONE,             \
-  .tick_callback_function       = WSSL_CALLBACK_FUNCTION_NONE,             \
-  .next_client_id               = WSSL_ID_INIT_VALUE,                      \
-  .servers                      = WSSL_CHAIN_INIT_VALUE(what_name.servers) \
-}                                                                          \
+#define WSSL_INIT_VALUE(what_name)                                          \
+{                                                                           \
+  .epoll_descriptor             = WSSL_NO_DESCRIPTOR,                       \
+  .server_name                  = WSSL_DEFAULT_SERVER_NAME,                 \
+  .buffer_size_in_octets        = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,       \
+  .epoll_sleep_in_mseconds      = WSSL_DEFAULT_EPOLL_SLEEP_IN_MSECONDS,     \
+  .global_extra_data            = WSSL_NULL,                                \
+  .connect_callback_function    = WSSL_CALLBACK_FUNCTION_NONE,              \
+  .disconnect_callback_function = WSSL_CALLBACK_FUNCTION_NONE,              \
+  .header_callback_function     = WSSL_CALLBACK_FUNCTION_NONE,              \
+  .receiving_callback_function  = WSSL_CALLBACK_FUNCTION_NONE,              \
+  .tick_callback_function       = WSSL_CALLBACK_FUNCTION_NONE,              \
+  .next_client_id               = WSSL_ID_INIT_VALUE,                       \
+  .servers                      = WSSL_CHAIN_INIT_VALUE(what_name.servers), \
+  .random_seed                  = 0                                         \
+}                                                                           \
 
 #define WSSL_DECLARE(what_name) wssl_t what_name = WSSL_INIT_VALUE(what_name)
 
@@ -54,6 +56,7 @@ static inline void wssl_init
   wssl->tick_callback_function       = WSSL_CALLBACK_FUNCTION_NONE;
   wssl_id_init(&wssl->next_client_id);
   wssl_chain_init(&wssl->servers);
+  wssl->random_seed                  = 0;
 }
 
 static inline void wssl_set_server_name
@@ -147,6 +150,14 @@ static inline wssl_id_t wssl_get_next_client_id
   wssl_id_t id = wssl->next_client_id;
   wssl_id_next(&wssl->next_client_id);
   return id;
+}
+
+static inline void wssl_generate_random_seed
+(
+  _WSSL_MODIFY_ wssl_t* wssl
+)
+{
+  wssl->random_seed = (unsigned int)time(NULL);
 }
 
 #endif

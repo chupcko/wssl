@@ -6,11 +6,13 @@ wssl_result_t wssl_loop
   _WSSL_MODIFY_ wssl_t* wssl
 )
 {
-  struct epoll_event events[EPOLL_EVENTS_SIZE];
   wssl_ssize_t events_number;
+  struct epoll_event events[EPOLL_EVENTS_SIZE];
   wssl_size_t event_index;
   wssl_epoll_data_t* epoll_data;
   bool client_deleted;
+
+  wssl_generate_random_seed(wssl);
 
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)

@@ -63,6 +63,7 @@ wssl_result_t wssl_client_add
 
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   wssl_header_init(&client->header);
+  wssl_frame_init(&client->frame);
 
   wssl_chain_add_link_backward(&server->clients, &client->chain_link);
 

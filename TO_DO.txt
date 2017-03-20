@@ -1,3 +1,4 @@
+-nemoj da brises client odmah, nego na sigurnom
 -frame
 -test
 -client last time
