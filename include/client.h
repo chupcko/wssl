@@ -76,6 +76,16 @@ static inline void wssl_client_set_local_extra_data
   client->local_extra_data = local_extra_data;
 }
 
+static inline void wssl_client_disconnect
+(
+  _WSSL_MODIFY_ wssl_client_t*                  client,
+  _WSSL_IN_     wssl_client_disconnect_reason_e disconnect_reason
+)
+{
+  client->state = WSSL_CLIENT_STATE_DISCONNECTING;
+  client->disconnect_reason = disconnect_reason;
+}
+
 static inline bool wssl_client_is_disconnected
 (
   _WSSL_IN_ const wssl_client_t* client
@@ -90,16 +100,6 @@ static inline bool wssl_client_is_not_disconnected
 )
 {
   return client->state != WSSL_CLIENT_STATE_DISCONNECTING;
-}
-
-static inline void wssl_client_disconnect
-(
-  _WSSL_MODIFY_ wssl_client_t*                  client,
-  _WSSL_IN_     wssl_client_disconnect_reason_e disconnect_reason
-)
-{
-  client->state = WSSL_CLIENT_STATE_DISCONNECTING;
-  client->disconnect_reason = disconnect_reason;
 }
 
 _INCLUDE_END_

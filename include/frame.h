@@ -42,49 +42,6 @@ static inline void wssl_frame_init
   frame->payload_size = 0;
 }
 
-static inline bool wssl_frame_is_allocated
-(
-  _WSSL_IN_ const wssl_frame_t* frame
-)
-{
-  return frame->payload != WSSL_NULL;
-}
-
-static inline bool wssl_frame_is_not_allocated
-(
-  _WSSL_IN_ const wssl_frame_t* frame
-)
-{
-  return frame->payload == WSSL_NULL;
-}
-
-static inline void wssl_frame_free
-(
-  _WSSL_MODIFY_ wssl_frame_t* frame
-)
-{
-  free((void*)frame->payload);
-  frame->payload = WSSL_NULL;
-  frame->payload_size = 0;
-}
-
-static inline void wssl_frame_mask_unmask
-(
-  _WSSL_MODIFY_ wssl_frame_t* frame
-)
-{
-  if
-  (
-    frame->masked &&
-    frame->payload != WSSL_NULL
-  )
-  {
-    wssl_frame_size_t i;
-    for(i = 0; i < frame->payload_size; i++)
-      frame->payload[i] ^= frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
-  }
-}
-
 static inline wssl_result_t wssl_frame_allocate
 (
   _WSSL_MODIFY_ wssl_frame_t* frame
@@ -120,6 +77,49 @@ static inline wssl_result_t wssl_frame_reallocate
   frame_destination->payload_size += frame_source->payload_size;
   frame_destination->payload[frame_destination->payload_size] = '\0';
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+}
+
+static inline void wssl_frame_free
+(
+  _WSSL_MODIFY_ wssl_frame_t* frame
+)
+{
+  free((void*)frame->payload);
+  frame->payload = WSSL_NULL;
+  frame->payload_size = 0;
+}
+
+static inline bool wssl_frame_is_allocated
+(
+  _WSSL_IN_ const wssl_frame_t* frame
+)
+{
+  return frame->payload != WSSL_NULL;
+}
+
+static inline bool wssl_frame_is_not_allocated
+(
+  _WSSL_IN_ const wssl_frame_t* frame
+)
+{
+  return frame->payload == WSSL_NULL;
+}
+
+static inline void wssl_frame_mask_unmask
+(
+  _WSSL_MODIFY_ wssl_frame_t* frame
+)
+{
+  if
+  (
+    frame->masked &&
+    frame->payload != WSSL_NULL
+  )
+  {
+    wssl_frame_size_t i;
+    for(i = 0; i < frame->payload_size; i++)
+      frame->payload[i] ^= frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
+  }
 }
 
 #endif

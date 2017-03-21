@@ -139,7 +139,6 @@ wssl_result_t wssl_client_processing_recv
 )
 {
   wssl_ssize_t size;
-  wssl_frame_t frame;
 
   *processed = 0;
 
@@ -266,6 +265,8 @@ wssl_result_t wssl_client_processing_recv
           wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
     case WSSL_CLIENT_STATE_WAIT_FIN_FRAME:
+    {
+      wssl_frame_t frame;
       wssl_frame_init(&frame);
       size = wssl_frame_get(&frame, data, data_size);
       if(size > 0)
@@ -284,6 +285,7 @@ wssl_result_t wssl_client_processing_recv
         else
           wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
+    }
   }
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);

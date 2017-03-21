@@ -1,3 +1,4 @@
+-id proveri koncpet i napravi ispis dobar
 -proveri koncpet frame-a
 -frame send
 -frame processing

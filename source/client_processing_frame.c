@@ -19,14 +19,14 @@ wssl_result_t wssl_client_processing_frame
     case FRAME_OPCODE_CLOSE:
       /*#
       callback
-      wssl_client_send_frame(client, FRAME_OPCODE_CLOSE, WSSL_NULL, 0);
+      WSSL_CALL(wssl_client_send_frame(client, FRAME_OPCODE_CLOSE, WSSL_NULL, 0));
       wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
       */
       break;
     case FRAME_OPCODE_PING:
       /*#
       callback
-      wssl_client_send_frame(client, FRAME_OPCODE_PONG, client->frame.payload, client->frame.payload_size);
+      WSSL_CALL(wssl_client_send_frame(client, FRAME_OPCODE_PONG, client->frame.payload, client->frame.payload_size));
       */
       break;
     case FRAME_OPCODE_PONG:
