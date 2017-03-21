@@ -2,7 +2,7 @@
 #define _VERSION_H_
 
 _INCLUDE_BEGIN_
-#define WSSL_VERSION "20170320"
+#define WSSL_VERSION "20170321"
 _INCLUDE_END_
 
 #endif

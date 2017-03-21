@@ -19,7 +19,7 @@ wssl_result_t wssl_server_stop
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients)
   {
     client = (wssl_client_t*)client_link;
-    client->delete_reason = WSSL_CLIENT_DELETE_REASON_STOPED;
+    client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_STOPED;
     WSSL_CALL(wssl_client_delete(client));
   }
 

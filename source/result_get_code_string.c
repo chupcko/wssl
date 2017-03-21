@@ -18,9 +18,9 @@ const char* wssl_result_get_code_string
   _WSSL_IN_ const wssl_result_t result
 )
 {
-  wssl_size_t table_index;
-  for(table_index = 0; Wssl_result_code_strings_table[table_index].string != WSSL_NULL; table_index++)
-    if(Wssl_result_code_strings_table[table_index].code == result.code)
-      return Wssl_result_code_strings_table[table_index].string;
+  wssl_size_t i;
+  for(i = 0; Wssl_result_code_strings_table[i].string != WSSL_NULL; i++)
+    if(Wssl_result_code_strings_table[i].code == result.code)
+      return Wssl_result_code_strings_table[i].string;
   return "Unknown";
 }

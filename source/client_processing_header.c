@@ -101,10 +101,10 @@ wssl_result_t wssl_client_processing_header
     return result;
   if
   (
-    wssl_client_is_not_to_delete(client) &&
-    must_client_delete
+    must_client_delete &&
+    wssl_client_is_not_disconnected(client)
   )
-    wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_BAD_HANDSHAKE);
+    wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HANDSHAKE);
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 }

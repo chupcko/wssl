@@ -45,7 +45,6 @@ void wssl_frame_dump
   if(frame->payload != WSSL_NULL)
   {
     fprintf(file, "\"");
-    wssl_size_t data_index;
     for(data_index = 0; data_index < frame->payload_size; data_index++)
     {
       if(data_index != 0)
@@ -61,10 +60,8 @@ void wssl_frame_dump
     file,
     (
       "\n"
-      INDENT_FORMAT "payload_size: %08" PRId64 "\n"
-      INDENT_FORMAT "count: %d\n"
+      INDENT_FORMAT "payload_size: %" PRId64 "\n"
     ),
-    INDENT(indent_level+1), frame->payload_size,
-    INDENT(indent_level+1), frame->count
+    INDENT(indent_level+1), frame->payload_size
   );
 }

@@ -46,6 +46,15 @@ static inline bool wssl_id_is_not_equal
     id_1->suffix != id_2->suffix;
 }
 
+static inline void wssl_id_dump
+(
+  _WSSL_IN_ const wssl_id_t* id,
+  _WSSL_IN_       FILE*      file
+)
+{
+  fprintf(file, "%" PRIu16 ":%" PRIu32, id->prefix, id->suffix);
+}
+
 _INCLUDE_END_
 
 static inline void wssl_id_new

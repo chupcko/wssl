@@ -19,10 +19,10 @@ typedef sha1_word_t sha1_intermediate_result_t[SHA1_RESULT_SIZE_IN_WORDS];
 static inline sha1_word_t sha1_word_rotate_left
 (
   _WSSL_IN_ const sha1_word_t word,
-  _WSSL_IN_ const wssl_size_t i
+  _WSSL_IN_ const wssl_size_t count
 )
 {
-  return (word<<i)|(word>>(SHA1_WORD_SIZE_IN_BITS-i));
+  return (word<<count)|(word>>(SHA1_WORD_SIZE_IN_BITS-count));
 }
 
 static void sha1_processing_chunk

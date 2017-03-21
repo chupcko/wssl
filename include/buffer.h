@@ -52,6 +52,22 @@ static inline bool wssl_buffer_is_not_allocated
   return buffer->data == WSSL_NULL;
 }
 
+static inline bool wssl_buffer_is_full
+(
+  _WSSL_IN_ const wssl_buffer_t* buffer
+)
+{
+  return buffer->used >= buffer->size;
+}
+
+static inline bool wssl_buffer_is_not_full
+(
+  _WSSL_IN_ const wssl_buffer_t* buffer
+)
+{
+  return buffer->used < buffer->size;
+}
+
 static inline void wssl_buffer_free
 (
   _WSSL_MODIFY_ wssl_buffer_t* buffer

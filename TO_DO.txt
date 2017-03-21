@@ -1,4 +1,6 @@
--frame
+-proveri koncpet frame-a
+-frame send
+-frame processing
 -eventualno da size i ssize budu isti
 -test
 -client last time

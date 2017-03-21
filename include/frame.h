@@ -15,7 +15,6 @@ typedef struct wssl_frame_t
   wssl_octet_t      masking_key[WSSL_FRAME_MASKING_KEY_SIZE];
   wssl_octet_t*     payload;
   wssl_frame_size_t payload_size;
-  wssl_size_t       count;
 } wssl_frame_t;
 
 _INCLUDE_END_
@@ -41,7 +40,6 @@ static inline void wssl_frame_init
 {
   frame->payload = WSSL_NULL;
   frame->payload_size = 0;
-  frame->count = 0;
 }
 
 static inline bool wssl_frame_is_allocated
@@ -49,7 +47,7 @@ static inline bool wssl_frame_is_allocated
   _WSSL_IN_ const wssl_frame_t* frame
 )
 {
-  return frame->count != 0;
+  return frame->payload != WSSL_NULL;
 }
 
 static inline bool wssl_frame_is_not_allocated
@@ -57,7 +55,7 @@ static inline bool wssl_frame_is_not_allocated
   _WSSL_IN_ const wssl_frame_t* frame
 )
 {
-  return frame->count == 0;
+  return frame->payload == WSSL_NULL;
 }
 
 static inline void wssl_frame_free
@@ -68,7 +66,6 @@ static inline void wssl_frame_free
   free((void*)frame->payload);
   frame->payload = WSSL_NULL;
   frame->payload_size = 0;
-  frame->count = 0;
 }
 
 static inline void wssl_frame_mask_unmask
@@ -82,9 +79,9 @@ static inline void wssl_frame_mask_unmask
     frame->payload != WSSL_NULL
   )
   {
-    wssl_frame_size_t index;
-    for(index = 0; index < frame->payload_size; index++)
-      frame->payload[index] ^= frame->masking_key[index%WSSL_FRAME_MASKING_KEY_SIZE];
+    wssl_frame_size_t i;
+    for(i = 0; i < frame->payload_size; i++)
+      frame->payload[i] ^= frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
   }
 }
 

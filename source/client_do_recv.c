@@ -6,7 +6,7 @@ wssl_result_t wssl_client_do_recv
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  if(wssl_client_is_to_delete(client))
+  if(wssl_client_is_disconnected(client))
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
 
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
@@ -26,14 +26,14 @@ wssl_result_t wssl_client_do_recv
         break;
       case ECONNRESET:
       case EPIPE:
-        wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_DISCONNECTED);
+        wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
         break;
       default:
         return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "recv", errno);
         break;
     }
   else if(recv_size == 0)
-    wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_CLOSED);
+    wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
   else
   {
     wssl_size_t processed = 0;
@@ -52,7 +52,7 @@ wssl_result_t wssl_client_do_recv
           &local_processed
         )
       );
-      if(wssl_client_is_to_delete(client))
+      if(wssl_client_is_disconnected(client))
         return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
       if(local_processed == 0)
         break;
@@ -62,8 +62,8 @@ wssl_result_t wssl_client_do_recv
       wssl_buffer_free(&client->input_buffer);
     else if(processed > 0)
       wssl_buffer_shift(&client->input_buffer, processed);
-    else if(client->input_buffer.used == client->input_buffer.size)
-      wssl_client_to_delete(client, WSSL_CLIENT_DELETE_REASON_FULL_RECV_BUFFER);
+    else if(wssl_buffer_is_full(&client->input_buffer))
+      wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_FULL_RECV_BUFFER);
   }
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);

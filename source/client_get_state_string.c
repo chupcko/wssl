@@ -18,9 +18,9 @@ const char* wssl_client_get_state_string
   _WSSL_IN_ const wssl_client_state_e state
 )
 {
-  wssl_size_t table_index;
-  for(table_index = 0; Wssl_client_state_table[table_index].string != WSSL_NULL; table_index++)
-    if(Wssl_client_state_table[table_index].state == state)
-      return Wssl_client_state_table[table_index].string;
+  wssl_size_t i;
+  for(i = 0; Wssl_client_state_table[i].string != WSSL_NULL; i++)
+    if(Wssl_client_state_table[i].state == state)
+      return Wssl_client_state_table[i].string;
   return "Unknown";
 }

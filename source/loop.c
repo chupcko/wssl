@@ -50,7 +50,7 @@ wssl_result_t wssl_loop
               WSSL_CALL(wssl_client_do_recv(epoll_data->client));
             if((events[event_index].events&EPOLLOUT) != 0)
               WSSL_CALL(wssl_client_do_send(epoll_data->client));
-            if(wssl_client_is_to_delete(epoll_data->client))
+            if(wssl_client_is_disconnected(epoll_data->client))
               WSSL_CALL(wssl_client_delete(epoll_data->client));
           break;
         }

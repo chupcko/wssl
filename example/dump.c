@@ -38,9 +38,17 @@ void on_connect(wssl_client_t* client)
   printf("Connect %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n", client->id.prefix, client->id.suffix, client->ip, client->port, client->server->ip, client->server->port);
 }
 
-void on_disconnect(wssl_client_t* client)
+void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e disconnect_reason)
 {
-  printf("Disconnect %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n", client->id.prefix, client->id.suffix, client->ip, client->port, client->server->ip, client->server->port);
+  printf
+  (
+    (
+      "Disconnect %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n"
+      "  %s\n"
+    ),
+    client->id.prefix, client->id.suffix, client->ip, client->port, client->server->ip, client->server->port,
+    wssl_client_get_disconnect_reason_string(disconnect_reason)
+  );
 }
 
 bool on_header(wssl_client_t* client)
@@ -55,7 +63,7 @@ bool on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_s
   (
     (
       "Receive text frame %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n"
-      "\"%s\"\n"
+      "  \"%s\"\n"
     ),
     client->id.prefix, client->id.suffix, client->ip, client->port, client->server->ip, client->server->port,
     data
@@ -66,7 +74,7 @@ bool on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_s
 bool on_tick(wssl_t* wssl)
 {
   printf("Tick\n");
-/*  wssl_dump(wssl, stdout, 0);*/
+  wssl_dump(wssl, stdout, 0);
   printf("\n");
   return Work;
 }
