@@ -8,8 +8,8 @@ wssl_result_t wssl_client_send
   _WSSL_IN_     const wssl_size_t    data_size
 )
 {
-  if(wssl_client_is_disconnected(client))
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  if(wssl_client_is_for_disconnecting(client))
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 
   if(wssl_buffer_is_allocated(&client->output_buffer))
   {
@@ -35,14 +35,14 @@ wssl_result_t wssl_client_send
           break;
         case ECONNRESET:
         case EPIPE:
-          wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
+          wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
           break;
         default:
           return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "send", errno);
           break;
       }
     else if(send_size == 0)
-      wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+      wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
     else if((wssl_size_t)send_size < data_size)
     {
       WSSL_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
@@ -51,5 +51,5 @@ wssl_result_t wssl_client_send
     }
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

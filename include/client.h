@@ -13,7 +13,7 @@
   what_call(WAIT_FIELD_VALUE,           "Wait field value"          ) \
   what_call(WAIT_FRAME,                 "Wait frame"                ) \
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
-  what_call(DISCONNECTING,              "Disconnecting"             ) \
+  what_call(FOR_DISCONNECTING,          "For disconnecting"         ) \
 
 #define WSSL_CLIENT_DISCONNECT_REASON_TABLE(what_call) \
   what_call(NONE,              "None")                 \
@@ -27,6 +27,7 @@
   what_call(MISSING_FIELD_KEY, "Missing field key")    \
   what_call(BAD_HANDSHAKE,     "Bad handshake")        \
   what_call(BAD_FRAME_OPCODE,  "Bad frame opcode")     \
+  what_call(REQUESTED,         "Requested")            \
   what_call(STOPED,            "Stoped")               \
 
 _INCLUDE_BEGIN_
@@ -76,30 +77,20 @@ static inline void wssl_client_set_local_extra_data
   client->local_extra_data = local_extra_data;
 }
 
-static inline void wssl_client_disconnect
-(
-  _WSSL_MODIFY_ wssl_client_t*                  client,
-  _WSSL_IN_     wssl_client_disconnect_reason_e disconnect_reason
-)
-{
-  client->state = WSSL_CLIENT_STATE_DISCONNECTING;
-  client->disconnect_reason = disconnect_reason;
-}
-
-static inline bool wssl_client_is_disconnected
+static inline bool wssl_client_is_for_disconnecting
 (
   _WSSL_IN_ const wssl_client_t* client
 )
 {
-  return client->state == WSSL_CLIENT_STATE_DISCONNECTING;
+  return client->state == WSSL_CLIENT_STATE_FOR_DISCONNECTING;
 }
 
-static inline bool wssl_client_is_not_disconnected
+static inline bool wssl_client_is_not_for_disconnecting
 (
   _WSSL_IN_ const wssl_client_t* client
 )
 {
-  return client->state != WSSL_CLIENT_STATE_DISCONNECTING;
+  return client->state != WSSL_CLIENT_STATE_FOR_DISCONNECTING;
 }
 
 _INCLUDE_END_

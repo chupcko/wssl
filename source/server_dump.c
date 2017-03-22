@@ -37,9 +37,8 @@ void wssl_server_dump
   );
   if(wssl_chain_is_not_empty(&server->clients))
   {
-    wssl_chain_t* client_link;
-
     fprintf(file, "\n");
+    wssl_chain_t* client_link;
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(client_link, &server->clients)
       wssl_client_dump((wssl_client_t*)client_link, file, indent_level+2);
   }

@@ -3,8 +3,6 @@
 
 _INCLUDE_BEGIN_
 
-struct wssl_t;
-
 typedef void wssl_connect_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*
@@ -21,33 +19,33 @@ typedef bool wssl_header_callback_f
   _WSSL_MODIFY_ wssl_client_t*
 );
 
-typedef bool wssl_receive_text_frame_callback_f
+typedef void wssl_receive_text_frame_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*,
   _WSSL_IN_     char*,
   _WSSL_IN_     wssl_size_t
 );
 
-typedef bool wssl_receive_binary_frame_callback_f
+typedef void wssl_receive_binary_frame_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*,
   _WSSL_IN_     wssl_octet_t*,
   _WSSL_IN_     wssl_size_t
 );
 
-typedef bool wssl_receive_close_frame_callback_f
+typedef void wssl_receive_close_frame_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*
 );
 
-typedef bool wssl_receive_ping_frame_callback_f
+typedef void wssl_receive_ping_frame_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*,
   _WSSL_IN_     wssl_octet_t*,
   _WSSL_IN_     wssl_size_t
 );
 
-typedef bool wssl_receive_pong_frame_callback_f
+typedef void wssl_receive_pong_frame_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*,
   _WSSL_IN_     wssl_octet_t*,

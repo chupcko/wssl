@@ -1,7 +1,7 @@
+-pravi buffer za svaki send, i drzi listu neposlatih buffera
+-kod primanja frame-a kopiraj tako ako nema fin
+
 -id proveri koncpet i napravi ispis dobar
--proveri koncpet frame-a
--frame send
--frame processing
 -eventualno da size i ssize budu isti
 -test
 -client last time

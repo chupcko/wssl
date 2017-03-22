@@ -102,9 +102,9 @@ wssl_result_t wssl_client_processing_header
   if
   (
     must_client_delete &&
-    wssl_client_is_not_disconnected(client)
+    wssl_client_is_not_for_disconnecting(client)
   )
-    wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HANDSHAKE);
+    wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HANDSHAKE);
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

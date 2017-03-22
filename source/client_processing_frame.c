@@ -6,6 +6,8 @@ wssl_result_t wssl_client_processing_frame
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
+  wssl_frame_t frame;
+
   switch(client->frame.opcode)
   {
     case FRAME_OPCODE_TEXT:
@@ -17,27 +19,26 @@ wssl_result_t wssl_client_processing_frame
         (*client->wssl->receive_binary_frame_callback)(client, client->frame.payload, client->frame.payload_size);
       break;
     case FRAME_OPCODE_CLOSE:
-      /*#
-      callback
-      WSSL_CALL(wssl_client_send_frame(client, FRAME_OPCODE_CLOSE, WSSL_NULL, 0));
-      wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
-      */
+      if(client->wssl->receive_close_frame_callback != WSSL_CALLBACK_NONE)
+        (*client->wssl->receive_close_frame_callback)(client);
+      wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_CLOSE, false, client->frame.payload, client->frame.payload_size);
+      WSSL_CALL(wssl_client_send_frame(client, &frame));
+      wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
       break;
     case FRAME_OPCODE_PING:
-      /*#
-      callback
-      WSSL_CALL(wssl_client_send_frame(client, FRAME_OPCODE_PONG, client->frame.payload, client->frame.payload_size));
-      */
+      if(client->wssl->receive_ping_frame_callback != WSSL_CALLBACK_NONE)
+        (*client->wssl->receive_ping_frame_callback)(client, client->frame.payload, client->frame.payload_size);
+      wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_PONG, false, client->frame.payload, client->frame.payload_size);
+      WSSL_CALL(wssl_client_send_frame(client, &frame));
       break;
     case FRAME_OPCODE_PONG:
-      /*#
-      callback
-      */
+      if(client->wssl->receive_pong_frame_callback != WSSL_CALLBACK_NONE)
+        (*client->wssl->receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size);
       break;
     defualt:
-      wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+      wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

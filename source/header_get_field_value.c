@@ -1,6 +1,6 @@
 #include "main.h"
 
-_FUNCTION_
+_LIBRARY_FUNCTION_
 char* wssl_header_get_field_value
 (
   _WSSL_IN_ const wssl_header_t* header,

@@ -3,6 +3,7 @@ WSSL_DIR := ../out
 WSSL_INCLUDE = $(WSSL_DIR)/wssl.h
 
 SOURCES := $(wildcard *.c)
+INCLUDES := $(wildcard *.h)
 OBJECTS = $(SOURCES:.c=.o)
 TARGETS = $(SOURCES:.c=.t)
 
@@ -28,7 +29,7 @@ clean:
 .SECONDARY:
 .SUFFIXES:
 
-%.o: %.c $(WSSL_INCLUDE)
+%.o: %.c $(WSSL_INCLUDE) $(INCLUDES)
 	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
 
 %.t: %.o

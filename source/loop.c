@@ -50,9 +50,7 @@ wssl_result_t wssl_loop
               WSSL_CALL(wssl_client_do_recv(epoll_data->client));
             if((events[event_index].events&EPOLLOUT) != 0)
               WSSL_CALL(wssl_client_do_send(epoll_data->client));
-            if(wssl_client_is_disconnected(epoll_data->client))
-              WSSL_CALL(wssl_client_delete(epoll_data->client));
-          break;
+            break;
         }
       }
 
@@ -62,6 +60,11 @@ wssl_result_t wssl_loop
       !(*wssl->tick_callback)(wssl)
     )
       break;
+
+    wssl_chain_t* client_link;
+    wssl_chain_t* client_link_next;
+    WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_for_disconnecting)
+      WSSL_CALL(wssl_client_delete((wssl_client_t*)client_link));
   }
 
   WSSL_CALL(wssl_servers_stop(wssl));
@@ -69,5 +72,5 @@ wssl_result_t wssl_loop
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "close", errno);
   wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

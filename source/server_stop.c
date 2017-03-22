@@ -23,5 +23,5 @@ wssl_result_t wssl_server_stop
     WSSL_CALL(wssl_client_delete(client));
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

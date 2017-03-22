@@ -153,7 +153,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR;
       }
       else if(size <= 0)
-        wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_METHOD);
+        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_METHOD);
       break;
     case WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
@@ -163,7 +163,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_URI;
       }
       else if(size <= 0)
-        wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
+        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
       break;
     case WSSL_CLIENT_STATE_WAIT_URI:
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
@@ -174,7 +174,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR;
       }
       else if(size <= 0)
-        wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
+        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
       break;
     case WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
@@ -184,7 +184,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION;
       }
       else if(size <= 0)
-        wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_VERSION);
+        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_VERSION);
       break;
     case WSSL_CLIENT_STATE_WAIT_VERSION:
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
@@ -203,7 +203,7 @@ wssl_result_t wssl_client_processing_recv
         client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
       }
       else if(size < 0)
-        wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_CRLF);
+        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_CRLF);
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_KEY:
       size = wssl_client_processing_recv_eat_crlf((char*)data, data_size);
@@ -223,7 +223,7 @@ wssl_result_t wssl_client_processing_recv
           client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
         }
         else if(size <= 0)
-          wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_FIELD_KEY);
+          wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_FIELD_KEY);
       }
       break;
     case WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR:
@@ -240,7 +240,7 @@ wssl_result_t wssl_client_processing_recv
       {
         wssl_header_field_t* last_headed_field = wssl_header_get_last_field(&client->header);
         if(last_headed_field == WSSL_NULL)
-          return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header field", 0);
+          return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header_field", 0);
         WSSL_CALL(wssl_header_field_insert_value(last_headed_field, (char*)data, size));
         *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
@@ -262,7 +262,7 @@ wssl_result_t wssl_client_processing_recv
           *processed = size;
         }
         else
-          wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+          wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
     case WSSL_CLIENT_STATE_WAIT_FIN_FRAME:
     {
@@ -283,10 +283,10 @@ wssl_result_t wssl_client_processing_recv
           *processed = size;
         }
         else
-          wssl_client_disconnect(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+          wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
     }
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

@@ -26,19 +26,23 @@ _INCLUDE_END_
 #define FRAME_OPCODE_PING     0x9
 #define FRAME_OPCODE_PONG     0xa
 
-#define FRAME_LENGTH_LONG          0x7f
-#define FRAME_LENGTH_MEDIUM        0x7e
+#define FRAME_LENGTH_LONG_CODE     0x7f
+#define FRAME_LENGTH_MEDIUM_CODE   0x7e
 #define FRAME_LENGTH_LONG_LENGTH   8
 #define FRAME_LENGTH_MEDIUM_LENGTH 2
 #define FRAME_PAYLOAD_SIZE_MEDIUM  0xffff
-#define FRAME_PAYLOAD_SIZE_SHORT   0x7e
+#define FRAME_PAYLOAD_SIZE_SHORT   0x7d
 
 static inline void wssl_frame_init
 (
   _WSSL_MODIFY_ wssl_frame_t* frame
 )
 {
-  frame->payload = WSSL_NULL;
+  frame->fin          = true;
+  frame->opcode       = FRAME_OPCODE_CONTINUE;
+  frame->masked       = false;
+  frame->length       = 0;
+  frame->payload      = WSSL_NULL;
   frame->payload_size = 0;
 }
 
@@ -53,7 +57,7 @@ static inline wssl_result_t wssl_frame_allocate
   memcpy((void*)payload, (void*)frame->payload, (size_t)frame->payload_size);
   frame->payload = payload;
   frame->payload[frame->payload_size] = '\0';
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
 static inline wssl_result_t wssl_frame_reallocate
@@ -76,17 +80,7 @@ static inline wssl_result_t wssl_frame_reallocate
   frame_destination->payload = payload;
   frame_destination->payload_size += frame_source->payload_size;
   frame_destination->payload[frame_destination->payload_size] = '\0';
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, NULL, 0);
-}
-
-static inline void wssl_frame_free
-(
-  _WSSL_MODIFY_ wssl_frame_t* frame
-)
-{
-  free((void*)frame->payload);
-  frame->payload = WSSL_NULL;
-  frame->payload_size = 0;
+  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
 static inline bool wssl_frame_is_allocated
@@ -103,6 +97,16 @@ static inline bool wssl_frame_is_not_allocated
 )
 {
   return frame->payload == WSSL_NULL;
+}
+
+static inline void wssl_frame_free
+(
+  _WSSL_MODIFY_ wssl_frame_t* frame
+)
+{
+  free((void*)frame->payload);
+  frame->payload = WSSL_NULL;
+  frame->payload_size = 0;
 }
 
 static inline void wssl_frame_mask_unmask
