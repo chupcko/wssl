@@ -6,6 +6,7 @@ wssl_result_t wssl_client_do_send
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
+/*
   if(wssl_client_is_for_disconnecting(client))
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 
@@ -15,7 +16,7 @@ wssl_result_t wssl_client_do_send
     (
       client->socket_descriptor,
       (void*)client->output_buffer.data,
-      (size_t)client->output_buffer.used,
+      (size_t)client->output_buffer.end,
       0
     );
     if(send_size < 0)
@@ -33,14 +34,16 @@ wssl_result_t wssl_client_do_send
       }
     else if(send_size == 0)
       wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
-    else if((wssl_size_t)send_size == client->output_buffer.used)
+    else if((wssl_size_t)send_size == client->output_buffer.end)
     {
       wssl_buffer_free(&client->output_buffer);
       WSSL_CALL(wssl_client_epoll_event_delete_out(client));
     }
     else
       wssl_buffer_shift(&client->output_buffer, (wssl_size_t)send_size);
+
   }
+*/
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

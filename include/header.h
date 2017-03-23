@@ -5,17 +5,17 @@ _INCLUDE_BEGIN_
 
 typedef struct wssl_header_field_t
 {
-  wssl_chain_t chain_link;
-  char*        key;
-  char*        value;
+  wssl_header_field_chain_t chain_link;
+  char*                     key;
+  char*                     value;
 } wssl_header_field_t;
 
 typedef struct wssl_header_t
 {
-  char*        method;
-  char*        uri;
-  char*        version;
-  wssl_chain_t fields;
+  char*                     method;
+  char*                     uri;
+  char*                     version;
+  wssl_header_field_chain_t fields;
 } wssl_header_t;
 
 _INCLUDE_END_
@@ -28,7 +28,7 @@ static inline void wssl_header_init
   header->method = WSSL_NULL;
   header->uri = WSSL_NULL;
   header->version = WSSL_NULL;
-  wssl_chain_init(&header->fields);
+  wssl_header_field_chain_init(&header->fields);
 }
 
 #define MAKE_HEADER_INSERT(what_member)                                                \
@@ -74,19 +74,9 @@ static inline wssl_result_t wssl_header_add_field
 
   header_field->value = WSSL_NULL;
 
-  wssl_chain_add_link_backward(&header->fields, &header_field->chain_link);
+  wssl_header_field_chain_add_link_backward(&header->fields, &header_field->chain_link);
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
-}
-
-static inline wssl_header_field_t* wssl_header_get_last_field
-(
-  _WSSL_IN_ const wssl_header_t* header
-)
-{
-  if(wssl_chain_is_empty(&header->fields))
-    return WSSL_NULL;
-  return (wssl_header_field_t*)header->fields.prev;
 }
 
 static inline wssl_result_t wssl_header_field_insert_value

@@ -4,7 +4,7 @@ _FUNCTION_
 wssl_size_t wssl_frame_get
 (
   _WSSL_MODIFY_       wssl_frame_t* frame,
-  _WSSL_IN_           wssl_octet_t* data,
+  _WSSL_MODIFY_       wssl_octet_t* data,
   _WSSL_IN_     const wssl_size_t   data_size
 )
 {
@@ -66,7 +66,9 @@ wssl_size_t wssl_frame_get
   frame->payload = &data[data_length];
   data_length += (wssl_size_t)frame->payload_size;
 
-  wssl_frame_mask_unmask(frame);
+  if(frame->masked)
+    for(i = 0; i < frame->payload_size; i++)
+      frame->payload[i] ^= frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
 
   return data_length;
 }

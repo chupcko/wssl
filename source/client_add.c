@@ -59,7 +59,7 @@ wssl_result_t wssl_client_add
   client->local_extra_data = WSSL_NULL;
 
   wssl_buffer_init(&client->input_buffer);
-  wssl_buffer_init(&client->output_buffer);
+  wssl_chunk_chain_init(&client->output_chunks);
 
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_NONE;
@@ -67,7 +67,7 @@ wssl_result_t wssl_client_add
   wssl_header_init(&client->header);
   wssl_frame_init(&client->frame);
 
-  wssl_chain_add_link_backward(&server->clients, &client->chain_link);
+  wssl_client_chain_add_link_backward(&server->clients, &client->chain_link);
 
   if(client->wssl->connect_callback != WSSL_CALLBACK_NONE)
     (*client->wssl->connect_callback)(client);

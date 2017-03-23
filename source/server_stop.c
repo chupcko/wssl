@@ -13,12 +13,12 @@ wssl_result_t wssl_server_stop
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "close", errno);
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
-  wssl_chain_t* client_link;
-  wssl_chain_t* client_link_next;
+  wssl_client_chain_t* client_link;
+  wssl_client_chain_t* client_link_next;
   wssl_client_t* client;
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients)
   {
-    client = (wssl_client_t*)client_link;
+    client = wssl_client_chain_entry(client_link);
     client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_STOPED;
     WSSL_CALL(wssl_client_delete(client));
   }

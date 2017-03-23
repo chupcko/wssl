@@ -11,7 +11,7 @@ void wssl_header_field_delete
   if(header_field->value != WSSL_NULL)
     free((void*)header_field->value);
 
-  wssl_chain_delete_link(&header_field->chain_link);
+  wssl_header_field_chain_delete_link(&header_field->chain_link);
 
   free((void*)header_field);
 }

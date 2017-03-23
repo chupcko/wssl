@@ -65,11 +65,13 @@ void wssl_client_dump
   }
   else
     fprintf(file, " none\n");
-  fprintf(file, INDENT_FORMAT "output_buffer:", INDENT(indent_level+1));
-  if(wssl_buffer_is_allocated(&client->output_buffer))
+  fprintf(file, INDENT_FORMAT "output_chunks:", INDENT(indent_level+1));
+  if(wssl_chunk_chain_is_not_empty(&client->output_chunks))
   {
     fprintf(file, "\n");
-    wssl_buffer_dump(&client->output_buffer, file, indent_level+2);
+    wssl_chunk_chain_t* chunk_link;
+    WSSL_CHAIN_FOR_EACH_LINK_FORWARD(chunk_link, &client->output_chunks)
+      wssl_buffer_dump(&wssl_chunk_chain_entry(chunk_link)->buffer, file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

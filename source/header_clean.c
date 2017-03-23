@@ -13,8 +13,8 @@ void wssl_header_clean
   if(header->method != WSSL_NULL)
     free((void*)header->version);
 
-  wssl_chain_t* header_field_link;
-  wssl_chain_t* header_field_link_next;
+  wssl_header_field_chain_t* header_field_link;
+  wssl_header_field_chain_t* header_field_link_next;
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(header_field_link, header_field_link_next, &header->fields)
-    wssl_header_field_delete((wssl_header_field_t*)header_field_link);
+    wssl_header_field_delete(wssl_header_field_chain_entry(header_field_link));
 }

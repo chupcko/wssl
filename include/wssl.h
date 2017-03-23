@@ -8,7 +8,7 @@ typedef struct wssl_t
   int                                   epoll_descriptor;
   char*                                 server_name;
   wssl_size_t                           buffer_size_in_octets;
-  wssl_ssize_t                          epoll_sleep_in_mseconds;
+  wssl_ssize_t                          sleep_in_mseconds;
   void*                                 global_extra_data;
   wssl_connect_callback_f*              connect_callback;
   wssl_disconnect_callback_f*           disconnect_callback;
@@ -21,8 +21,8 @@ typedef struct wssl_t
   wssl_tick_callback_f*                 tick_callback;
   unsigned int                          random_seed;
   wssl_id_t                             next_client_id;
-  wssl_chain_t                          servers;
-  wssl_chain_t                          clients_for_disconnecting;
+  wssl_server_chain_t                   servers;
+  wssl_client_chain_t                   clients_for_disconnecting;
 } wssl_t;
 
 #define WSSL_INIT_VALUE(what_name)                                                            \
@@ -30,7 +30,7 @@ typedef struct wssl_t
   .epoll_descriptor              = WSSL_NO_DESCRIPTOR,                                        \
   .server_name                   = WSSL_DEFAULT_SERVER_NAME,                                  \
   .buffer_size_in_octets         = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,                        \
-  .epoll_sleep_in_mseconds       = WSSL_DEFAULT_EPOLL_SLEEP_IN_MSECONDS,                      \
+  .sleep_in_mseconds             = WSSL_DEFAULT_SLEEP_IN_MSECONDS,                            \
   .global_extra_data             = WSSL_NULL,                                                 \
   .connect_callback              = WSSL_CALLBACK_NONE,                                        \
   .disconnect_callback           = WSSL_CALLBACK_NONE,                                        \
@@ -57,7 +57,7 @@ static inline void wssl_init
   wssl->epoll_descriptor              = WSSL_NO_DESCRIPTOR;
   wssl->server_name                   = WSSL_DEFAULT_SERVER_NAME;
   wssl->buffer_size_in_octets         = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,
-  wssl->epoll_sleep_in_mseconds       = WSSL_DEFAULT_EPOLL_SLEEP_IN_MSECONDS,
+  wssl->sleep_in_mseconds             = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
   wssl->global_extra_data             = WSSL_NULL;
   wssl->connect_callback              = WSSL_CALLBACK_NONE;
   wssl->disconnect_callback           = WSSL_CALLBACK_NONE;
@@ -70,8 +70,8 @@ static inline void wssl_init
   wssl->tick_callback                 = WSSL_CALLBACK_NONE;
   wssl->random_seed                   = 0;
   wssl_id_init(&wssl->next_client_id);
-  wssl_chain_init(&wssl->servers);
-  wssl_chain_init(&wssl->clients_for_disconnecting);
+  wssl_server_chain_init(&wssl->servers);
+  wssl_client_chain_init(&wssl->clients_for_disconnecting);
 }
 
 _INCLUDE_END_

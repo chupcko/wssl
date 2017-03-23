@@ -109,21 +109,12 @@ static inline void wssl_frame_free
   frame->payload_size = 0;
 }
 
-static inline void wssl_frame_mask_unmask
+static inline wssl_size_t wssl_frame_buffer_size
 (
-  _WSSL_MODIFY_ wssl_frame_t* frame
+  _WSSL_IN_ const wssl_frame_t* frame
 )
 {
-  if
-  (
-    frame->masked &&
-    frame->payload != WSSL_NULL
-  )
-  {
-    wssl_frame_size_t i;
-    for(i = 0; i < frame->payload_size; i++)
-      frame->payload[i] ^= frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
-  }
+  return 2+FRAME_LENGTH_LONG_LENGTH+WSSL_FRAME_MASKING_KEY_SIZE+(wssl_size_t)frame->payload_size;
 }
 
 #endif

@@ -57,12 +57,12 @@ void wssl_header_dump
     ),
     INDENT(indent_level+1)
   );
-  if(wssl_chain_is_not_empty(&header->fields))
+  if(wssl_header_field_chain_is_not_empty(&header->fields))
   {
     fprintf(file, "\n");
-    wssl_chain_t* header_field_link;
+    wssl_header_field_chain_t* header_field_link;
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(header_field_link, &header->fields)
-      wssl_header_field_dump((wssl_header_field_t*)header_field_link, file, indent_level+2);
+      wssl_header_field_dump(wssl_header_field_chain_entry(header_field_link), file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

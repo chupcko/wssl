@@ -44,8 +44,8 @@ wssl_result_t wssl_client_processing_header
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  wssl_buffer_t buffer;
-  WSSL_CALL(wssl_buffer_allocate(&buffer, client->wssl->buffer_size_in_octets));
+  WSSL_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets));
+  wssl_chunk_t* chunk = wssl_chunk_chain_get_last(&client->output_chunks);
 
   bool must_client_delete = false;
   char* sec_websocket_key;
@@ -66,7 +66,7 @@ wssl_result_t wssl_client_processing_header
     );
     wssl_buffer_printf
     (
-      &buffer,
+      &chunk->buffer,
       (
         "HTTP/1.1 101 Web Socket Protocol Handshake\r\n"
         "Upgrade: websocket\r\n"
@@ -83,7 +83,7 @@ wssl_result_t wssl_client_processing_header
   {
     wssl_buffer_printf
     (
-      &buffer,
+      &chunk->buffer,
       (
         "HTTP/1.1 400 Bad Request\r\n"
         "Server: %s\r\n"
@@ -95,10 +95,7 @@ wssl_result_t wssl_client_processing_header
     must_client_delete = true;
   }
 
-  wssl_result_t result = wssl_client_send(client, buffer.data, buffer.used);
-  wssl_buffer_free(&buffer);
-  if(wssl_result_is_not_ok(result))
-    return result;
+  WSSL_CALL(wssl_client_do_send(client));
   if
   (
     must_client_delete &&

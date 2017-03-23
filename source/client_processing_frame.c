@@ -21,7 +21,7 @@ wssl_result_t wssl_client_processing_frame
     case FRAME_OPCODE_CLOSE:
       if(client->wssl->receive_close_frame_callback != WSSL_CALLBACK_NONE)
         (*client->wssl->receive_close_frame_callback)(client);
-      wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_CLOSE, false, client->frame.payload, client->frame.payload_size);
+      wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_CLOSE, false, WSSL_NULL, 0);
       WSSL_CALL(wssl_client_send_frame(client, &frame));
       wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
       break;

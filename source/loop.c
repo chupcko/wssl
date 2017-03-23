@@ -10,6 +10,8 @@ wssl_result_t wssl_loop
   struct epoll_event events[EPOLL_EVENTS_SIZE];
   wssl_size_t event_index;
   wssl_epoll_data_t* epoll_data;
+  wssl_client_chain_t* client_link;
+  wssl_client_chain_t* client_link_next;
 
   wssl_generate_random_seed(wssl);
 
@@ -25,7 +27,7 @@ wssl_result_t wssl_loop
       wssl->epoll_descriptor,
       events,
       EPOLL_EVENTS_SIZE,
-      (int)wssl->epoll_sleep_in_mseconds
+      (int)wssl->sleep_in_mseconds
     );
     if(events_number < 0)
       switch(errno)
@@ -61,10 +63,8 @@ wssl_result_t wssl_loop
     )
       break;
 
-    wssl_chain_t* client_link;
-    wssl_chain_t* client_link_next;
     WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_for_disconnecting)
-      WSSL_CALL(wssl_client_delete((wssl_client_t*)client_link));
+      WSSL_CALL(wssl_client_delete(wssl_client_chain_entry(client_link)));
   }
 
   WSSL_CALL(wssl_servers_stop(wssl));

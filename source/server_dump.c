@@ -35,12 +35,12 @@ void wssl_server_dump
     ),
     INDENT(indent_level+1)
   );
-  if(wssl_chain_is_not_empty(&server->clients))
+  if(wssl_client_chain_is_not_empty(&server->clients))
   {
     fprintf(file, "\n");
-    wssl_chain_t* client_link;
+    wssl_client_chain_t* client_link;
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(client_link, &server->clients)
-      wssl_client_dump((wssl_client_t*)client_link, file, indent_level+2);
+      wssl_client_dump(wssl_client_chain_entry(client_link), file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

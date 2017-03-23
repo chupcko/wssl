@@ -3,10 +3,10 @@
 _FUNCTION_
 wssl_result_t wssl_frame_put
 (
-  _WSSL_MODIFY_       wssl_frame_t* frame,
-  _WSSL_OUT_          wssl_octet_t* data,
-  _WSSL_IN_     const wssl_size_t   data_size,
-  _WSSL_OUT_          wssl_size_t*  data_length
+  _WSSL_IN_  const wssl_frame_t* frame,
+  _WSSL_OUT_       wssl_octet_t* data,
+  _WSSL_IN_  const wssl_size_t   data_size,
+  _WSSL_OUT_       wssl_size_t*  data_length
 )
 {
   wssl_frame_size_t payload_size;
@@ -20,13 +20,6 @@ wssl_result_t wssl_frame_put
   if(frame->fin)
     data[*data_length] |= 0x80;
   ++*data_length;
-
-  if(frame->payload_size <= FRAME_PAYLOAD_SIZE_SHORT)
-    frame->length = (wssl_octet_t)frame->payload_size;
-  else if(frame->payload_size <= FRAME_PAYLOAD_SIZE_MEDIUM)
-    frame->length = FRAME_LENGTH_MEDIUM_CODE;
-  else
-    frame->length = FRAME_LENGTH_LONG_CODE;
 
   if(*data_length >= data_size)
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
@@ -76,11 +69,12 @@ wssl_result_t wssl_frame_put
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "frame_put", 0);
     if(*data_length+(wssl_size_t)frame->payload_size > data_size)
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
-    memcpy((void*)&data[*data_length], (void*)frame->payload, (size_t)frame->payload_size);
-    frame->payload = &data[*data_length];
+    if(frame->masked)
+      for(i = 0; i < frame->payload_size; i++)
+        data[*data_length+i] = frame->payload[i]^frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
+    else
+      memcpy((void*)&data[*data_length], (void*)frame->payload, (size_t)frame->payload_size);
     *data_length += (wssl_size_t)frame->payload_size;
-
-    wssl_frame_mask_unmask(frame);
   }
 
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);

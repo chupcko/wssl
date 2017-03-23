@@ -1,5 +1,4 @@
 -pravi buffer za svaki send, i drzi listu neposlatih buffera
--kod primanja frame-a kopiraj tako ako nema fin
 
 -id proveri koncpet i napravi ispis dobar
 -eventualno da size i ssize budu isti

@@ -68,22 +68,22 @@ void wssl_dump
     ),
     INDENT(indent_level+1)
   );
-  if(wssl_chain_is_not_empty(&wssl->servers))
+  if(wssl_server_chain_is_not_empty(&wssl->servers))
   {
     fprintf(file, "\n");
-    wssl_chain_t* server_link;
+    wssl_server_chain_t* server_link;
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
-      wssl_server_dump((wssl_server_t*)server_link, file, indent_level+2);
+      wssl_server_dump(wssl_server_chain_entry(server_link), file, indent_level+2);
   }
   else
     fprintf(file, " none\n");
   fprintf(file, INDENT_FORMAT "clients_for_disconnecting:", INDENT(indent_level+1));
-  if(wssl_chain_is_not_empty(&wssl->clients_for_disconnecting))
+  if(wssl_client_chain_is_not_empty(&wssl->clients_for_disconnecting))
   {
     fprintf(file, "\n");
-    wssl_chain_t* client_link;
+    wssl_client_chain_t* client_link;
     WSSL_CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_for_disconnecting)
-      wssl_client_dump((wssl_client_t*)client_link, file, indent_level+2);
+      wssl_client_dump(wssl_client_chain_entry(client_link), file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

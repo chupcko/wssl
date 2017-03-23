@@ -18,14 +18,17 @@ wssl_result_t wssl_client_delete
 
   if(wssl_buffer_is_allocated(&client->input_buffer))
     wssl_buffer_free(&client->input_buffer);
-  if(wssl_buffer_is_allocated(&client->output_buffer))
-    wssl_buffer_free(&client->output_buffer);
+
+  wssl_chunk_chain_t* chunk_link;
+  wssl_chunk_chain_t* chunk_link_next;
+  WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(chunk_link, chunk_link_next, &client->output_chunks)
+    wssl_chunk_delete(wssl_chunk_chain_entry(chunk_link));
 
   wssl_header_clean(&client->header);
   if(wssl_frame_is_allocated(&client->frame))
     wssl_frame_free(&client->frame);
 
-  wssl_chain_delete_link(&client->chain_link);
+  wssl_client_chain_delete_link(&client->chain_link);
 
   free((void*)client);
 

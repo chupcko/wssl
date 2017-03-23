@@ -22,7 +22,7 @@ void wssl_buffer_dump
   {
     fprintf(file, "\"");
     wssl_size_t data_index;
-    for(data_index = 0; data_index < buffer->used; data_index++)
+    for(data_index = buffer->begin; data_index < buffer->end; data_index++)
     {
       if(data_index != 0)
         fprintf(file, " ");
@@ -38,9 +38,11 @@ void wssl_buffer_dump
     (
       "\n"
       INDENT_FORMAT "size: %d\n"
-      INDENT_FORMAT "used: %d\n"
+      INDENT_FORMAT "begin: %d\n"
+      INDENT_FORMAT "end: %d\n"
     ),
     INDENT(indent_level+1), buffer->size,
-    INDENT(indent_level+1), buffer->used
+    INDENT(indent_level+1), buffer->begin,
+    INDENT(indent_level+1), buffer->end
   );
 }
