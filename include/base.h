@@ -25,6 +25,6 @@ typedef wssl_octet_t wssl_sha1_result_t[SHA1_RESULT_SIZE_IN_OCTETS];
 
 #define INDENT_SIZE_IN_CHAR 2
 #define INDENT_FORMAT       "%*s"
-#define INDENT(what_level)  ((what_level)*INDENT_SIZE_IN_CHAR), ""
+#define INDENT(what_level)  (int)((what_level)*INDENT_SIZE_IN_CHAR), ""
 
 #endif

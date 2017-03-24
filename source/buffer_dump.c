@@ -37,9 +37,9 @@ void wssl_buffer_dump
     file,
     (
       "\n"
-      INDENT_FORMAT "size: %d\n"
-      INDENT_FORMAT "begin: %d\n"
-      INDENT_FORMAT "end: %d\n"
+      INDENT_FORMAT "size: %zu\n"
+      INDENT_FORMAT "begin: %zu\n"
+      INDENT_FORMAT "end: %zu\n"
     ),
     INDENT(indent_level+1), buffer->size,
     INDENT(indent_level+1), buffer->begin,

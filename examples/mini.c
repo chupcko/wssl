@@ -28,7 +28,7 @@ void on_client(wssl_client_t* client)
   #define DATA_SIZE 64
   char data[DATA_SIZE];
 
-  snprintf(data, DATA_SIZE, "t=%d", time(NULL));
+  snprintf(data, DATA_SIZE, "t=%ld", (long)time(NULL));
   wssl_client_send_text(client, data);
   #undef DATA_SIZE
 }
