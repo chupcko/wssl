@@ -1,6 +1,7 @@
 #include "main.h"
 
-static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_space
+static inline
+wssl_ssize_t wssl_client_processing_recv_find_word_until_space
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -22,7 +23,8 @@ static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_space
   return data_size;
 }
 
-static inline wssl_size_t wssl_client_processing_recv_find_word_until_crlf
+static inline
+wssl_size_t wssl_client_processing_recv_find_word_until_crlf
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -40,7 +42,8 @@ static inline wssl_size_t wssl_client_processing_recv_find_word_until_crlf
   return data_size;
 }
 
-static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
+static inline
+wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -63,7 +66,8 @@ static inline wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
   return data_size;
 }
 
-static inline wssl_ssize_t wssl_client_processing_recv_eat_spaces
+static inline
+wssl_ssize_t wssl_client_processing_recv_eat_spaces
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -87,7 +91,8 @@ static inline wssl_ssize_t wssl_client_processing_recv_eat_spaces
   return data_size;
 }
 
-static inline wssl_size_t wssl_client_processing_recv_count_spaces
+static inline
+wssl_size_t wssl_client_processing_recv_count_spaces
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size
@@ -107,7 +112,8 @@ static inline wssl_size_t wssl_client_processing_recv_count_spaces
   return data_size;
 }
 
-static inline wssl_ssize_t wssl_client_processing_recv_eat_crlf
+static inline
+wssl_ssize_t wssl_client_processing_recv_eat_crlf
 (
   _WSSL_IN_ const char*       data,
   _WSSL_IN_ const wssl_size_t data_size

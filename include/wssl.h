@@ -49,7 +49,8 @@ typedef struct wssl_t
 
 #define WSSL_DECLARE(what_name) wssl_t what_name = WSSL_INIT_VALUE(what_name)
 
-static inline void wssl_init
+static inline
+void wssl_init
 (
   _WSSL_MODIFY_ wssl_t* wssl
 )
@@ -76,7 +77,8 @@ static inline void wssl_init
 
 _INCLUDE_END_
 
-static inline void wssl_generate_random_seed
+static inline
+void wssl_generate_random_seed
 (
   _WSSL_MODIFY_ wssl_t* wssl
 )
@@ -84,7 +86,8 @@ static inline void wssl_generate_random_seed
   wssl->random_seed = (unsigned int)time(NULL);
 }
 
-static inline wssl_id_t wssl_get_next_client_id
+static inline
+wssl_id_t wssl_get_next_client_id
 (
   _WSSL_MODIFY_ wssl_t* wssl
 )

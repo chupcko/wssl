@@ -13,7 +13,8 @@ typedef struct wssl_buffer_t
 
 _INCLUDE_END_
 
-static inline void wssl_buffer_init
+static inline
+void wssl_buffer_init
 (
   _WSSL_MODIFY_ wssl_buffer_t* buffer
 )
@@ -24,7 +25,8 @@ static inline void wssl_buffer_init
   buffer->end = 0;
 }
 
-static inline wssl_result_t wssl_buffer_allocate
+static inline
+wssl_result_t wssl_buffer_allocate
 (
   _WSSL_MODIFY_       wssl_buffer_t* buffer,
   _WSSL_IN_     const wssl_size_t    size
@@ -39,7 +41,8 @@ static inline wssl_result_t wssl_buffer_allocate
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
-static inline bool wssl_buffer_is_allocated
+static inline
+bool wssl_buffer_is_allocated
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -47,7 +50,8 @@ static inline bool wssl_buffer_is_allocated
   return buffer->data != WSSL_NULL;
 }
 
-static inline bool wssl_buffer_is_not_allocated
+static inline
+bool wssl_buffer_is_not_allocated
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -55,7 +59,8 @@ static inline bool wssl_buffer_is_not_allocated
   return buffer->data == WSSL_NULL;
 }
 
-static inline bool wssl_buffer_is_empty
+static inline
+bool wssl_buffer_is_empty
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -63,7 +68,8 @@ static inline bool wssl_buffer_is_empty
   return buffer->begin >= buffer->end;
 }
 
-static inline bool wssl_buffer_is_not_empty
+static inline
+bool wssl_buffer_is_not_empty
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -71,7 +77,8 @@ static inline bool wssl_buffer_is_not_empty
   return buffer->begin < buffer->end;
 }
 
-static inline bool wssl_buffer_is_full
+static inline
+bool wssl_buffer_is_full
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -79,7 +86,8 @@ static inline bool wssl_buffer_is_full
   return buffer->end >= buffer->size;
 }
 
-static inline bool wssl_buffer_is_not_full
+static inline
+bool wssl_buffer_is_not_full
 (
   _WSSL_IN_ const wssl_buffer_t* buffer
 )
@@ -87,7 +95,8 @@ static inline bool wssl_buffer_is_not_full
   return buffer->end < buffer->size;
 }
 
-static inline void wssl_buffer_free
+static inline
+void wssl_buffer_free
 (
   _WSSL_MODIFY_ wssl_buffer_t* buffer
 )
@@ -99,7 +108,8 @@ static inline void wssl_buffer_free
   buffer->end = 0;
 }
 
-static inline void wssl_buffer_printf
+static inline
+void wssl_buffer_printf
 (
   _WSSL_MODIFY_       wssl_buffer_t* buffer,
   _WSSL_IN_     const char*          format,
@@ -118,7 +128,8 @@ static inline void wssl_buffer_printf
   va_end(arguments);
 }
 
-static inline wssl_result_t wssl_buffer_append
+static inline
+wssl_result_t wssl_buffer_append
 (
   _WSSL_MODIFY_       wssl_buffer_t* buffer,
   _WSSL_IN_     const wssl_octet_t*  data,
@@ -137,7 +148,8 @@ static inline wssl_result_t wssl_buffer_append
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
-static inline void wssl_buffer_shift_left
+static inline
+void wssl_buffer_shift_left
 (
   _WSSL_MODIFY_ wssl_buffer_t* buffer
 )

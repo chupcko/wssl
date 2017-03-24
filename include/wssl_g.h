@@ -2,7 +2,8 @@
 #define _WSSL_G_H_
 
 #define MAKE_WSSL_SET(what_type, what_name) \
-static inline void wssl_set_##what_name     \
+static inline                               \
+void wssl_set_##what_name                   \
 (                                           \
   _WSSL_MODIFY_ wssl_t*   wssl,             \
   _WSSL_IN_     what_type what_name         \

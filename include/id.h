@@ -15,7 +15,8 @@ typedef struct wssl_id_t
   .suffix = 0              \
 }                          \
 
-static inline void wssl_id_init
+static inline
+void wssl_id_init
 (
   _WSSL_MODIFY_ wssl_id_t* id
 )
@@ -24,7 +25,8 @@ static inline void wssl_id_init
   id->suffix = 0;
 }
 
-static inline bool wssl_id_is_equal
+static inline
+bool wssl_id_is_equal
 (
   _WSSL_IN_ const wssl_id_t* id_1,
   _WSSL_IN_ const wssl_id_t* id_2
@@ -35,7 +37,8 @@ static inline bool wssl_id_is_equal
     id_1->suffix == id_2->suffix;
 }
 
-static inline bool wssl_id_is_not_equal
+static inline
+bool wssl_id_is_not_equal
 (
   _WSSL_IN_ const wssl_id_t* id_1,
   _WSSL_IN_ const wssl_id_t* id_2
@@ -46,7 +49,8 @@ static inline bool wssl_id_is_not_equal
     id_1->suffix != id_2->suffix;
 }
 
-static inline void wssl_id_dump
+static inline
+void wssl_id_dump
 (
   _WSSL_IN_ const wssl_id_t* id,
   _WSSL_IN_       FILE*      file
@@ -57,7 +61,8 @@ static inline void wssl_id_dump
 
 _INCLUDE_END_
 
-static inline void wssl_id_new
+static inline
+void wssl_id_new
 (
   _WSSL_MODIFY_ wssl_id_t* id
 )
@@ -65,7 +70,8 @@ static inline void wssl_id_new
   id->prefix++;
 }
 
-static inline void wssl_id_next
+static inline
+void wssl_id_next
 (
   _WSSL_MODIFY_ wssl_id_t* id
 )

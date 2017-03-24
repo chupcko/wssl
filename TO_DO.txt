@@ -1,5 +1,3 @@
--pravi buffer za svaki send, i drzi listu neposlatih buffera
-
 -id proveri koncpet i napravi ispis dobar
 -eventualno da size i ssize budu isti
 -test

@@ -1,6 +1,7 @@
 #include "main.h"
 
-static inline wssl_result_t wssl_base64_encode_put
+static inline
+wssl_result_t wssl_base64_encode_put
 (
   _WSSL_MODIFY_       char*        output,
   _WSSL_MODIFY_       wssl_size_t* output_index,

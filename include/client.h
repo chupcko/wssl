@@ -23,7 +23,8 @@ typedef struct wssl_client_t
   wssl_frame_t                    frame;
 } wssl_client_t;
 
-static inline void wssl_client_set_local_extra_data
+static inline
+void wssl_client_set_local_extra_data
 (
   _WSSL_MODIFY_ wssl_client_t* client,
   _WSSL_IN_     void*          local_extra_data
@@ -32,7 +33,8 @@ static inline void wssl_client_set_local_extra_data
   client->local_extra_data = local_extra_data;
 }
 
-static inline bool wssl_client_is_for_disconnecting
+static inline
+bool wssl_client_is_for_disconnecting
 (
   _WSSL_IN_ const wssl_client_t* client
 )
@@ -40,7 +42,8 @@ static inline bool wssl_client_is_for_disconnecting
   return client->state == WSSL_CLIENT_STATE_FOR_DISCONNECTING;
 }
 
-static inline bool wssl_client_is_not_for_disconnecting
+static inline
+bool wssl_client_is_not_for_disconnecting
 (
   _WSSL_IN_ const wssl_client_t* client
 )

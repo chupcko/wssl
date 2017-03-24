@@ -12,7 +12,8 @@ typedef struct wssl_chunk_t
 
 _INCLUDE_END_
 
-static inline void wssl_chunk_delete
+static inline
+void wssl_chunk_delete
 (
   _WSSL_MODIFY_ wssl_chunk_t* chunk
 )

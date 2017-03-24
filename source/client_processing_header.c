@@ -1,6 +1,7 @@
 #include "main.h"
 
-static inline bool wssl_client_processing_header_check
+static inline
+bool wssl_client_processing_header_check
 (
   _WSSL_MODIFY_ wssl_client_t* client,
   _WSSL_OUT_    char**         sec_websocket_key

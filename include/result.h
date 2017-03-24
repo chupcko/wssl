@@ -10,7 +10,8 @@ typedef struct wssl_result_t
   int                last_errno;
 } wssl_result_t;
 
-static inline bool wssl_result_is_ok
+static inline
+bool wssl_result_is_ok
 (
   wssl_result_t result
 )
@@ -18,7 +19,8 @@ static inline bool wssl_result_is_ok
   return result.code == WSSL_RESULT_CODE_OK;
 }
 
-static inline bool wssl_result_is_not_ok
+static inline
+bool wssl_result_is_not_ok
 (
   wssl_result_t result
 )

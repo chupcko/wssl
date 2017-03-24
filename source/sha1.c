@@ -16,7 +16,8 @@ typedef uint64_t sha1_length_t;
 typedef wssl_octet_t sha1_chunk_t[SHA1_CHUNK_SIZE_IN_OCTETS];
 typedef sha1_word_t sha1_intermediate_result_t[SHA1_RESULT_SIZE_IN_WORDS];
 
-static inline sha1_word_t sha1_word_rotate_left
+static inline
+sha1_word_t sha1_word_rotate_left
 (
   _WSSL_IN_ const sha1_word_t word,
   _WSSL_IN_ const wssl_size_t count
@@ -25,7 +26,8 @@ static inline sha1_word_t sha1_word_rotate_left
   return (word<<count)|(word>>(SHA1_WORD_SIZE_IN_BITS-count));
 }
 
-static void sha1_processing_chunk
+static
+void sha1_processing_chunk
 (
   _WSSL_IN_  const sha1_chunk_t               chunk,
   _WSSL_OUT_       sha1_intermediate_result_t intermediate_result

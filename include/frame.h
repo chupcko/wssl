@@ -33,7 +33,8 @@ _INCLUDE_END_
 #define FRAME_PAYLOAD_SIZE_MEDIUM  0xffff
 #define FRAME_PAYLOAD_SIZE_SHORT   0x7d
 
-static inline void wssl_frame_init
+static inline
+void wssl_frame_init
 (
   _WSSL_MODIFY_ wssl_frame_t* frame
 )
@@ -46,7 +47,8 @@ static inline void wssl_frame_init
   frame->payload_size = 0;
 }
 
-static inline wssl_result_t wssl_frame_allocate
+static inline
+wssl_result_t wssl_frame_allocate
 (
   _WSSL_MODIFY_ wssl_frame_t* frame
 )
@@ -60,7 +62,8 @@ static inline wssl_result_t wssl_frame_allocate
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
-static inline wssl_result_t wssl_frame_reallocate
+static inline
+wssl_result_t wssl_frame_reallocate
 (
   _WSSL_MODIFY_       wssl_frame_t* frame_destination,
   _WSSL_IN_     const wssl_frame_t* frame_source
@@ -83,7 +86,8 @@ static inline wssl_result_t wssl_frame_reallocate
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
-static inline bool wssl_frame_is_allocated
+static inline
+bool wssl_frame_is_allocated
 (
   _WSSL_IN_ const wssl_frame_t* frame
 )
@@ -91,7 +95,8 @@ static inline bool wssl_frame_is_allocated
   return frame->payload != WSSL_NULL;
 }
 
-static inline bool wssl_frame_is_not_allocated
+static inline
+bool wssl_frame_is_not_allocated
 (
   _WSSL_IN_ const wssl_frame_t* frame
 )
@@ -99,7 +104,8 @@ static inline bool wssl_frame_is_not_allocated
   return frame->payload == WSSL_NULL;
 }
 
-static inline void wssl_frame_free
+static inline
+void wssl_frame_free
 (
   _WSSL_MODIFY_ wssl_frame_t* frame
 )
@@ -109,7 +115,8 @@ static inline void wssl_frame_free
   frame->payload_size = 0;
 }
 
-static inline wssl_size_t wssl_frame_buffer_size
+static inline
+wssl_size_t wssl_frame_buffer_size
 (
   _WSSL_IN_ const wssl_frame_t* frame
 )

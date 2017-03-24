@@ -9,7 +9,8 @@ typedef struct what_type_chain                                            \
   struct what_type_chain* next;                                           \
 } what_type_chain;                                                        \
                                                                           \
-static inline void what_prefix##_chain_init                               \
+static inline                                                             \
+void what_prefix##_chain_init                                             \
 (                                                                         \
   _WSSL_MODIFY_ what_type_chain* chain                                    \
 )                                                                         \
@@ -20,7 +21,8 @@ static inline void what_prefix##_chain_init                               \
 
 #define MAKE_CHAIN(what_prefix, what_type_chain, what_type_entry) \
                                                                   \
-static inline void what_prefix##_chain_add_link_forward           \
+static inline                                                     \
+void what_prefix##_chain_add_link_forward                         \
 (                                                                 \
   _WSSL_MODIFY_ what_type_chain* link,                            \
   _WSSL_MODIFY_ what_type_chain* new                              \
@@ -32,7 +34,8 @@ static inline void what_prefix##_chain_add_link_forward           \
   link->next = new;                                               \
 }                                                                 \
                                                                   \
-static inline void what_prefix##_chain_add_link_backward          \
+static inline                                                     \
+void what_prefix##_chain_add_link_backward                        \
 (                                                                 \
   _WSSL_MODIFY_ what_type_chain* link,                            \
   _WSSL_MODIFY_ what_type_chain* new                              \
@@ -44,7 +47,8 @@ static inline void what_prefix##_chain_add_link_backward          \
   link->prev = new;                                               \
 }                                                                 \
                                                                   \
-static inline bool what_prefix##_chain_is_empty                   \
+static inline                                                     \
+bool what_prefix##_chain_is_empty                                 \
 (                                                                 \
   _WSSL_IN_ const what_type_chain* chain                          \
 )                                                                 \
@@ -54,7 +58,8 @@ static inline bool what_prefix##_chain_is_empty                   \
     chain == chain->next;                                         \
 }                                                                 \
                                                                   \
-static inline bool what_prefix##_chain_is_not_empty               \
+static inline                                                     \
+bool what_prefix##_chain_is_not_empty                             \
 (                                                                 \
   _WSSL_IN_ const what_type_chain* chain                          \
 )                                                                 \
@@ -64,7 +69,8 @@ static inline bool what_prefix##_chain_is_not_empty               \
     chain != chain->next;                                         \
 }                                                                 \
                                                                   \
-static inline void what_prefix##_chain_delete_link                \
+static inline                                                     \
+void what_prefix##_chain_delete_link                              \
 (                                                                 \
   _WSSL_MODIFY_ what_type_chain* link                             \
 )                                                                 \
@@ -78,7 +84,8 @@ static inline void what_prefix##_chain_delete_link                \
   }                                                               \
 }                                                                 \
                                                                   \
-static inline what_type_entry* what_prefix##_chain_entry          \
+static inline                                                     \
+what_type_entry* what_prefix##_chain_entry                        \
 (                                                                 \
   _WSSL_IN_ what_type_chain* link                                 \
 )                                                                 \
@@ -86,7 +93,8 @@ static inline what_type_entry* what_prefix##_chain_entry          \
   return (what_type_entry*)link;                                  \
 }                                                                 \
                                                                   \
-static inline what_type_entry* what_prefix##_chain_get_first      \
+static inline                                                     \
+what_type_entry* what_prefix##_chain_get_first                    \
 (                                                                 \
    _WSSL_IN_ what_type_chain* chain                               \
 )                                                                 \
@@ -96,7 +104,8 @@ static inline what_type_entry* what_prefix##_chain_get_first      \
   return what_prefix##_chain_entry(chain->next);                  \
 }                                                                 \
                                                                   \
-static inline what_type_entry* what_prefix##_chain_get_last       \
+static inline                                                     \
+what_type_entry* what_prefix##_chain_get_last                     \
 (                                                                 \
   _WSSL_IN_ what_type_chain* chain                                \
 )                                                                 \

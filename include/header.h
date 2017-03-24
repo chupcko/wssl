@@ -20,7 +20,8 @@ typedef struct wssl_header_t
 
 _INCLUDE_END_
 
-static inline void wssl_header_init
+static inline
+void wssl_header_init
 (
   _WSSL_MODIFY_ wssl_header_t* header
 )
@@ -32,7 +33,8 @@ static inline void wssl_header_init
 }
 
 #define MAKE_HEADER_INSERT(what_member)                                                \
-static inline wssl_result_t wssl_header_insert_##what_member                           \
+static inline                                                                          \
+wssl_result_t wssl_header_insert_##what_member                                         \
 (                                                                                      \
   _WSSL_MODIFY_ wssl_header_t* header,                                                 \
   _WSSL_IN_     char*          data,                                                   \
@@ -52,7 +54,8 @@ MAKE_HEADER_INSERT(uri)
 MAKE_HEADER_INSERT(version)
 #undef MAKE_HEADER_INSERT
 
-static inline wssl_result_t wssl_header_add_field
+static inline
+wssl_result_t wssl_header_add_field
 (
   _WSSL_MODIFY_ wssl_header_t* header,
   _WSSL_IN_     char*          data,
@@ -79,7 +82,8 @@ static inline wssl_result_t wssl_header_add_field
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
-static inline wssl_result_t wssl_header_field_insert_value
+static inline
+wssl_result_t wssl_header_field_insert_value
 (
   _WSSL_MODIFY_ wssl_header_field_t* header_field,
   _WSSL_IN_     char*                data,
