@@ -57,6 +57,11 @@ typedef bool wssl_tick_callback_f
   _WSSL_MODIFY_ struct wssl_t*
 );
 
+typedef void wssl_for_each_client_callback_f
+(
+  _WSSL_MODIFY_ wssl_client_t*;
+);
+
 #define WSSL_CALLBACK_NONE NULL
 
 _INCLUDE_END_

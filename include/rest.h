@@ -1,6 +1,28 @@
 #ifndef _REST_H_
 #define _REST_H_
 
+_INCLUDE_BEGIN_
+
+static inline
+void wssl_result_dump
+(
+  _WSSL_IN_ const wssl_result_t result,
+  _WSSL_IN_       FILE*         file
+)
+{
+  fprintf
+  (
+    file,
+    "\"%s\" on \"%s\" with %d:\"%s\"\n",
+    wssl_result_get_code_string(result),
+    result.where,
+    result.last_errno,
+    strerror(result.last_errno)
+  );
+}
+
+_INCLUDE_END_
+
 static inline
 const char* wssl_get_bool_string
 (

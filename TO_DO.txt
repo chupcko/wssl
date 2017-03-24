@@ -1,5 +1,7 @@
+-proveri spisak nepotrebnih funkcija
 -id proveri koncpet i napravi ispis dobar
 -eventualno da size i ssize budu isti
 -test
 -client last time
 -dodaj string sa duzinom
+-da mogu da se registruju funkcije koje ce ici na sve konekcije po timeoutu

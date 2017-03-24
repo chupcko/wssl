@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "wssl.h"
 
@@ -18,20 +19,16 @@ do                                        \
 }                                         \
 while(false)                              \
 
-#define CALL(...)                            \
-do                                           \
-{                                            \
-  wssl_result_t _result_ = (__VA_ARGS__);    \
-  if(wssl_result_is_not_ok(_result_))        \
-    ERROR                                    \
-    (                                        \
-      "\"%s\" on \"%s\" with %d:\"%s\"\n",   \
-      wssl_result_get_code_string(_result_), \
-      _result_.where,                        \
-      _result_.last_errno,                   \
-      strerror(_result_.last_errno)          \
-    );                                       \
-}                                            \
-while(false)                                 \
+#define CALL(...)                         \
+do                                        \
+{                                         \
+  wssl_result_t _result_ = (__VA_ARGS__); \
+  if(wssl_result_is_not_ok(_result_))     \
+  {                                       \
+    wssl_result_dump(_result_, stderr);   \
+    exit(EXIT_FAILURE);                   \
+  }                                       \
+}                                         \
+while(false)                              \
 
 #endif

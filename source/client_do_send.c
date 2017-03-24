@@ -11,13 +11,14 @@ wssl_result_t wssl_client_do_send_set_epoll_event
     events &= ~EPOLLOUT;
   else
     events |= EPOLLOUT;
-  
+
   if(client->epoll_event.events != events)
   {
     client->epoll_event.events = events;
     if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_MOD, client->socket_descriptor, &client->epoll_event) < 0)
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_ctl", errno);
   }
+
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
@@ -68,9 +69,10 @@ wssl_result_t wssl_client_do_send
       }
       chunk->buffer.begin += (wssl_size_t)send_size;
     }
+    wssl_chunk_delete(chunk);
   }
-  
+
   WSSL_CALL(wssl_client_do_send_set_epoll_event(client));
-  
+
   return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }

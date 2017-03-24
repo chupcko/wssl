@@ -25,11 +25,11 @@ clean:
 	rm -r -f $(PROTOTYPE) $(OBJECTS) $(TARGET) $(OUT_DIR) core
 
 $(OUT_DIR): $(TARGET)
-	../tool/make_out
+	../tools/make_out
 	touch $(OUT_DIR)
 
 $(PROTOTYPE): $(SOURCES)
-	../tool/update_prototype
+	../tools/update_prototype
 
 $(TARGET): $(OBJECTS)
 	$(ARCHIVER) $(ARCHIVER_FLAGS) $@ $^

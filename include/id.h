@@ -56,7 +56,13 @@ void wssl_id_dump
   _WSSL_IN_       FILE*      file
 )
 {
-  fprintf(file, "%" PRIu16 ":%" PRIu32, id->prefix, id->suffix);
+  fprintf
+  (
+    file,
+    "%" PRIu16 ":%" PRIu32,
+    id->prefix,
+    id->suffix
+  );
 }
 
 _INCLUDE_END_

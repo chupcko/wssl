@@ -27,30 +27,57 @@
     /* ]]> */</style>
     <script type="text/javascript">/* <![CDATA[ */
 
-      var address = undefined;
-      var message = undefined;
-      var output = undefined;
+      var addressId = undefined;
+      var connectId = undefined;
+      var messageId = undefined;
+      var sendId = undefined;
+      var disconnectId = undefined;
+      var outputId = undefined;
       var webSocket = undefined;
 
       function init()
       {
-        address = document.getElementById('address');
-        message = document.getElementById('message');
-        output = document.getElementById('output');
+        addressId = document.getElementById('address');
+        connectId = document.getElementById('connect');
+        messageId = document.getElementById('message');
+        sendId = document.getElementById('send');
+        disconnectId = document.getElementById('disconnect');
+        outputId = document.getElementById('output');
+        abled();
+      }
+
+      function abled()
+      {
+        if(webSocket === undefined)
+        {
+          addressId.disabled = false;
+          connectId.disabled = false;
+          messageId.disabled = true;
+          sendId.disabled = true;
+          disconnectId.disabled = true;
+        }
+        else
+        {
+          addressId.disabled = true;
+          connectId.disabled = true;
+          messageId.disabled = false;
+          sendId.disabled = false;
+          disconnectId.disabled = false;
+        }
       }
 
       function write(message)
       {
         var newData = document.createElement('p');
         newData.innerHTML = message;
-        output.insertBefore(newData, output.firstChild);
+        outputId.insertBefore(newData, outputId.firstChild);
       }
 
       function connect()
       {
         if(webSocket !== undefined)
           write('ERROR: already connected');
-        webSocket = new WebSocket(address.value);
+        webSocket = new WebSocket(addressId.value);
         webSocket.onopen = function(event)
         {
           write("onOpen");
@@ -59,6 +86,7 @@
         {
           write("onClose");
           webSocket = undefined;
+          abled();
         };
         webSocket.onmessage = function(event)
         {
@@ -68,14 +96,15 @@
         {
           write('onError: '+event.type);
         };
+        abled();
       }
 
       function send()
       {
         if(webSocket === undefined)
           write('ERROR: not connected');
-        webSocket.send(message.value);
-        write('Sent: '+message.value);
+        webSocket.send(messageId.value);
+        write('Sent: '+messageId.value);
       }
 
       function disconnect()
@@ -94,10 +123,10 @@
   </head>
   <body onload="init();">
     <input type="text" id="address" value="ws://127.0.0.1:5000/"/>
-    <button onclick="connect();">Connect</button>
+    <button id="connect" onclick="connect();">Connect</button>
     <input type="text" id="message" value="test"/>
-    <button onclick="send();">Send</button>
-    <button onclick="disconnect();">Disconnect</button>
+    <button id="send" onclick="send();">Send</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
     <button onclick="clean();">Clean</button>
     <div id="output" class="box"></div>
   </body>

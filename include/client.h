@@ -51,6 +51,28 @@ bool wssl_client_is_not_for_disconnecting
   return client->state != WSSL_CLIENT_STATE_FOR_DISCONNECTING;
 }
 
+static inline
+bool wssl_client_is_in_frame_processing
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return
+    client->state == WSSL_CLIENT_STATE_WAIT_FRAME ||
+    client->state == WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
+}
+
+static inline
+bool wssl_client_is_not_in_frame_processing
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return
+    client->state != WSSL_CLIENT_STATE_WAIT_FRAME &&
+    client->state != WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
+}
+
 _INCLUDE_END_
 
 #endif

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WSSL Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">/* <![CDATA[ */
+
+      body
+      {
+        background-color: white;
+        color: black;
+        font-family: "lucida grande", tahoma, verdana, arial, helvetica, sans-serif;
+        font-size: 16px;
+        padding: 1em;
+      }
+
+      .left
+      {
+        border-color: black;
+        border-style: solid;
+        border-width: 2px;
+        float: left;
+        margin: 6px;
+        padding: 6px;
+      }
+
+      .box
+      {
+        border-color: black;
+        border-style: solid;
+        border-width: 1px;
+        margin: 3px;
+        padding: 3px;
+      }
+
+      .source
+      {
+        border-color: black;
+        border-style: solid;
+        border-width: 1px;
+        font-size: 12px;
+        margin: 3px;
+        padding: 3px;
+      }
+
+      .wssl
+      {
+        color: red;
+        font-weight: bold;
+      }
+
+    /* ]]> */</style>
+    <script type="text/javascript">/* <![CDATA[ */
+
+      var addressId = undefined;
+      var connectId = undefined;
+      var messageId = undefined;
+      var sendId = undefined;
+      var disconnectId = undefined;
+      var outputId = undefined;
+      var webSocket = undefined;
+
+      function init()
+      {
+        addressId = document.getElementById('address');
+        connectId = document.getElementById('connect');
+        messageId = document.getElementById('message');
+        sendId = document.getElementById('send');
+        disconnectId = document.getElementById('disconnect');
+        outputId = document.getElementById('output');
+        abled();
+      }
+
+      function abled()
+      {
+        if(webSocket === undefined)
+        {
+          addressId.disabled = false;
+          connectId.disabled = false;
+          messageId.disabled = true;
+          sendId.disabled = true;
+          disconnectId.disabled = true;
+        }
+        else
+        {
+          addressId.disabled = true;
+          connectId.disabled = true;
+          messageId.disabled = false;
+          sendId.disabled = false;
+          disconnectId.disabled = false;
+        }
+      }
+
+      function write(message)
+      {
+        var newData = document.createElement('p');
+        newData.innerHTML = message;
+        outputId.insertBefore(newData, outputId.firstChild);
+      }
+
+      function connect()
+      {
+        if(webSocket !== undefined)
+          write('ERROR: already connected');
+        webSocket = new WebSocket(addressId.value);
+        webSocket.onopen = function(event)
+        {
+          write("onOpen");
+        };
+        webSocket.onclose = function(event)
+        {
+          write("onClose");
+          webSocket = undefined;
+          abled();
+        };
+        webSocket.onmessage = function(event)
+        {
+          write('onMessage: '+event.data);
+        };
+        webSocket.onerror = function(event)
+        {
+          write('onError: '+event.type);
+        };
+        abled();
+      }
+
+      function send()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.send(messageId.value);
+        write('Sent: '+messageId.value);
+      }
+
+      function disconnect()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.close();
+      }
+
+      function clean()
+      {
+        output.innerHTML = '';
+      }
+
+    /* ]]> */</script>
+  </head>
+  <body onload="init();">
+    <div style="overflow: auto;">
+      <div class="left">
+        <b>examples/mini.c</b> from <a href="https://github.com/chupcko/wssl">https://github.com/chupcko/wssl</a>
+        <pre class="source">
+#include &lt;errno.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+
+#include "<span class="wssl">wssl</span>.h"
+
+#define CALL(...)                         \
+do                                        \
+{                                         \
+  <span class="wssl">wssl</span>_result_t _result_ = (__VA_ARGS__); \
+  if(<span class="wssl">wssl</span>_result_is_not_ok(_result_))     \
+  {                                       \
+    <span class="wssl">wssl</span>_result_dump(_result_, stderr);   \
+    exit(EXIT_FAILURE);                   \
+  }                                       \
+}                                         \
+while(false)                              \
+
+void <b>on_receive_text_frame</b>(<span class="wssl">wssl</span>_client_t* client, char* data, <span class="wssl">wssl</span>_size_t data_size)
+{
+  <span class="wssl">wssl</span>_client_send_text(client, data);
+}
+
+void <b>on_client</b>(<span class="wssl">wssl</span>_client_t* client)
+{
+  #define DATA_SIZE 64
+  char data[DATA_SIZE];
+
+  snprintf(data, DATA_SIZE, "t=%d", time(NULL));
+  <span class="wssl">wssl</span>_client_send_text(client, data);
+  #undef DATA_SIZE
+}
+
+bool <b>on_tick</b>(<span class="wssl">wssl</span>_t* wssl)
+{
+  <span class="wssl">wssl</span>_for_each_client_call(wssl, &amp;<b>on_client</b>);
+  return true;
+}
+
+int <b>main</b>(void)
+{
+  <span class="wssl">WSSL</span>_DECLARE(wssl);
+
+  <span class="wssl">wssl</span>_set_sleep_in_mseconds(&amp;wssl, 5000);
+  <span class="wssl">wssl</span>_set_receive_text_frame_callback(&amp;wssl, &amp;<b>on_receive_text_frame</b>);
+  <span class="wssl">wssl</span>_set_tick_callback(&amp;wssl, &amp;<b>on_tick</b>);
+
+  CALL(<span class="wssl">wssl</span>_server_add(&amp;wssl, "0.0.0.0", 5000));
+  CALL(<span class="wssl">wssl</span>_loop(&amp;wssl));
+  CALL(<span class="wssl">wssl</span>_clean(&amp;wssl));
+
+  return EXIT_SUCCESS;
+}
+</pre>
+      </div>
+      <div class="left">
+        <input type="text" id="address" value="ws://wssl.chupcko.org:5000/"/>
+        <button id="connect" onclick="connect();">Connect</button>
+        <input type="text" id="message" value="test"/>
+        <button id="send" onclick="send();">Send</button>
+        <button id="disconnect" onclick="disconnect();">Disconnect</button>
+        <button onclick="clean();">Clean</button>
+        <div id="output" class="box"></div>
+      </div>
+    </div>
+  </body>
+</html>

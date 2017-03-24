@@ -19,20 +19,20 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 #include <unistd.h>
 
 _INCLUDE_BEGIN_
 
 #include <sys/epoll.h>
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #undef _WSSL_IN_
 #define _WSSL_IN_
@@ -42,6 +42,8 @@ _INCLUDE_BEGIN_
 #define _WSSL_MODIFY_
 
 _INCLUDE_END_
+
+#define LOOP for(;;)
 
 #include "version.h"
 #include "configurations.h"
@@ -62,10 +64,9 @@ _INCLUDE_END_
 #include "callback.h"
 #include "wssl.h"
 #include "wssl_g.h"
-#include "rest.h"
 
 #include "prototype.h"
 
-#define LOOP for(;;)
+#include "rest.h"
 
 #endif

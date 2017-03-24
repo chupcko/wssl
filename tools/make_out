@@ -10,7 +10,7 @@ LIBRARY_ORGIN="${BASE_DIR}/source/${LIBRARY_NAME}"
 
 function include_filter()
 {
-  awk -f ${BASE_DIR}/tool/awk/make_out_include.awk
+  awk -f ${BASE_DIR}/tools/awk/make_out_include.awk
 }
 
 function include_exec()
@@ -51,9 +51,12 @@ echo >> ${INCLUDE_FILE}
 cd ${BASE_DIR}/source
 for file in $(\ls *.c | sort)
 do
-  cat ${file} | awk -f ${BASE_DIR}/tool/awk/make_out_function.awk >> ${INCLUDE_FILE}
+  cat ${file} | awk -f ${BASE_DIR}/tools/awk/make_out_function.awk >> ${INCLUDE_FILE}
   echo >> ${INCLUDE_FILE}
 done
+
+cat          ${BASE_DIR}/include/rest.h           | include_filter >> ${INCLUDE_FILE}
+
 echo '#endif' >> ${INCLUDE_FILE}
 
 if [ -e ${LIBRARY_ORGIN} ]

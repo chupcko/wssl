@@ -15,7 +15,7 @@ cd ${BASE_DIR}/source
 for file in $(\ls *.c | sort)
 do
   echo "/* ${file} */" >> ${DESTINATION_NEW}
-  cat ${file} | awk -f ${BASE_DIR}/tool/awk/update_prototype.awk >> ${DESTINATION_NEW}
+  cat ${file} | awk -f ${BASE_DIR}/tools/awk/update_prototype.awk >> ${DESTINATION_NEW}
   echo >> ${DESTINATION_NEW}
 done
 echo '#endif' >> ${DESTINATION_NEW}
