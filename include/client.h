@@ -34,6 +34,15 @@ void wssl_client_set_local_extra_data
 }
 
 static inline
+void* wssl_client_get_local_extra_data
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return client->local_extra_data;
+}
+
+static inline
 bool wssl_client_is_for_disconnecting
 (
   _WSSL_IN_ const wssl_client_t* client

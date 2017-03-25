@@ -75,6 +75,15 @@ void wssl_init
   wssl_client_chain_init(&wssl->clients_for_disconnecting);
 }
 
+static inline
+void* wssl_get_global_extra_data
+(
+  _WSSL_IN_ const wssl_t* wssl
+)
+{
+  return wssl->global_extra_data;
+}
+
 _INCLUDE_END_
 
 static inline

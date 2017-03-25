@@ -21,6 +21,15 @@ void wssl_result_dump
   );
 }
 
+static inline
+void* wssl_client_get_global_extra_data
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return client->wssl->global_extra_data;
+}
+
 _INCLUDE_END_
 
 static inline
