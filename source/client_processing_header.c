@@ -45,8 +45,8 @@ wssl_result_t wssl_client_processing_header
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  WSSL_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets));
-  wssl_chunk_t* chunk = wssl_chunk_chain_get_last(&client->output_chunks);
+  wssl_chunk_t* chunk;
+  WSSL_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
 
   bool must_client_delete = false;
   char* sec_websocket_key;

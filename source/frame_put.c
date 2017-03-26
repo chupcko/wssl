@@ -63,10 +63,12 @@ wssl_result_t wssl_frame_put
     *data_length += WSSL_FRAME_MASKING_KEY_SIZE;
   }
 
-  if(frame->payload_size > 0)
+  if
+  (
+    frame->payload_size > 0 &&
+    frame->payload != WSSL_NULL
+  )
   {
-    if(frame->payload == WSSL_NULL)
-      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "frame_put", 0);
     if(*data_length+(wssl_size_t)frame->payload_size > data_size)
       return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
     if(frame->masked)

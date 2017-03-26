@@ -30,4 +30,6 @@ MAKE_WSSL_SET(wssl_tick_callback_f*,                 tick_callback)
 
 _INCLUDE_END_
 
+#undef MAKE_WSSL_SET
+
 #endif

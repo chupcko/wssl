@@ -6,8 +6,6 @@ void wssl_header_field_delete
   _WSSL_MODIFY_ wssl_header_field_t* header_field
 )
 {
-  if(header_field->key != WSSL_NULL)
-    free((void*)header_field->key);
   if(header_field->value != WSSL_NULL)
     free((void*)header_field->value);
 

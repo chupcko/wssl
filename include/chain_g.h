@@ -92,28 +92,6 @@ what_type_entry* what_prefix##_chain_entry                        \
 {                                                                 \
   return (what_type_entry*)link;                                  \
 }                                                                 \
-                                                                  \
-static inline                                                     \
-what_type_entry* what_prefix##_chain_get_first                    \
-(                                                                 \
-   _WSSL_IN_ what_type_chain* chain                               \
-)                                                                 \
-{                                                                 \
-  if(what_prefix##_chain_is_empty(chain))                         \
-    return WSSL_NULL;                                             \
-  return what_prefix##_chain_entry(chain->next);                  \
-}                                                                 \
-                                                                  \
-static inline                                                     \
-what_type_entry* what_prefix##_chain_get_last                     \
-(                                                                 \
-  _WSSL_IN_ what_type_chain* chain                                \
-)                                                                 \
-{                                                                 \
-  if(what_prefix##_chain_is_empty(chain))                         \
-    return WSSL_NULL;                                             \
-  return what_prefix##_chain_entry(chain->prev);                  \
-}                                                                 \
 
 _INCLUDE_BEGIN_
 
@@ -124,9 +102,13 @@ MAKE_CHAIN_INCLUDE(wssl_header_field, wssl_header_field_chain_t, struct wssl_hea
 
 _INCLUDE_END_
 
+#undef MAKE_CHAIN_INCLUDE
+
 MAKE_CHAIN(wssl_client,       wssl_client_chain_t,       struct wssl_client_t      )
 MAKE_CHAIN(wssl_server,       wssl_server_chain_t,       struct wssl_server_t      )
 MAKE_CHAIN(wssl_chunk,        wssl_chunk_chain_t,        struct wssl_chunk_t       )
 MAKE_CHAIN(wssl_header_field, wssl_header_field_chain_t, struct wssl_header_field_t)
+
+#undef MAKE_CHAIN
 
 #endif

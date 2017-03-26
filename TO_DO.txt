@@ -1,3 +1,5 @@
+-dodaj assert
+-dodaj novi koncpet chaina, sa ofsetima
 -proveri spisak nepotrebnih funkcija
 -id proveri koncpet i napravi ispis dobar
 -eventualno da size i ssize budu isti

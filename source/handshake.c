@@ -18,7 +18,7 @@ wssl_result_t wssl_handshake
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "handshake", 0);
 
   wssl_ssize_t data_length = snprintf(data, (size_t)data_size, "%s" HANDSHAKE_MAGIC, input);
-  if(data_length < 0)
+  if(data_length < 0)/*#assert */
   {
     free((void*)data);
     return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "handshake", 0);

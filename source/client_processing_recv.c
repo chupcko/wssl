@@ -244,10 +244,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size >= 0 && size < data_size)
       {
-        wssl_header_field_t* last_headed_field = wssl_header_field_chain_get_last(&client->header.fields);
-        if(last_headed_field == WSSL_NULL)
-          return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header_field", 0);
-        WSSL_CALL(wssl_header_field_insert_value(last_headed_field, (char*)data, size));
+        WSSL_CALL(wssl_header_insert_value_at_last_field(&client->header, (char*)data, size));
         *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
       }

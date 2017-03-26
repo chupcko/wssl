@@ -7,8 +7,8 @@ wssl_result_t wssl_client_send_frame
   _WSSL_IN_     const wssl_frame_t*  frame
 )
 {
-  WSSL_CALL(wssl_chunk_add(client, wssl_frame_buffer_size(frame)));
-  wssl_chunk_t* chunk = wssl_chunk_chain_get_last(&client->output_chunks);
+  wssl_chunk_t* chunk;
+  WSSL_CALL(wssl_chunk_add(client, wssl_frame_buffer_size(frame), &chunk));
 
   WSSL_CALL(wssl_frame_put(frame, chunk->buffer.data, chunk->buffer.size, &chunk->buffer.end));
   WSSL_CALL(wssl_client_do_send(client));
