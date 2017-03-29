@@ -16,5 +16,5 @@ wssl_result_t wssl_clean
   WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(server_link, server_link_next, &wssl->servers)
     WSSL_CALL(wssl_server_delete(wssl_server_chain_entry(server_link)));
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

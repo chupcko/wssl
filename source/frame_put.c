@@ -15,14 +15,14 @@ wssl_result_t wssl_frame_put
   *data_length = 0;
 
   if(*data_length >= data_size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
   data[*data_length] = frame->opcode&0x0f;
   if(frame->fin)
     data[*data_length] |= 0x80;
   ++*data_length;
 
   if(*data_length >= data_size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
   data[*data_length] =  frame->length;
   if(frame->masked)
     data[*data_length] |= 0x80;
@@ -32,7 +32,7 @@ wssl_result_t wssl_frame_put
   {
     case FRAME_LENGTH_LONG_CODE:
       if(*data_length+FRAME_LENGTH_LONG_LENGTH > data_size)
-        return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
+        return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
       payload_size = frame->payload_size;
       for(i = 0; i < FRAME_LENGTH_LONG_LENGTH; i++)
       {
@@ -43,7 +43,7 @@ wssl_result_t wssl_frame_put
       break;
     case FRAME_LENGTH_MEDIUM_CODE:
       if(*data_length+FRAME_LENGTH_MEDIUM_LENGTH > data_size)
-        return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
+        return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
       payload_size = frame->payload_size;
       for(i = 0; i < FRAME_LENGTH_MEDIUM_LENGTH; i++)
       {
@@ -57,7 +57,7 @@ wssl_result_t wssl_frame_put
   if(frame->masked)
   {
     if(*data_length+WSSL_FRAME_MASKING_KEY_SIZE > data_size)
-      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
+      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
     for(i = 0; i < WSSL_FRAME_MASKING_KEY_SIZE; i++)
       data[*data_length+i] = frame->masking_key[i];
     *data_length += WSSL_FRAME_MASKING_KEY_SIZE;
@@ -70,7 +70,7 @@ wssl_result_t wssl_frame_put
   )
   {
     if(*data_length+(wssl_size_t)frame->payload_size > data_size)
-      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put", 0);
+      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
     if(frame->masked)
       for(i = 0; i < frame->payload_size; i++)
         data[*data_length+i] = frame->payload[i]^frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
@@ -79,5 +79,5 @@ wssl_result_t wssl_frame_put
     *data_length += (wssl_size_t)frame->payload_size;
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

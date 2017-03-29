@@ -3,10 +3,16 @@
 
 _INCLUDE_BEGIN_
 
+typedef uint32_t wssl_id_prefix_t;
+#define WSSL_PRINT_ID_PREFIX PRIu32
+
+typedef uint32_t wssl_id_suffix_t;
+#define WSSL_PRINT_ID_SUFFIX PRIu32
+
 typedef struct wssl_id_t
 {
-  uint16_t prefix;
-  uint32_t suffix;
+  wssl_id_prefix_t prefix;
+  wssl_id_suffix_t suffix;
 } wssl_id_t;
 
 #define WSSL_ID_INIT_VALUE \
@@ -23,6 +29,26 @@ void wssl_id_init
 {
   id->prefix = 0;
   id->suffix = 0;
+}
+
+static inline
+void wssl_id_set_prefix
+(
+  _WSSL_MODIFY_       wssl_id_t*       id,
+  _WSSL_IN_     const wssl_id_prefix_t prefix
+)
+{
+  id->prefix = prefix;
+}
+
+static inline
+void wssl_id_set_suffix
+(
+  _WSSL_MODIFY_       wssl_id_t*       id,
+  _WSSL_IN_     const wssl_id_suffix_t suffix
+)
+{
+  id->suffix = suffix;
 }
 
 static inline
@@ -59,7 +85,7 @@ void wssl_id_dump
   fprintf
   (
     file,
-    "%" PRIu16 ":%" PRIu32,
+    "%" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX,
     id->prefix,
     id->suffix
   );

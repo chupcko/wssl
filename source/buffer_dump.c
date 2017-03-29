@@ -26,7 +26,7 @@ void wssl_buffer_dump
     {
       if(data_index != 0)
         fprintf(file, " ");
-      fprintf(file, "%02" PRIx8, buffer->data[data_index]);
+      fprintf(file, "%" WSSL_PRINT_OCTET, buffer->data[data_index]);
     }
     fprintf(file, "\"");
   }
@@ -37,9 +37,9 @@ void wssl_buffer_dump
     file,
     (
       "\n"
-      INDENT_FORMAT "size: %zu\n"
-      INDENT_FORMAT "begin: %zu\n"
-      INDENT_FORMAT "end: %zu\n"
+      INDENT_FORMAT "size: %" WSSL_PRINT_SIZE "\n"
+      INDENT_FORMAT "begin: %" WSSL_PRINT_SIZE "\n"
+      INDENT_FORMAT "end: %" WSSL_PRINT_SIZE "\n"
     ),
     INDENT(indent_level+1), buffer->size,
     INDENT(indent_level+1), buffer->begin,

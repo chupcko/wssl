@@ -216,8 +216,9 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
       {
         *processed = (wssl_size_t)size;
-        client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
+        client->state = WSSL_CLIENT_STATE_PROCESSING_HEADER;
         WSSL_CALL(wssl_client_processing_header(client));
+        client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
       }
       else
       {
@@ -291,5 +292,5 @@ wssl_result_t wssl_client_processing_recv
     }
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

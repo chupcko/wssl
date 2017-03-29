@@ -17,7 +17,7 @@ wssl_result_t wssl_loop
 
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_create1", errno);
+    return WSSL_MAKE_RESULT_ERRNO("epoll_create1", errno);
   WSSL_CALL(wssl_servers_start(wssl));
 
   LOOP
@@ -35,7 +35,7 @@ wssl_result_t wssl_loop
         case EINTR:
           break;
         default:
-          return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_wait", errno);
+          return WSSL_MAKE_RESULT_ERRNO("epoll_wait", errno);
           break;
       }
     else
@@ -69,8 +69,8 @@ wssl_result_t wssl_loop
 
   WSSL_CALL(wssl_servers_stop(wssl));
   if(close(wssl->epoll_descriptor) < 0)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "close", errno);
+    return WSSL_MAKE_RESULT_ERRNO("close", errno);
   wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

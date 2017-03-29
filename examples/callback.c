@@ -4,7 +4,7 @@ void on_connect(wssl_client_t* client)
 {
   printf
   (
-    "Connect %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Connect %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip,
@@ -18,7 +18,7 @@ void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e discon
 {
   printf
   (
-    "Disconnect (%s) %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Disconnect (%s) %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     wssl_client_get_disconnect_reason_string(disconnect_reason),
     client->id.prefix,
     client->id.suffix,
@@ -33,7 +33,7 @@ bool on_header(wssl_client_t* client)
 {
   printf
   (
-    "Header %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Header %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip,
@@ -48,7 +48,7 @@ void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_s
 {
   printf
   (
-    "Receive text frame %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Receive text frame %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip,
@@ -62,7 +62,7 @@ void on_receive_binary_frame(wssl_client_t* client, wssl_octet_t* data, wssl_siz
 {
   printf
   (
-    "Receive binary frame %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Receive binary frame %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip, client->port,
@@ -75,7 +75,7 @@ void on_receive_close_frame(wssl_client_t* client)
 {
   printf
   (
-    "Receive close frame %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Receive close frame %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip, client->port,
@@ -88,7 +88,7 @@ void on_receive_ping_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_
 {
   printf
   (
-    "Receive binary frame %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Receive binary frame %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip, client->port,
@@ -101,7 +101,7 @@ void on_receive_pong_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_
 {
   printf
   (
-    "Receive binary frame %" PRIu16 ":%" PRIu32 " %s:%d -> %s:%d\n",
+    "Receive binary frame %" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX " %s:%d -> %s:%d\n",
     client->id.prefix,
     client->id.suffix,
     client->ip, client->port,

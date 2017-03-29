@@ -34,11 +34,11 @@ wssl_result_t wssl_buffer_allocate
 {
   buffer->data = (wssl_octet_t*)malloc((size_t)size);
   if(buffer->data == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer");
   buffer->size = size;
   buffer->begin = 0;
   buffer->end = 0;
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 static inline
@@ -113,7 +113,7 @@ void wssl_buffer_printf
 (
   _WSSL_MODIFY_       wssl_buffer_t* buffer,
   _WSSL_IN_     const char*          format,
-                                     ...
+                      ...
 )
 {
   va_list arguments;
@@ -126,26 +126,6 @@ void wssl_buffer_printf
     arguments
   );
   va_end(arguments);
-}
-
-static inline
-wssl_result_t wssl_buffer_append
-(
-  _WSSL_MODIFY_       wssl_buffer_t* buffer,
-  _WSSL_IN_     const wssl_octet_t*  data,
-  _WSSL_IN_     const wssl_size_t    data_size
-)
-{
-  if(buffer->end+data_size > buffer->size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "buffer", 0);
-  memcpy
-  (
-    (void*)&buffer->data[buffer->end],
-    (void*)data,
-    (size_t)data_size
-  );
-  buffer->end += data_size;
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
 }
 
 static inline

@@ -9,8 +9,13 @@ _INCLUDE_BEGIN_
 #define WSSL_IP_SIZE_IN_CHAR    ((3+1)*4)
 
 typedef uint8_t wssl_octet_t;
+#define WSSL_PRINT_OCTET "02" PRIx8
+
 typedef size_t wssl_size_t;
+#define WSSL_PRINT_SIZE  "zu"
+
 typedef ssize_t wssl_ssize_t;
+#define WSSL_PRINT_SSIZE "zd"
 
 _INCLUDE_END_
 

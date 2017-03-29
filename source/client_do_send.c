@@ -16,10 +16,10 @@ wssl_result_t wssl_client_do_send_set_epoll_event
   {
     client->epoll_event.events = events;
     if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_MOD, client->socket_descriptor, &client->epoll_event) < 0)
-      return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "epoll_ctl", errno);
+      return WSSL_MAKE_RESULT_ERRNO("epoll_ctl", errno);
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 _FUNCTION_
@@ -29,7 +29,7 @@ wssl_result_t wssl_client_do_send
 )
 {
   if(wssl_client_is_for_disconnecting(client))
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+    return WSSL_MAKE_RESULT_OK;
 
   wssl_ssize_t send_size;
   wssl_chunk_chain_t* chunk_link;
@@ -51,21 +51,21 @@ wssl_result_t wssl_client_do_send
         switch(errno)
         {
           case EAGAIN:
-            return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+            return WSSL_MAKE_RESULT_OK;
             break;
           case ECONNRESET:
           case EPIPE:
             wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
-            return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+            return WSSL_MAKE_RESULT_OK;
             break;
           default:
-            return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_ERRNO, "send", errno);
+            return WSSL_MAKE_RESULT_ERRNO("send", errno);
             break;
         }
       if(send_size == 0)
       {
         wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
-        return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+        return WSSL_MAKE_RESULT_OK;
       }
       chunk->buffer.begin += (wssl_size_t)send_size;
     }
@@ -74,5 +74,5 @@ wssl_result_t wssl_client_do_send
 
   WSSL_CALL(wssl_client_do_send_set_epoll_event(client));
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

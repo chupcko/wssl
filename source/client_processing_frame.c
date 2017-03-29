@@ -40,5 +40,5 @@ wssl_result_t wssl_client_processing_frame
       break;
   }
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

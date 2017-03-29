@@ -13,5 +13,5 @@ wssl_result_t wssl_client_send_frame
   WSSL_CALL(wssl_frame_put(frame, chunk->buffer.data, chunk->buffer.size, &chunk->buffer.end));
   WSSL_CALL(wssl_client_do_send(client));
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

@@ -4,8 +4,8 @@ INCLUDE_DIR := ../include
 
 SOURCES := $(wildcard *.c)
 OBJECTS = $(SOURCES:.c=.o)
-PROTOTYPE = $(INCLUDE_DIR)/prototype.h
-INCLUDES = $(filter-out $(PROTOTYPE), $(wildcard $(INCLUDE_DIR)/*.h)) $(PROTOTYPE)
+PROTOTYPE = prototype.h
+INCLUDES = $(PROTOTYPE) $(wildcard $(INCLUDE_DIR)/*.h)
 
 COMPILER := gcc
 COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(INCLUDE_DIR)
@@ -29,7 +29,7 @@ $(OUT_DIR): $(TARGET)
 	touch $(OUT_DIR)
 
 $(PROTOTYPE): $(SOURCES)
-	../tools/update_prototype
+	../tools/make_prototype
 
 $(TARGET): $(OBJECTS)
 	$(ARCHIVER) $(ARCHIVER_FLAGS) $@ $^

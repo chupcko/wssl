@@ -10,5 +10,5 @@ wssl_result_t wssl_client_send_text
   wssl_frame_t frame;
   wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_TEXT, false, (wssl_octet_t*)text, (wssl_size_t)strlen(text));
   WSSL_CALL(wssl_client_send_frame(client, &frame));
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

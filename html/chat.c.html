@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WSSL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+      /*]]>*/
+    </script>
+  </head>
+  <body>
+    demonstrations/chat.c:
+    <pre class="source">
+#include &lt;errno.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+
+#include "<span class="wssl">wssl</span>.h"
+
+#define CALL(...)                         \
+do                                        \
+{                                         \
+  <span class="wssl">wssl</span>_result_t _result_ = (__VA_ARGS__); \
+  if(<span class="wssl">wssl</span>_result_is_not_ok(_result_))     \
+  {                                       \
+    <span class="wssl">wssl</span>_result_dump(_result_, stderr);   \
+    exit(EXIT_FAILURE);                   \
+  }                                       \
+}                                         \
+while(false)                              \
+
+#define OUTPUT_SIZE 1024
+
+void on_client(<span class="wssl">wssl</span>_client_t* client, void* local_extra_data)
+{
+  <span class="wssl">wssl</span>_client_send_text(client, (char*)local_extra_data);
+}
+
+bool on_header(<span class="wssl">wssl</span>_client_t* client)
+{
+  char output[OUTPUT_SIZE];
+  snprintf(output, OUTPUT_SIZE, "%s:%" <span class="wssl">WSSL</span>_PRINT_ID_SUFFIX " = JOIN", client-&gt;header.uri, client-&gt;id.suffix);
+  <span class="wssl">wssl</span>_for_each_client_call(<span class="wssl">wssl</span>_client_get_wssl(client), &amp;on_client, (void*)output);
+  return true;
+}
+
+void on_receive_text_frame(<span class="wssl">wssl</span>_client_t* client, char* data, <span class="wssl">wssl</span>_size_t data_size)
+{
+  char output[OUTPUT_SIZE];
+  snprintf(output, OUTPUT_SIZE, "%s:%" <span class="wssl">WSSL</span>_PRINT_ID_SUFFIX " - %s", client-&gt;header.uri, client-&gt;id.suffix, data);
+  <span class="wssl">wssl</span>_for_each_client_call(<span class="wssl">wssl</span>_client_get_wssl(client), &amp;on_client, (void*)output);
+}
+
+void on_disconnect(<span class="wssl">wssl</span>_client_t* client, <span class="wssl">wssl</span>_client_disconnect_reason_e disconnect_reason)
+{
+  if(disconnect_reason == <span class="wssl">WSSL</span>_CLIENT_DISCONNECT_REASON_REQUESTED)
+  {
+    char output[OUTPUT_SIZE];
+    snprintf(output, OUTPUT_SIZE, "%s:%" <span class="wssl">WSSL</span>_PRINT_ID_SUFFIX " = LEAVE", client-&gt;header.uri, client-&gt;id.suffix);
+    <span class="wssl">wssl</span>_for_each_client_call(<span class="wssl">wssl</span>_client_get_wssl(client), &amp;on_client, (void*)output);
+  }
+}
+
+int main(void)
+{
+  <span class="wssl">WSSL</span>_DECLARE(wssl);
+
+  <span class="wssl">wssl</span>_set_header_callback(&amp;wssl, &amp;on_header);
+  <span class="wssl">wssl</span>_set_receive_text_frame_callback(&amp;wssl, &amp;on_receive_text_frame);
+  <span class="wssl">wssl</span>_set_disconnect_callback(&amp;wssl, &amp;on_disconnect);
+
+  CALL(<span class="wssl">wssl</span>_server_add(&amp;wssl, "0.0.0.0", 5002));
+  CALL(<span class="wssl">wssl</span>_loop(&amp;wssl));
+  CALL(<span class="wssl">wssl</span>_clean(&amp;wssl));
+
+  return EXIT_SUCCESS;
+}
+</pre>
+  </body>
+</html>

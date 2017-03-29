@@ -84,6 +84,26 @@ void* wssl_get_global_extra_data
   return wssl->global_extra_data;
 }
 
+static inline
+void wssl_set_id_prefix
+(
+  _WSSL_MODIFY_       wssl_t*          wssl,
+  _WSSL_IN_     const wssl_id_prefix_t prefix
+)
+{
+  wssl_id_set_prefix(&wssl->next_client_id, prefix);
+}
+
+static inline
+void wssl_set_id_suffix
+(
+  _WSSL_MODIFY_       wssl_t*          wssl,
+  _WSSL_IN_     const wssl_id_suffix_t suffix
+)
+{
+  wssl_id_set_prefix(&wssl->next_client_id, suffix);
+}
+
 _INCLUDE_END_
 
 static inline

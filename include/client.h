@@ -14,7 +14,7 @@ typedef struct wssl_client_t
   int                             port;
   wssl_epoll_data_t               epoll_data;
   struct epoll_event              epoll_event;
-  void*                           local_extra_data;
+  void*                           connection_extra_data;
   wssl_buffer_t                   input_buffer;
   wssl_chunk_chain_t              output_chunks;
   wssl_client_state_e             state;
@@ -24,22 +24,22 @@ typedef struct wssl_client_t
 } wssl_client_t;
 
 static inline
-void wssl_client_set_local_extra_data
+void wssl_client_set_connection_extra_data
 (
   _WSSL_MODIFY_ wssl_client_t* client,
-  _WSSL_IN_     void*          local_extra_data
+  _WSSL_IN_     void*          connection_extra_data
 )
 {
-  client->local_extra_data = local_extra_data;
+  client->connection_extra_data = connection_extra_data;
 }
 
 static inline
-void* wssl_client_get_local_extra_data
+void* wssl_client_get_connection_extra_data
 (
   _WSSL_IN_ const wssl_client_t* client
 )
 {
-  return client->local_extra_data;
+  return client->connection_extra_data;
 }
 
 static inline

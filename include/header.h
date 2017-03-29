@@ -32,22 +32,22 @@ void wssl_header_init
   wssl_header_field_chain_init(&header->fields);
 }
 
-#define MAKE_HEADER_INSERT(what_member)                                                \
-static inline                                                                          \
-wssl_result_t wssl_header_insert_##what_member                                         \
-(                                                                                      \
-  _WSSL_MODIFY_       wssl_header_t* header,                                           \
-  _WSSL_IN_           char*          data,                                             \
-  _WSSL_IN_     const wssl_size_t    data_size                                         \
-)                                                                                      \
-{                                                                                      \
-  header->what_member = (char*)malloc((size_t)(data_size+1));                          \
-  if(header->what_member == NULL)                                                      \
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_" #what_member, 0); \
-  strncpy(header->what_member, data, data_size);                                       \
-  header->what_member[data_size] = '\0';                                               \
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);                          \
-}                                                                                      \
+#define MAKE_HEADER_INSERT(what_member)                                             \
+static inline                                                                       \
+wssl_result_t wssl_header_insert_##what_member                                      \
+(                                                                                   \
+  _WSSL_MODIFY_       wssl_header_t* header,                                        \
+  _WSSL_IN_           char*          data,                                          \
+  _WSSL_IN_     const wssl_size_t    data_size                                      \
+)                                                                                   \
+{                                                                                   \
+  header->what_member = (char*)malloc((size_t)(data_size+1));                       \
+  if(header->what_member == NULL)                                                   \
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_" #what_member); \
+  strncpy(header->what_member, data, data_size);                                    \
+  header->what_member[data_size] = '\0';                                            \
+  return WSSL_MAKE_RESULT_OK;                                                       \
+}                                                                                   \
 
 MAKE_HEADER_INSERT(method)
 MAKE_HEADER_INSERT(uri)
@@ -65,7 +65,7 @@ wssl_result_t wssl_header_add_field
 {
   wssl_header_field_t* header_field = (wssl_header_field_t*)malloc(sizeof(wssl_header_field_t)+(size_t)(data_size+1));
   if(header_field == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_field", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_field");
 
   strncpy(header_field->key, data, data_size);
   header_field->key[data_size] = '\0';
@@ -74,7 +74,7 @@ wssl_result_t wssl_header_add_field
 
   wssl_header_field_chain_add_link_backward(&header->fields, &header_field->chain_link);
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 static inline
@@ -86,17 +86,17 @@ wssl_result_t wssl_header_insert_value_at_last_field
 )
 {
   if(wssl_header_field_chain_is_empty(&header->fields))/*#assert */
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header_field", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header_field");
   wssl_header_field_t* header_field = wssl_header_field_chain_entry(header->fields.prev);
 
   header_field->value = (char*)malloc((size_t)(data_size+1));
   if(header_field->value == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_field_key", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_field_key");
 
   strncpy(header_field->value, data, data_size);
   header_field->value[data_size] = '\0';
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 #endif

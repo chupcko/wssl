@@ -1,0 +1,46 @@
+body
+{
+  background-color: white;
+  color: black;
+  font-family: "lucida grande", tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 16px;
+  padding: 1em;
+}
+
+.link
+{
+  color: rgb(0%, 0%, 80%);
+  text-decoration: none;
+}
+
+.link:focus,
+.link:hover
+{
+  text-decoration: underline;
+  outline-style: none;
+}
+
+.box
+{
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  margin: 3px;
+  padding: 3px;
+}
+
+.source
+{
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 12px;
+  margin: 3px;
+  padding: 3px;
+}
+
+.wssl
+{
+  color: red;
+  font-weight: bold;
+}

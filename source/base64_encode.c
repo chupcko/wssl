@@ -10,11 +10,11 @@ wssl_result_t wssl_base64_encode_put
 )
 {
   if(*output_index >= output_size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
   output[*output_index] = data;
   (*output_index)++;
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 _FUNCTION_
@@ -62,8 +62,8 @@ wssl_result_t wssl_base64_encode
   }
 
   if(*output_length >= output_size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
   output[*output_length] = '\0';
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

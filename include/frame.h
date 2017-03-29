@@ -4,6 +4,7 @@
 _INCLUDE_BEGIN_
 
 typedef uint64_t wssl_frame_size_t;
+#define WSSL_PRINT_FRAME_SIZE PRIu64
 
 #define WSSL_FRAME_MASKING_KEY_SIZE 4
 typedef struct wssl_frame_t
@@ -55,11 +56,11 @@ wssl_result_t wssl_frame_allocate
 {
   wssl_octet_t* payload = (wssl_octet_t*)malloc((size_t)frame->payload_size+1);
   if(payload == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame");
   memcpy((void*)payload, (void*)frame->payload, (size_t)frame->payload_size);
   frame->payload = payload;
   frame->payload[frame->payload_size] = '\0';
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 static inline
@@ -77,13 +78,13 @@ wssl_result_t wssl_frame_reallocate
   if(payload == NULL)
   {
     free((void*)frame_destination->payload);
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame");
   }
   memcpy((void*)&payload[frame_destination->payload_size], (void*)frame_source->payload, (size_t)frame_source->payload_size);
   frame_destination->payload = payload;
   frame_destination->payload_size += frame_source->payload_size;
   frame_destination->payload[frame_destination->payload_size] = '\0';
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }
 
 static inline

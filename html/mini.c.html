@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WSSL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+      /*]]>*/
+    </script>
+  </head>
+  <body>
+    demonstrations/mini.c:
+    <pre class="source">
+#include &lt;errno.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+
+#include "<span class="wssl">wssl</span>.h"
+
+#define CALL(...)                         \
+do                                        \
+{                                         \
+  <span class="wssl">wssl</span>_result_t _result_ = (__VA_ARGS__); \
+  if(<span class="wssl">wssl</span>_result_is_not_ok(_result_))     \
+  {                                       \
+    <span class="wssl">wssl</span>_result_dump(_result_, stderr);   \
+    exit(EXIT_FAILURE);                   \
+  }                                       \
+}                                         \
+while(false)                              \
+
+void <b>on_receive_text_frame</b>(<span class="wssl">wssl</span>_client_t* client, char* data, <span class="wssl">wssl</span>_size_t data_size)
+{
+  <span class="wssl">wssl</span>_client_send_text(client, data);
+}
+
+void <b>on_client</b>(<span class="wssl">wssl</span>_client_t* client, void* local_extra_data)
+{
+  #define DATA_SIZE 64
+  char data[DATA_SIZE];
+
+  snprintf(data, DATA_SIZE, "t=%ld", (long)time(NULL));
+  <span class="wssl">wssl</span>_client_send_text(client, data);
+  #undef DATA_SIZE
+}
+
+bool <b>on_tick</b>(<span class="wssl">wssl</span>_t* wssl)
+{
+  <span class="wssl">wssl</span>_for_each_client_call(wssl, &amp;<b>on_client</b>, NULL);
+  return true;
+}
+
+int <b>main</b>(void)
+{
+  <span class="wssl">WSSL</span>_DECLARE(wssl);
+
+  <span class="wssl">wssl</span>_set_sleep_in_mseconds(&amp;wssl, 5000);
+  <span class="wssl">wssl</span>_set_receive_text_frame_callback(&amp;wssl, &amp;<b>on_receive_text_frame</b>);
+  <span class="wssl">wssl</span>_set_tick_callback(&amp;wssl, &amp;<b>on_tick</b>);
+
+  CALL(<span class="wssl">wssl</span>_server_add(&amp;wssl, "0.0.0.0", 5001));
+  CALL(<span class="wssl">wssl</span>_loop(&amp;wssl));
+  CALL(<span class="wssl">wssl</span>_clean(&amp;wssl));
+
+  return EXIT_SUCCESS;
+}
+</pre>
+  </body>
+</html>

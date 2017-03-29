@@ -39,14 +39,14 @@ void wssl_client_dump
       "\n"
       INDENT_FORMAT "ip: %s\n"
       INDENT_FORMAT "port: %d\n"
-      INDENT_FORMAT "local_extra_data: "
+      INDENT_FORMAT "connection_extra_data: "
     ),
     INDENT(indent_level+1), client->ip,
     INDENT(indent_level+1), client->port,
     INDENT(indent_level+1)
   );
-  if(client->local_extra_data != WSSL_NULL)
-    fprintf(file, "%p", client->local_extra_data);
+  if(client->connection_extra_data != WSSL_NULL)
+    fprintf(file, "%p", client->connection_extra_data);
   else
     fprintf(file, "none");
   fprintf

@@ -5,7 +5,7 @@ void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_s
   wssl_client_send_text(client, data);
 }
 
-void on_client(wssl_client_t* client)
+void on_client(wssl_client_t* client, void* local_extra_data)
 {
   #define DATA_SIZE 64
   char data[DATA_SIZE];
@@ -17,7 +17,7 @@ void on_client(wssl_client_t* client)
 
 bool on_tick(wssl_t* wssl)
 {
-  wssl_for_each_client_call(wssl, &on_client);
+  wssl_for_each_client_call(wssl, &on_client, NULL);
   return true;
 }
 

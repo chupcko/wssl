@@ -11,7 +11,7 @@ typedef enum wssl_epoll_data_type_e
 
 typedef struct wssl_epoll_data_t
 {
-  wssl_epoll_data_type_e type;
+  wssl_epoll_data_type_e  type;
   union
   {
     struct wssl_server_t* server;

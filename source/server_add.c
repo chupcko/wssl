@@ -10,7 +10,7 @@ wssl_result_t wssl_server_add
 {
   wssl_server_t* server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
   if(server == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "server", 0);
+    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "server");
 
   server->wssl = wssl;
 
@@ -25,5 +25,5 @@ wssl_result_t wssl_server_add
 
   wssl_server_chain_add_link_backward(&wssl->servers, &server->chain_link);
 
-  return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_OK, WSSL_NULL, 0);
+  return WSSL_MAKE_RESULT_OK;
 }

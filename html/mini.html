@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WSSL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+      var addressId = undefined;
+      var connectId = undefined;
+      var messageId = undefined;
+      var sendId = undefined;
+      var disconnectId = undefined;
+      var outputId = undefined;
+      var webSocket = undefined;
+
+      function init()
+      {
+        addressId = document.getElementById('address');
+        connectId = document.getElementById('connect');
+        messageId = document.getElementById('message');
+        sendId = document.getElementById('send');
+        disconnectId = document.getElementById('disconnect');
+        outputId = document.getElementById('output');
+        abled();
+      }
+
+      function abled()
+      {
+        if(webSocket === undefined)
+        {
+          addressId.disabled = false;
+          connectId.disabled = false;
+          messageId.disabled = true;
+          sendId.disabled = true;
+          disconnectId.disabled = true;
+        }
+        else
+        {
+          addressId.disabled = true;
+          connectId.disabled = true;
+          messageId.disabled = false;
+          sendId.disabled = false;
+          disconnectId.disabled = false;
+        }
+      }
+
+      function write(message)
+      {
+        var newData = document.createElement('p');
+        newData.innerHTML = message;
+        outputId.insertBefore(newData, outputId.firstChild);
+      }
+
+      function connect()
+      {
+        if(webSocket !== undefined)
+          write('ERROR: already connected');
+        webSocket = new WebSocket(addressId.value);
+        webSocket.onopen = function(event)
+        {
+          write("onOpen");
+          abled();
+        };
+        webSocket.onclose = function(event)
+        {
+          write("onClose");
+          webSocket = undefined;
+          abled();
+        };
+        webSocket.onmessage = function(event)
+        {
+          write('onMessage: '+event.data);
+        };
+        webSocket.onerror = function(event)
+        {
+          write('onError: '+event.type);
+        };
+      }
+
+      function send()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.send(messageId.value);
+        write('Sent: '+messageId.value);
+      }
+
+      function disconnect()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.close();
+      }
+
+      function clean()
+      {
+        outputId.innerHTML = '';
+      }
+
+      /*]]>*/
+    </script>
+  </head>
+  <body onload="init();">
+    <a href="mini.c.html" class="link">Server source</a>
+    <p/>
+    <input type="text" id="address" value="ws://wssl.chupcko.org:5001/"/>
+    <button id="connect" onclick="connect();">Connect</button>
+    <input type="text" id="message" value="test"/>
+    <button id="send" onclick="send();">Send</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
+    <button onclick="clean();">Clean</button>
+    <div id="output" class="box"></div>
+  </body>
+</html>

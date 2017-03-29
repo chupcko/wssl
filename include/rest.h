@@ -4,21 +4,12 @@
 _INCLUDE_BEGIN_
 
 static inline
-void wssl_result_dump
+wssl_t* wssl_client_get_wssl
 (
-  _WSSL_IN_ const wssl_result_t result,
-  _WSSL_IN_       FILE*         file
+  _WSSL_IN_ const wssl_client_t* client
 )
 {
-  fprintf
-  (
-    file,
-    "\"%s\" on \"%s\" with %d:\"%s\"\n",
-    wssl_result_get_code_string(result),
-    result.where,
-    result.last_errno,
-    strerror(result.last_errno)
-  );
+  return client->wssl;
 }
 
 static inline

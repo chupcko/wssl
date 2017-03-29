@@ -11,6 +11,7 @@
   what_call(WAIT_FIELD_KEY,             "Wait field key"            ) \
   what_call(WAIT_FIELD_VALUE_SEPARATOR, "Wait field value separator") \
   what_call(WAIT_FIELD_VALUE,           "Wait field value"          ) \
+  what_call(PROCESSING_HEADER,          "Processing header"         ) \
   what_call(WAIT_FRAME,                 "Wait frame"                ) \
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
   what_call(FOR_DISCONNECTING,          "For disconnecting"         ) \

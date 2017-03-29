@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WSSL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+      /*]]>*/
+    </style>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+      var nicknameId = undefined;
+      var connectId = undefined;
+      var messageId = undefined;
+      var sendId = undefined;
+      var disconnectId = undefined;
+      var outputId = undefined;
+      var webSocket = undefined;
+
+      function init()
+      {
+        nicknameId = document.getElementById('nickname');
+        connectId = document.getElementById('connect');
+        disconnectId = document.getElementById('disconnect');
+        messageId = document.getElementById('message');
+        sendId = document.getElementById('send');
+        outputId = document.getElementById('output');
+        abled();
+      }
+
+      function abled()
+      {
+        if(webSocket === undefined)
+        {
+          nicknameId.disabled = false;
+          connectId.disabled = false;
+          disconnectId.disabled = true;
+          messageId.disabled = true;
+          sendId.disabled = true;
+        }
+        else
+        {
+          nicknameId.disabled = true;
+          connectId.disabled = true;
+          disconnectId.disabled = false;
+          messageId.disabled = false;
+          sendId.disabled = false;
+        }
+      }
+
+      function write(message)
+      {
+        var newData = document.createElement('p');
+        newData.innerHTML = message;
+        outputId.insertBefore(newData, outputId.firstChild);
+      }
+
+      function connect()
+      {
+        if(webSocket !== undefined)
+          write('ERROR: already connected');
+        webSocket = new WebSocket('ws://wssl.chupcko.org:5002/'+nicknameId.value);
+        webSocket.onopen = function(event)
+        {
+          write("Connected");
+          abled();
+        };
+        webSocket.onclose = function(event)
+        {
+          write("Disconnected");
+          webSocket = undefined;
+          abled();
+        };
+        webSocket.onmessage = function(event)
+        {
+          write(event.data);
+        };
+        webSocket.onerror = function(event)
+        {
+          write('Error: '+event.type);
+        };
+      }
+
+      function send()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.send(messageId.value);
+      }
+
+      function disconnect()
+      {
+        if(webSocket === undefined)
+          write('ERROR: not connected');
+        webSocket.close();
+      }
+
+      function clean()
+      {
+        output.innerHTML = '';
+      }
+
+      /*]]>*/
+    </script>
+  </head>
+  <body onload="init();">
+    <a href="chat.c.html" class="link">Server source</a>
+    <p/>
+    Nickname: <input type="text" id="nickname" value=""/>
+    <button id="connect" onclick="connect();">Connect</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button><br/>
+    <button onclick="clean();">Clean</button>
+    <input type="text" id="message" value="test"/>
+    <button id="send" onclick="send();">Send</button>
+    <div id="output" class="box"></div>
+  </body>
+</html>

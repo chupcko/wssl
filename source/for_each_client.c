@@ -4,7 +4,8 @@ _LIBRARY_FUNCTION_
 void wssl_for_each_client_call
 (
   _WSSL_MODIFY_ wssl_t*                          wssl,
-  _WSSL_IN_     wssl_for_each_client_callback_f* callback
+  _WSSL_IN_     wssl_for_each_client_callback_f* callback,
+  _WSSL_MODIFY_ void*                            local_extra_data
 )
 {
   wssl_server_chain_t* server_link;
@@ -15,6 +16,6 @@ void wssl_for_each_client_call
     {
       client = wssl_client_chain_entry(client_link);
       if(wssl_client_is_in_frame_processing(client))
-        (*callback)(client);
+        (*callback)(client, local_extra_data);
     }
 }
