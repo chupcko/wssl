@@ -12,12 +12,19 @@
     <script src="index.js"></script>
     <script type="text/javascript">
       /*<![CDATA[*/
+
+      function init()
+      {
+        document.getElementById('version').innerHTML = version;
+      }
+
       /*]]>*/
     </script>
   </head>
-  <body>
+  <body onload="init();">
     <h1>WSSL - WebSocket Server Library</h1>
-    by Goran "<a href="http://www.chupcko.org/" target="_blank" class="link">CHUPCKO</a>" Lazi&#x0107;
+    <h2>by Goran "<a href="http://www.chupcko.org/" target="_blank" class="link">CHUPCKO</a>" Lazi&#x0107;</h2>
+    <h3>Version: <span id="version"></span></h3>
     <p/>
     <a href="https://github.com/chupcko/wssl" target="_blank" class="link">https://github.com/chupcko/wssl</a>
     <p/>

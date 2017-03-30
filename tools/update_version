@@ -4,6 +4,7 @@ BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
 INCLUDE_FILE="${BASE_DIR}/include/version.h"
 INCLUDE_FILE_NEW="${INCLUDE_FILE}.new"
+JAVASCRIPT_FILE="${BASE_DIR}/html/index.js"
 VERSION_FILE="${BASE_DIR}/VERSION"
 
 NOW="$(date +%Y%m%d)"
@@ -32,5 +33,12 @@ else
     mv ${INCLUDE_FILE_NEW} ${INCLUDE_FILE}
   fi
 fi
+
+cat << _EOF_ > ${JAVASCRIPT_FILE}
+var version = '${NOW}';
+
+/* var serverName = 'wssl.chupcko.org'; */
+var serverName = 'localhost';
+_EOF_
 
 echo ${NOW} > ${VERSION_FILE}

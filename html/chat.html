@@ -25,7 +25,7 @@
 
       function init()
       {
-        document.getElementById('server').innerHTML = serverName;
+        document.getElementById('server').innerHTML = serverName+':'+serverPort;
         nicknameId = document.getElementById('nickname');
         connectId = document.getElementById('connect');
         disconnectId = document.getElementById('disconnect');
@@ -112,7 +112,7 @@
     </script>
   </head>
   <body onload="init();">
-    Server on "<span id="server"></span>:5003" with <a href="chat.c.html" target="_blank" class="link">source</a>
+    Server on "<span id="server"></span>" with <a href="chat.c.html" target="_blank" class="link">source</a>
     <p/>
     <button onclick="clean();">Clean</button>
     Nickname: <input type="text" id="nickname"/>
