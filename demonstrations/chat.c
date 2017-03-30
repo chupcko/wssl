@@ -58,7 +58,7 @@ int main(void)
   wssl_set_receive_text_frame_callback(&wssl, &on_receive_text_frame);
   wssl_set_disconnect_callback(&wssl, &on_disconnect);
 
-  CALL(wssl_server_add(&wssl, "0.0.0.0", 5002));
+  CALL(wssl_server_add(&wssl, "0.0.0.0", 5003));
   CALL(wssl_loop(&wssl));
   CALL(wssl_clean(&wssl));
 

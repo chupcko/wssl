@@ -13,17 +13,15 @@
     <script type="text/javascript">
       /*<![CDATA[*/
 
-      var nicknameId = undefined;
       var connectId = undefined;
+      var disconnectId = undefined;
       var messageId = undefined;
       var sendId = undefined;
-      var disconnectId = undefined;
       var outputId = undefined;
       var webSocket = undefined;
 
       function init()
       {
-        nicknameId = document.getElementById('nickname');
         connectId = document.getElementById('connect');
         disconnectId = document.getElementById('disconnect');
         messageId = document.getElementById('message');
@@ -36,7 +34,6 @@
       {
         if(webSocket === undefined)
         {
-          nicknameId.disabled = false;
           connectId.disabled = false;
           disconnectId.disabled = true;
           messageId.disabled = true;
@@ -44,7 +41,6 @@
         }
         else
         {
-          nicknameId.disabled = true;
           connectId.disabled = true;
           disconnectId.disabled = false;
           messageId.disabled = false;
@@ -68,25 +64,25 @@
       {
         if(webSocket !== undefined)
           write('ERROR: already connected');
-        webSocket = new WebSocket('ws://'+serverName+':5003/'+nicknameId.value);
+        webSocket = new WebSocket('ws://'+serverName+':5001');
         webSocket.onopen = function(event)
         {
-          write("Connected");
+          write("onOpen");
           abled();
         };
         webSocket.onclose = function(event)
         {
-          write("Disconnected");
+          write("onClose");
           webSocket = undefined;
           abled();
         };
         webSocket.onmessage = function(event)
         {
-          write(event.data);
+          write('onMessage: '+event.data);
         };
         webSocket.onerror = function(event)
         {
-          write('Error: '+event.type);
+          write('onError: '+event.type);
         };
       }
 
@@ -102,19 +98,19 @@
         if(webSocket === undefined)
           write('ERROR: not connected');
         webSocket.send(messageId.value);
+        write('Sent: '+messageId.value);
       }
 
       /*]]>*/
     </script>
   </head>
   <body onload="init();">
-    <a href="chat.c.html" class="link">Server source</a>
+    <a href="echo.c.html" class="link">Server source</a>
     <p/>
     <button onclick="clean();">Clean</button>
-    Nickname: <input type="text" id="nickname"/>
     <button id="connect" onclick="connect();">Connect</button>
     <button id="disconnect" onclick="disconnect();">Disconnect</button>
-    <input type="text" id="message"/>
+    <input type="text" id="message" value="test"/>
     <button id="send" onclick="send();">Send</button>
     <div id="output" class="box"></div>
   </body>

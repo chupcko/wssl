@@ -9,13 +9,14 @@
       /*<![CDATA[*/
       /*]]>*/
     </style>
+    <script src="index.js"></script>
     <script type="text/javascript">
       /*<![CDATA[*/
       /*]]>*/
     </script>
   </head>
   <body>
-    demonstrations/mini.c:
+    demonstrations/time.c:
     <pre class="source">
 #include &lt;errno.h&gt;
 #include &lt;stdio.h&gt;
@@ -37,19 +38,13 @@ do                                        \
 }                                         \
 while(false)                              \
 
-void <b>on_receive_text_frame</b>(<span class="wssl">wssl</span>_client_t* client, char* data, <span class="wssl">wssl</span>_size_t data_size)
-{
-  <span class="wssl">wssl</span>_client_send_text(client, data);
-}
+#define OUTPUT_SIZE 64
 
 void <b>on_client</b>(<span class="wssl">wssl</span>_client_t* client, void* local_extra_data)
 {
-  #define DATA_SIZE 64
-  char data[DATA_SIZE];
-
-  snprintf(data, DATA_SIZE, "t=%ld", (long)time(NULL));
-  <span class="wssl">wssl</span>_client_send_text(client, data);
-  #undef DATA_SIZE
+  char output[OUTPUT_SIZE];
+  snprintf(output, OUTPUT_SIZE, "t=%ld", (long)time(NULL));
+  <span class="wssl">wssl</span>_client_send_text(client, output);
 }
 
 bool <b>on_tick</b>(<span class="wssl">wssl</span>_t* wssl)
@@ -62,11 +57,10 @@ int <b>main</b>(void)
 {
   <span class="wssl">WSSL</span>_DECLARE(wssl);
 
-  <span class="wssl">wssl</span>_set_sleep_in_mseconds(&amp;wssl, 5000);
-  <span class="wssl">wssl</span>_set_receive_text_frame_callback(&amp;wssl, &amp;<b>on_receive_text_frame</b>);
+  <span class="wssl">wssl</span>_set_sleep_in_mseconds(&amp;wssl, 500);
   <span class="wssl">wssl</span>_set_tick_callback(&amp;wssl, &amp;<b>on_tick</b>);
 
-  CALL(<span class="wssl">wssl</span>_server_add(&amp;wssl, "0.0.0.0", 5001));
+  CALL(<span class="wssl">wssl</span>_server_add(&amp;wssl, "0.0.0.0", 5003));
   CALL(<span class="wssl">wssl</span>_loop(&amp;wssl));
   CALL(<span class="wssl">wssl</span>_clean(&amp;wssl));
 

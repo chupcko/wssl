@@ -9,23 +9,18 @@
       /*<![CDATA[*/
       /*]]>*/
     </style>
+    <script src="index.js"></script>
     <script type="text/javascript">
       /*<![CDATA[*/
 
-      var addressId = undefined;
       var connectId = undefined;
-      var messageId = undefined;
-      var sendId = undefined;
       var disconnectId = undefined;
       var outputId = undefined;
       var webSocket = undefined;
 
       function init()
       {
-        addressId = document.getElementById('address');
         connectId = document.getElementById('connect');
-        messageId = document.getElementById('message');
-        sendId = document.getElementById('send');
         disconnectId = document.getElementById('disconnect');
         outputId = document.getElementById('output');
         abled();
@@ -35,20 +30,19 @@
       {
         if(webSocket === undefined)
         {
-          addressId.disabled = false;
           connectId.disabled = false;
-          messageId.disabled = true;
-          sendId.disabled = true;
           disconnectId.disabled = true;
         }
         else
         {
-          addressId.disabled = true;
           connectId.disabled = true;
-          messageId.disabled = false;
-          sendId.disabled = false;
           disconnectId.disabled = false;
         }
+      }
+
+      function clean()
+      {
+        outputId.innerHTML = '';
       }
 
       function write(message)
@@ -62,7 +56,7 @@
       {
         if(webSocket !== undefined)
           write('ERROR: already connected');
-        webSocket = new WebSocket(addressId.value);
+        webSocket = new WebSocket('ws://'+serverName+':5002');
         webSocket.onopen = function(event)
         {
           write("onOpen");
@@ -84,14 +78,6 @@
         };
       }
 
-      function send()
-      {
-        if(webSocket === undefined)
-          write('ERROR: not connected');
-        webSocket.send(messageId.value);
-        write('Sent: '+messageId.value);
-      }
-
       function disconnect()
       {
         if(webSocket === undefined)
@@ -99,23 +85,15 @@
         webSocket.close();
       }
 
-      function clean()
-      {
-        outputId.innerHTML = '';
-      }
-
       /*]]>*/
     </script>
   </head>
   <body onload="init();">
-    <a href="mini.c.html" class="link">Server source</a>
+    <a href="echo.c.html" class="link">Server source</a>
     <p/>
-    <input type="text" id="address" value="ws://wssl.chupcko.org:5001/"/>
-    <button id="connect" onclick="connect();">Connect</button>
-    <input type="text" id="message" value="test"/>
-    <button id="send" onclick="send();">Send</button>
-    <button id="disconnect" onclick="disconnect();">Disconnect</button>
     <button onclick="clean();">Clean</button>
+    <button id="connect" onclick="connect();">Connect</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
     <div id="output" class="box"></div>
   </body>
 </html>
