@@ -1,7 +1,5 @@
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 #include "wssl.h"
@@ -12,7 +10,7 @@ do                                        \
   wssl_result_t _result_ = (__VA_ARGS__); \
   if(wssl_result_is_not_ok(_result_))     \
   {                                       \
-    wssl_result_dump(_result_, stderr);   \
+    wssl_result_print(_result_, stderr);  \
     exit(EXIT_FAILURE);                   \
   }                                       \
 }                                         \

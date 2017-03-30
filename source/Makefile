@@ -17,7 +17,7 @@ ARCHIVER_FLAGS := csr
 all: $(OUT_DIR)
 
 .PHONY: debug
-debug: COMPILER_FLAGS += -g -DDEBUG
+debug: COMPILER_FLAGS += -g -DWSSL_DEBUG
 debug: all
 
 .PHONY: clean

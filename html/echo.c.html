@@ -18,11 +18,8 @@
   <body>
     demonstrations/echo.c:
     <pre class="source">
-#include &lt;errno.h&gt;
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-#include &lt;time.h&gt;
 
 #include "<span class="wssl">wssl</span>.h"
 
@@ -32,7 +29,7 @@ do                                        \
   <span class="wssl">wssl</span>_result_t _result_ = (__VA_ARGS__); \
   if(<span class="wssl">wssl</span>_result_is_not_ok(_result_))     \
   {                                       \
-    <span class="wssl">wssl</span>_result_dump(_result_, stderr);   \
+    <span class="wssl">wssl</span>_result_print(_result_, stderr);  \
     exit(EXIT_FAILURE);                   \
   }                                       \
 }                                         \

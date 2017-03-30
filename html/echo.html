@@ -13,6 +13,8 @@
     <script type="text/javascript">
       /*<![CDATA[*/
 
+      var serverPort = 5001;
+
       var connectId = undefined;
       var disconnectId = undefined;
       var messageId = undefined;
@@ -22,6 +24,7 @@
 
       function init()
       {
+        document.getElementById('server').innerHTML = serverName;
         connectId = document.getElementById('connect');
         disconnectId = document.getElementById('disconnect');
         messageId = document.getElementById('message');
@@ -64,7 +67,7 @@
       {
         if(webSocket !== undefined)
           write('ERROR: already connected');
-        webSocket = new WebSocket('ws://'+serverName+':5001');
+        webSocket = new WebSocket('ws://'+serverName+':'+serverPort);
         webSocket.onopen = function(event)
         {
           write("onOpen");
@@ -105,7 +108,7 @@
     </script>
   </head>
   <body onload="init();">
-    <a href="echo.c.html" class="link">Server source</a>
+    Server on "<span id="server"></span>" with <a href="echo.c.html" target="_blank" class="link">source</a>
     <p/>
     <button onclick="clean();">Clean</button>
     <button id="connect" onclick="connect();">Connect</button>

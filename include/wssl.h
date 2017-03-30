@@ -13,6 +13,7 @@ typedef struct wssl_t
   wssl_connect_callback_f*              connect_callback;
   wssl_disconnect_callback_f*           disconnect_callback;
   wssl_header_callback_f*               header_callback;
+  wssl_begin_callback_f*                begin_callback;
   wssl_receive_text_frame_callback_f*   receive_text_frame_callback;
   wssl_receive_binary_frame_callback_f* receive_binary_frame_callback;
   wssl_receive_close_frame_callback_f*  receive_close_frame_callback;
@@ -35,6 +36,7 @@ typedef struct wssl_t
   .connect_callback              = WSSL_CALLBACK_NONE,                                        \
   .disconnect_callback           = WSSL_CALLBACK_NONE,                                        \
   .header_callback               = WSSL_CALLBACK_NONE,                                        \
+  .begin_callback                = WSSL_CALLBACK_NONE,                                        \
   .receive_text_frame_callback   = WSSL_CALLBACK_NONE,                                        \
   .receive_binary_frame_callback = WSSL_CALLBACK_NONE,                                        \
   .receive_close_frame_callback  = WSSL_CALLBACK_NONE,                                        \
@@ -63,6 +65,7 @@ void wssl_init
   wssl->connect_callback              = WSSL_CALLBACK_NONE;
   wssl->disconnect_callback           = WSSL_CALLBACK_NONE;
   wssl->header_callback               = WSSL_CALLBACK_NONE;
+  wssl->begin_callback                = WSSL_CALLBACK_NONE;
   wssl->receive_text_frame_callback   = WSSL_CALLBACK_NONE;
   wssl->receive_binary_frame_callback = WSSL_CALLBACK_NONE;
   wssl->receive_close_frame_callback  = WSSL_CALLBACK_NONE;
@@ -116,7 +119,7 @@ void wssl_generate_random_seed
 }
 
 static inline
-wssl_id_t wssl_get_next_client_id
+wssl_id_t wssl_get_next_client_id /*#*/
 (
   _WSSL_MODIFY_ wssl_t* wssl
 )

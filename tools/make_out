@@ -29,6 +29,7 @@ _EOF_
 cat          ${BASE_DIR}/include/main.h           | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/version.h        | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/configurations.h | include_filter >> ${INCLUDE_FILE}
+cat          ${BASE_DIR}/include/debug.h          | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/base.h           | include_filter >> ${INCLUDE_FILE}
 include_exec ${BASE_DIR}/include/chain_g.h        | include_filter >> ${INCLUDE_FILE}
 cat          ${BASE_DIR}/include/chain.h          | include_filter >> ${INCLUDE_FILE}

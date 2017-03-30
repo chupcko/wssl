@@ -82,6 +82,25 @@ bool wssl_client_is_not_in_frame_processing
     client->state != WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
 }
 
+static inline
+void wssl_client_print
+(
+  _WSSL_IN_ const wssl_client_t* client,
+  _WSSL_IN_       FILE*          file
+)
+{
+  wssl_id_print(&client->id, file);
+  fprintf
+  (
+    file,
+    " %s:%d -> %s:%d",
+    client->ip,
+    client->port,
+    client->server->ip,
+    client->server->port
+  );
+}
+
 _INCLUDE_END_
 
 #endif

@@ -85,8 +85,7 @@ wssl_result_t wssl_header_insert_value_at_last_field
   _WSSL_IN_     wssl_size_t    data_size
 )
 {
-  if(wssl_header_field_chain_is_empty(&header->fields))/*#assert */
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_CONSISTENCY, "header_field");
+  WSSL_ASSERT(wssl_header_field_chain_is_not_empty(&header->fields));
   wssl_header_field_t* header_field = wssl_header_field_chain_entry(header->fields.prev);
 
   header_field->value = (char*)malloc((size_t)(data_size+1));

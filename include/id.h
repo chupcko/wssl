@@ -76,7 +76,7 @@ bool wssl_id_is_not_equal
 }
 
 static inline
-void wssl_id_dump
+void wssl_id_print
 (
   _WSSL_IN_ const wssl_id_t* id,
   _WSSL_IN_       FILE*      file
@@ -85,7 +85,7 @@ void wssl_id_dump
   fprintf
   (
     file,
-    "%" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX,
+    "[%" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX "]",
     id->prefix,
     id->suffix
   );

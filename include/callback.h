@@ -19,6 +19,11 @@ typedef bool wssl_header_callback_f
   _WSSL_MODIFY_ wssl_client_t*
 );
 
+typedef void wssl_begin_callback_f
+(
+  _WSSL_MODIFY_ wssl_client_t*
+);
+
 typedef void wssl_receive_text_frame_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*,

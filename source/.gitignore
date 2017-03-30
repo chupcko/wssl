@@ -1,3 +1,4 @@
+prototype.h
 *.o
 libwssl.a
 core

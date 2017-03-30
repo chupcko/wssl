@@ -216,9 +216,13 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
       {
         *processed = (wssl_size_t)size;
+
         client->state = WSSL_CLIENT_STATE_PROCESSING_HEADER;
         WSSL_CALL(wssl_client_processing_header(client));
+
         client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
+        if(client->wssl->begin_callback != WSSL_CALLBACK_NONE)
+          (*client->wssl->begin_callback)(client);
       }
       else
       {

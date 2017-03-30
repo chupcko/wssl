@@ -2,10 +2,10 @@
 
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
-DESTINATION="${BASE_DIR}/source/prototype.h"
-DESTINATION_NEW="${DESTINATION}.new"
+INCLUDE_FILE="${BASE_DIR}/source/prototype.h"
+INCLUDE_FILE_NEW="${INCLUDE_FILE}.new"
 
-cat << _EOF_ > ${DESTINATION_NEW}
+cat << _EOF_ > ${INCLUDE_FILE_NEW}
 #ifndef _PROTOTYPE_H_
 #define _PROTOTYPE_H_
 
@@ -14,20 +14,20 @@ _EOF_
 cd ${BASE_DIR}/source
 for file in $(\ls *.c | sort)
 do
-  echo "/* ${file} */" >> ${DESTINATION_NEW}
-  cat ${file} | awk -f ${BASE_DIR}/tools/awk/make_prototype.awk >> ${DESTINATION_NEW}
-  echo >> ${DESTINATION_NEW}
+  echo "/* ${file} */" >> ${INCLUDE_FILE_NEW}
+  cat ${file} | awk -f ${BASE_DIR}/tools/awk/make_prototype.awk >> ${INCLUDE_FILE_NEW}
+  echo >> ${INCLUDE_FILE_NEW}
 done
-echo '#endif' >> ${DESTINATION_NEW}
+echo '#endif' >> ${INCLUDE_FILE_NEW}
 
-if [ ! -e ${DESTINATION} ]
+if [ ! -e ${INCLUDE_FILE} ]
 then
-  mv ${DESTINATION_NEW} ${DESTINATION}
+  mv ${INCLUDE_FILE_NEW} ${INCLUDE_FILE}
 else
-  if diff ${DESTINATION_NEW} ${DESTINATION} > /dev/null
+  if diff ${INCLUDE_FILE_NEW} ${INCLUDE_FILE} > /dev/null
   then
-    rm -f ${DESTINATION_NEW}
+    rm -f ${INCLUDE_FILE_NEW}
   else
-    mv ${DESTINATION_NEW} ${DESTINATION}
+    mv ${INCLUDE_FILE_NEW} ${INCLUDE_FILE}
   fi
 fi

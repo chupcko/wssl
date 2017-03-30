@@ -1,7 +1,7 @@
 #include "main.h"
 
 _LIBRARY_FUNCTION_
-void wssl_result_dump
+void wssl_result_print
 (
   _WSSL_IN_ const wssl_result_t result,
   _WSSL_IN_       FILE*         file

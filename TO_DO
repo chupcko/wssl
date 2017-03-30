@@ -1,9 +1,7 @@
--callback za uspesan header, promeni chat da radi tako
 -dodaj razlicite izlaske iz cllabackova, recimo disconnect, error, ok
--dodaj assert
 -dodaj novi koncpet chaina, sa ofsetima
--proveri spisak nepotrebnih funkcija
 -testovi
 -client last time
 -dodaj string sa duzinom
 -da mogu da se registruju funkcije koje ce ici na sve konekcije po timeoutu
+-proveri spisak nepotrebnih funkcija

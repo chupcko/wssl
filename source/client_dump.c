@@ -18,7 +18,7 @@ void wssl_client_dump
     INDENT(indent_level),
     INDENT(indent_level+1)
   );
-  wssl_id_dump(&client->id, file);
+  wssl_id_print(&client->id, file);
   fprintf
   (
     file,

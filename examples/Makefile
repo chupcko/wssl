@@ -18,7 +18,7 @@ LIBRARIES = $(WSSL_DIR)/libwssl.a
 all: $(TARGETS)
 
 .PHONY: debug
-debug: COMPILER_FLAGS += -g -DDEBUG
+debug: COMPILER_FLAGS += -g -DWSSL_DEBUG
 debug: LINKER_FLAGS += -g
 debug: all
 

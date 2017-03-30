@@ -6,7 +6,6 @@
   what_call(ERROR_ERRNO,       -101, "System error with errno") \
   what_call(ERROR_MEMORY,      -102, "No memory"              ) \
   what_call(ERROR_FULL,        -103, "Buffer is full"         ) \
-  what_call(ERROR_CONSISTENCY, -104, "Consistency error"      )/*#*/ \
 
 _INCLUDE_BEGIN_
 

@@ -2,30 +2,35 @@
 
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
-DESTINATION="${BASE_DIR}/include/version.h"
-DESTINATION_NEW="${DESTINATION}.new"
+INCLUDE_FILE="${BASE_DIR}/include/version.h"
+INCLUDE_FILE_NEW="${INCLUDE_FILE}.new"
+VERSION_FILE="${BASE_DIR}/VERSION"
 
 NOW="$(date +%Y%m%d)"
 
-cat << _EOF_ > ${DESTINATION_NEW}
+cat << _EOF_ > ${INCLUDE_FILE_NEW}
 #ifndef _VERSION_H_
 #define _VERSION_H_
 
 _INCLUDE_BEGIN_
+
 #define WSSL_VERSION "${NOW}"
+
 _INCLUDE_END_
 
 #endif
 _EOF_
 
-if [ ! -e ${DESTINATION} ]
+if [ ! -e ${INCLUDE_FILE} ]
 then
-  mv ${DESTINATION_NEW} ${DESTINATION}
+  mv ${INCLUDE_FILE_NEW} ${INCLUDE_FILE}
 else
-  if diff ${DESTINATION_NEW} ${DESTINATION} > /dev/null
+  if diff ${INCLUDE_FILE_NEW} ${INCLUDE_FILE} > /dev/null
   then
-    rm -f ${DESTINATION_NEW}
+    rm -f ${INCLUDE_FILE_NEW}
   else
-    mv ${DESTINATION_NEW} ${DESTINATION}
+    mv ${INCLUDE_FILE_NEW} ${INCLUDE_FILE}
   fi
 fi
+
+echo ${NOW} > ${VERSION_FILE}

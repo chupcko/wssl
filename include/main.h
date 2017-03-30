@@ -40,6 +40,7 @@ _INCLUDE_END_
 
 #include "version.h"
 #include "configurations.h"
+#include "debug.h"
 #include "base.h"
 #include "chain_g.h"
 #include "chain.h"
