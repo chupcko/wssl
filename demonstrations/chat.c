@@ -3,18 +3,6 @@
 
 #include "wssl.h"
 
-#define CALL(...)                         \
-do                                        \
-{                                         \
-  wssl_result_t _result_ = (__VA_ARGS__); \
-  if(wssl_result_is_not_ok(_result_))     \
-  {                                       \
-    wssl_result_print(_result_, stderr);  \
-    exit(EXIT_FAILURE);                   \
-  }                                       \
-}                                         \
-while(false)                              \
-
 #define OUTPUT_SIZE 1024
 
 void on_client(wssl_client_t* client, void* local_extra_data)
@@ -54,9 +42,9 @@ int main(void)
   wssl_set_receive_text_frame_callback(&wssl, &on_receive_text_frame);
   wssl_set_disconnect_callback(&wssl, &on_disconnect);
 
-  CALL(wssl_server_add(&wssl, "0.0.0.0", 5003));
-  CALL(wssl_loop(&wssl));
-  CALL(wssl_clean(&wssl));
+  WSSL_TRY(wssl_server_add(&wssl, "0.0.0.0", 5003));
+  WSSL_TRY(wssl_loop(&wssl));
+  WSSL_TRY(wssl_clean(&wssl));
 
   return EXIT_SUCCESS;
 }

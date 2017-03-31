@@ -8,10 +8,10 @@ _INCLUDE_BEGIN_
 static inline
 void wssl_assert_fail
 (
-  const char*        expression,
-  const char*        file_name,
-  const unsigned int line_number,
-  const char*        function_name
+  _WSSL_IN_ const char*        expression,
+  _WSSL_IN_ const char*        file_name,
+  _WSSL_IN_ const unsigned int line_number,
+  _WSSL_IN_ const char*        function_name
 )
 {
   fprintf
@@ -29,14 +29,15 @@ void wssl_assert_fail
 #define WSSL_ASSERT(what_expression) \
 (                                    \
   (what_expression) ?                \
-  (void)(0) :                        \
-  wssl_assert_fail                   \
-  (                                  \
-    #what_expression,                \
-    __FILE__,                        \
-    __LINE__,                        \
-    __func__                         \
-  )                                  \
+    (void)(0)                        \
+  :                                  \
+    wssl_assert_fail                 \
+    (                                \
+      #what_expression,              \
+      __FILE__,                      \
+      __LINE__,                      \
+      __func__                       \
+    )                                \
 )                                    \
 
 #else

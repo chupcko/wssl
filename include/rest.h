@@ -4,6 +4,33 @@
 _INCLUDE_BEGIN_
 
 static inline
+void wssl_try_do
+(
+  _WSSL_IN_ const wssl_result_t result,
+  _WSSL_IN_ const char*         file_name,
+  _WSSL_IN_ const unsigned int  line_number,
+  _WSSL_IN_ const char*         function_name
+)
+{
+  if(wssl_result_is_not_ok(result))
+  {
+    fprintf
+    (
+      stderr,
+      "WSSL %s:%u %s: error ",
+      file_name,
+      line_number,
+      function_name
+    );
+    wssl_result_print(result, stderr);
+    fprintf(stderr, "\n");
+    abort();
+  }
+}
+
+#define WSSL_TRY(...) wssl_try_do((__VA_ARGS__), __FILE__, __LINE__, __func__)
+
+static inline
 wssl_t* wssl_client_get_wssl
 (
   _WSSL_IN_ const wssl_client_t* client

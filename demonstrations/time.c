@@ -4,18 +4,6 @@
 
 #include "wssl.h"
 
-#define CALL(...)                         \
-do                                        \
-{                                         \
-  wssl_result_t _result_ = (__VA_ARGS__); \
-  if(wssl_result_is_not_ok(_result_))     \
-  {                                       \
-    wssl_result_print(_result_, stderr);  \
-    exit(EXIT_FAILURE);                   \
-  }                                       \
-}                                         \
-while(false)                              \
-
 #define OUTPUT_SIZE 64
 
 void on_client(wssl_client_t* client, void* local_extra_data)
@@ -38,9 +26,9 @@ int main(void)
   wssl_set_sleep_in_mseconds(&wssl, 500);
   wssl_set_tick_callback(&wssl, &on_tick);
 
-  CALL(wssl_server_add(&wssl, "0.0.0.0", 5002));
-  CALL(wssl_loop(&wssl));
-  CALL(wssl_clean(&wssl));
+  WSSL_TRY(wssl_server_add(&wssl, "0.0.0.0", 5002));
+  WSSL_TRY(wssl_loop(&wssl));
+  WSSL_TRY(wssl_clean(&wssl));
 
   return EXIT_SUCCESS;
 }

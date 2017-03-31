@@ -17,6 +17,12 @@ typedef size_t wssl_size_t;
 typedef ssize_t wssl_ssize_t;
 #define WSSL_PRINT_SSIZE "zd"
 
+typedef struct wssl_string_t
+{
+  char*       string;
+  wssl_size_t length;
+} wssl_string_t;
+
 _INCLUDE_END_
 
 #define SHA1_RESULT_SIZE_IN_BITS   160

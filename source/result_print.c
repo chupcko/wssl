@@ -26,5 +26,4 @@ void wssl_result_print
       fprintf(file, " on \"%s\"", result.where);
       break;
   }
-  fprintf(file, "\n");
 }
