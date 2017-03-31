@@ -17,7 +17,7 @@ void wssl_try_do
     fprintf
     (
       stderr,
-      "WSSL %s:%u %s: error ",
+      "WSSL %s:%u-%s error ",
       file_name,
       line_number,
       function_name

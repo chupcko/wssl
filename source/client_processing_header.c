@@ -3,8 +3,8 @@
 static inline
 bool wssl_client_processing_header_check
 (
-  _WSSL_MODIFY_ wssl_client_t* client,
-  _WSSL_OUT_    char**         sec_websocket_key
+  _WSSL_MODIFY_ wssl_client_t*  client,
+  _WSSL_OUT_    wssl_string_t** sec_websocket_key
 )
 {
   if
@@ -13,25 +13,25 @@ bool wssl_client_processing_header_check
       client->wssl->header_callback != WSSL_CALLBACK_NONE &&
       !(*client->wssl->header_callback)(client)
     ) ||
-    client->header.method == WSSL_NULL ||
-    strcmp(client->header.method, "GET") != 0 ||
+    client->header.method.data == WSSL_NULL ||
+    strcmp(client->header.method.data, "GET") != 0 ||
     wssl_header_get_field_value(&client->header, "Host") == WSSL_NULL
   )
     return false;
 
-  char* connection = wssl_header_get_field_value(&client->header, "Connection");
+  wssl_string_t* connection = wssl_header_get_field_value(&client->header, "Connection");
   if
   (
     connection == WSSL_NULL ||
-    strstr(connection, "Upgrade") == NULL
+    strstr(connection->data, "Upgrade") == NULL
   )
     return false;
 
-  char* upgrade = wssl_header_get_field_value(&client->header, "Upgrade");
+  wssl_string_t* upgrade = wssl_header_get_field_value(&client->header, "Upgrade");
   if
   (
     upgrade == WSSL_NULL ||
-    strcmp(upgrade, "websocket") != 0
+    strcmp(upgrade->data, "websocket") != 0
   )
     return false;
 
@@ -45,7 +45,7 @@ wssl_result_t wssl_client_processing_header
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  char* sec_websocket_key;
+  wssl_string_t* sec_websocket_key;
   bool pass_header = wssl_client_processing_header_check(client, &sec_websocket_key);
 
   wssl_chunk_t* chunk;
@@ -59,8 +59,8 @@ wssl_result_t wssl_client_processing_header
     (
       wssl_handshake
       (
-        sec_websocket_key,
-        strlen(sec_websocket_key),/*#*/
+        sec_websocket_key->data,
+        sec_websocket_key->data_length,
         handshake_result,
         HANDSHAKE_RESULT_SIZE,
         &handshake_result_length

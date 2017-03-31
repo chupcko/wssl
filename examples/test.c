@@ -1,4 +1,6 @@
-#include "common.h"
+#include <stdlib.h>
+
+#include "wssl.h"
 
 int main(void)
 {

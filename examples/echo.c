@@ -5,7 +5,7 @@
 
 void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
 {
-  wssl_client_send_text(client, data);
+  wssl_client_send_string(client, &WSSL_MAKE_STRING(data, data_size));
 }
 
 int main(void)

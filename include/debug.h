@@ -17,7 +17,7 @@ void wssl_assert_fail
   fprintf
   (
     stderr,
-    "WSSL %s:%u %s: assertion \'%s\' failed\n",
+    "WSSL %s:%u-%s assertion \'%s\' failed\n",
     file_name,
     line_number,
     function_name,

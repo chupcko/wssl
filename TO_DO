@@ -1,7 +1,8 @@
--dodaj razlicite izlaske iz cllabackova, recimo disconnect, error, ok
+-sredi free/delete/clean, dodaj za string razne metode
+-uradi ispis stringa
+-dodaj razlicite izlaske iz callbackova, recimo disconnect, error, ok
 -dodaj novi koncpet chaina, sa ofsetima
 -testovi
 -client last time
--dodaj string sa duzinom
 -da mogu da se registruju funkcije koje ce ici na sve konekcije po timeoutu
 -proveri spisak nepotrebnih funkcija

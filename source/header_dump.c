@@ -18,8 +18,8 @@ void wssl_header_dump
     INDENT(indent_level),
     INDENT(indent_level+1)
   );
-  if(header->method != WSSL_NULL)
-    fprintf(file, "\"%s\"", header->method);
+  if(header->method.data != WSSL_NULL)
+    fprintf(file, "\"%s\"", header->method.data);
   else
     fprintf(file, "none");
   fprintf
@@ -31,8 +31,8 @@ void wssl_header_dump
     ),
     INDENT(indent_level+1)
   );
-  if(header->uri != WSSL_NULL)
-    fprintf(file, "\"%s\"", header->uri);
+  if(header->uri.data != WSSL_NULL)
+    fprintf(file, "\"%s\"", header->uri.data);
   else
     fprintf(file, "none");
   fprintf
@@ -44,8 +44,8 @@ void wssl_header_dump
     ),
     INDENT(indent_level+1)
   );
-  if(header->version != WSSL_NULL)
-    fprintf(file, "\"%s\"", header->version);
+  if(header->version.data != WSSL_NULL)
+    fprintf(file, "\"%s\"", header->version.data);
   else
     fprintf(file, "none");
   fprintf

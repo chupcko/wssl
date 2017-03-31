@@ -6,12 +6,12 @@ void wssl_header_clean
   _WSSL_MODIFY_ wssl_header_t* header
 )
 {
-  if(header->method != WSSL_NULL)
-    free((void*)header->method);
-  if(header->uri != WSSL_NULL)
-    free((void*)header->uri);
-  if(header->method != WSSL_NULL)
-    free((void*)header->version);
+  if(header->method.data != WSSL_NULL)
+    free((void*)header->method.data);
+  if(header->uri.data != WSSL_NULL)
+    free((void*)header->uri.data);
+  if(header->method.data != WSSL_NULL)
+    free((void*)header->version.data);
 
   wssl_header_field_chain_t* header_field_link;
   wssl_header_field_chain_t* header_field_link_next;

@@ -18,8 +18,8 @@ void wssl_header_field_dump
     INDENT(indent_level),
     INDENT(indent_level+1)
   );
-  if(header_field->key != WSSL_NULL)
-    fprintf(file, "\"%s\"", header_field->key);
+  if(header_field->key.data != WSSL_NULL)
+    fprintf(file, "\"%s\"", header_field->key.data);
   else
     fprintf(file, "none");
   fprintf
@@ -31,8 +31,8 @@ void wssl_header_field_dump
     ),
     INDENT(indent_level+1)
   );
-  if(header_field->value != WSSL_NULL)
-    fprintf(file, "\"%s\"", header_field->value);
+  if(header_field->value.data != WSSL_NULL)
+    fprintf(file, "\"%s\"", header_field->value.data);
   else
     fprintf(file, "none");
   fprintf(file, "\n");

@@ -19,9 +19,28 @@ typedef ssize_t wssl_ssize_t;
 
 typedef struct wssl_string_t
 {
-  char*       string;
-  wssl_size_t length;
+  char*       data;
+  wssl_size_t data_length;
 } wssl_string_t;
+
+static inline
+void wssl_string_init
+(
+  _WSSL_MODIFY_ wssl_string_t* string
+)
+{
+  string->data = WSSL_NULL;
+  string->data_length = 0;
+}
+
+#define WSSL_MAKE_STRING(what_data, what_data_length) \
+(                                                     \
+  (wssl_string_t)                                     \
+  {                                                   \
+    .data = (what_data),                              \
+    .data_length = (what_data_length)                 \
+  }                                                   \
+)                                                     \
 
 _INCLUDE_END_
 
