@@ -22,9 +22,9 @@ void wssl_frame_dump
       INDENT_FORMAT "masking_key:"
     ),
     INDENT(indent_level),
-    INDENT(indent_level+1), wssl_get_bool_string(frame->fin),
+    INDENT(indent_level+1), wssl_get_bool_name(frame->fin),
     INDENT(indent_level+1), frame->opcode,
-    INDENT(indent_level+1), wssl_get_bool_string(frame->masked),
+    INDENT(indent_level+1), wssl_get_bool_name(frame->masked),
     INDENT(indent_level+1), frame->length,
     INDENT(indent_level+1)
   );

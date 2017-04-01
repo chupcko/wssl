@@ -10,11 +10,11 @@ wssl_result_t wssl_base64_encode_put
 )
 {
   if(*output_index >= output_size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
+    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
   output[*output_index] = data;
   (*output_index)++;
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }
 
 _FUNCTION_
@@ -40,30 +40,30 @@ wssl_result_t wssl_base64_encode
 
   for(i = 0; input_size-i >= 3; i += 3)
   {
-    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
-    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]));
-    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i+1]&0xf)<<2) | ((input[i+2]>>6)&0x3)]));
-    WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[input[i+2]&0x3f]));
+    CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
+    CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]));
+    CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i+1]&0xf)<<2) | ((input[i+2]>>6)&0x3)]));
+    CALL(wssl_base64_encode_put(output, output_length, output_size, table[input[i+2]&0x3f]));
   }
   switch(input_size-i)
   {
     case 2:
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]));
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i+1]&0xf)<<2]));
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i+1]&0xf)<<2]));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
       break;
     case 1:
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]&0x3)<<4]));
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
-      WSSL_CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]>>2)&0x3f]));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, table[(input[i]&0x3)<<4]));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
+      CALL(wssl_base64_encode_put(output, output_length, output_size, '='));
       break;
   }
 
   if(*output_length >= output_size)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
+    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
   output[*output_length] = '\0';
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

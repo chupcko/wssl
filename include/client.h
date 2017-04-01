@@ -103,4 +103,6 @@ void wssl_client_print
 
 _INCLUDE_END_
 
+MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, chain_link)
+
 #endif

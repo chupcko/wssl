@@ -1,5 +1,5 @@
+-proveri lokalne makroe i out/wssl.h
 -dodaj razlicite izlaske iz callbackova, recimo disconnect, error, ok
--dodaj novi koncpet chaina, sa ofsetima
 -testovi
 -client last time
 -da mogu da se registruju funkcije koje ce ici na sve konekcije po timeoutu

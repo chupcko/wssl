@@ -6,9 +6,9 @@ static struct
   char*              name;
 } Wssl_result_code_table[] =
 {
-  #define CALL(what_id, what_number, what_name) { WSSL_RESULT_CODE_##what_id, what_name },
-  WSSL_RESULT_CODE_TABLE(CALL)
-  #undef CALL
+  #define MACRO_CALL(what_id, what_number, what_name) { WSSL_RESULT_CODE_##what_id, what_name },
+  RESULT_CODE_TABLE(MACRO_CALL)
+  #undef MACRO_CALL
   { WSSL_RESULT_CODE_END_, WSSL_NULL }
 };
 

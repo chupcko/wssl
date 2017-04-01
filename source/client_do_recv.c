@@ -7,10 +7,10 @@ wssl_result_t wssl_client_do_recv
 )
 {
   if(wssl_client_is_for_disconnecting(client))
-    return WSSL_MAKE_RESULT_OK;
+    return MAKE_RESULT_OK;
 
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
-    WSSL_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
+    CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
   wssl_ssize_t recv_size = (wssl_ssize_t)recv
   (
@@ -29,7 +29,7 @@ wssl_result_t wssl_client_do_recv
         wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
         break;
       default:
-        return WSSL_MAKE_RESULT_ERRNO("recv", errno);
+        return MAKE_RESULT_ERRNO("recv", errno);
         break;
     }
   else if(recv_size == 0)
@@ -41,7 +41,7 @@ wssl_result_t wssl_client_do_recv
     client->input_buffer.end += (wssl_size_t)recv_size;
     while(wssl_buffer_is_not_empty(&client->input_buffer))
     {
-      WSSL_CALL
+      CALL
       (
         wssl_client_processing_recv
         (
@@ -52,7 +52,7 @@ wssl_result_t wssl_client_do_recv
         )
       );
       if(wssl_client_is_for_disconnecting(client))
-        return WSSL_MAKE_RESULT_OK;
+        return MAKE_RESULT_OK;
       if(processed == 0)
         break;
       client->input_buffer.begin += processed;
@@ -68,5 +68,5 @@ wssl_result_t wssl_client_do_recv
     }
   }
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

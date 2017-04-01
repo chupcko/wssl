@@ -51,7 +51,7 @@ void* wssl_client_get_global_extra_data
 _INCLUDE_END_
 
 static inline
-const char* wssl_get_bool_string
+const char* wssl_get_bool_name
 (
   _WSSL_IN_ const bool value
 )

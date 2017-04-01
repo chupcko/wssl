@@ -6,9 +6,9 @@ static struct
   char*                           name;
 } Wssl_client_disconnect_reason_table[] =
 {
-  #define CALL(what_id, what_name) { WSSL_CLIENT_DISCONNECT_REASON_##what_id, what_name },
-  WSSL_CLIENT_DISCONNECT_REASON_TABLE(CALL)
-  #undef CALL
+  #define MACRO_CALL(what_id, what_name) { WSSL_CLIENT_DISCONNECT_REASON_##what_id, what_name },
+  CLIENT_DISCONNECT_REASON_TABLE(MACRO_CALL)
+  #undef MACRO_CALL
   { WSSL_CLIENT_DISCONNECT_REASON_END_, WSSL_NULL }
 };
 

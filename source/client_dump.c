@@ -70,8 +70,8 @@ void wssl_client_dump
   {
     fprintf(file, "\n");
     wssl_chunk_chain_t* chunk_link;
-    WSSL_CHAIN_FOR_EACH_LINK_FORWARD(chunk_link, &client->output_chunks)
-      wssl_buffer_dump(&wssl_chunk_chain_entry(chunk_link)->buffer, file, indent_level+2);
+    CHAIN_FOR_EACH_LINK_FORWARD(chunk_link, &client->output_chunks)
+      wssl_buffer_dump(&wssl_chunk_chain_get_entry_from_chain_link(chunk_link)->buffer, file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

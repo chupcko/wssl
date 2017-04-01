@@ -34,11 +34,11 @@ wssl_result_t wssl_buffer_allocate
 {
   buffer->data = (wssl_octet_t*)malloc((size_t)size);
   if(buffer->data == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer");
+    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer");
   buffer->size = size;
   buffer->begin = 0;
   buffer->end = 0;
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }
 
 static inline

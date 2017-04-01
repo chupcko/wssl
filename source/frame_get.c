@@ -31,7 +31,7 @@ wssl_size_t wssl_frame_get
       frame->payload_size = 0;
       for(i = 0; i < FRAME_LENGTH_LONG_LENGTH; i++)
       {
-        frame->payload_size <<= WSSL_OCTET_SIZE_IN_BITS;
+        frame->payload_size <<= OCTET_SIZE_IN_BITS;
         frame->payload_size |= (wssl_frame_size_t)data[data_length+i];
       }
       data_length += FRAME_LENGTH_LONG_LENGTH;
@@ -42,7 +42,7 @@ wssl_size_t wssl_frame_get
       frame->payload_size = 0;
       for(i = 0; i < FRAME_LENGTH_MEDIUM_LENGTH; i++)
       {
-        frame->payload_size <<= WSSL_OCTET_SIZE_IN_BITS;
+        frame->payload_size <<= OCTET_SIZE_IN_BITS;
         frame->payload_size |= (wssl_frame_size_t)data[data_length+i];
       }
       data_length += FRAME_LENGTH_MEDIUM_LENGTH;

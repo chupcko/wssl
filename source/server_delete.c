@@ -7,11 +7,11 @@ wssl_result_t wssl_server_delete
 )
 {
   if(server->socket_descriptor != WSSL_NO_DESCRIPTOR)
-    WSSL_CALL(wssl_server_stop(server));
+    CALL(wssl_server_stop(server));
 
   wssl_server_chain_delete_link(&server->chain_link);
 
   free((void*)server);
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

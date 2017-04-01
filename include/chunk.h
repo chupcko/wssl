@@ -12,6 +12,8 @@ typedef struct wssl_chunk_t
 
 _INCLUDE_END_
 
+MAKE_CHAIN_ENTRY(wssl_chunk, wssl_chunk_chain_t, wssl_chunk_t, chain_link)
+
 static inline
 void wssl_chunk_delete
 (

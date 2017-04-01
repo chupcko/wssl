@@ -6,9 +6,9 @@ static struct
   char*               name;
 } Wssl_client_state_table[] =
 {
-  #define CALL(what_id, what_name) { WSSL_CLIENT_STATE_##what_id, what_name },
-  WSSL_CLIENT_STATE_TABLE(CALL)
-  #undef CALL
+  #define MACRO_CALL(what_id, what_name) { WSSL_CLIENT_STATE_##what_id, what_name },
+  CLIENT_STATE_TABLE(MACRO_CALL)
+  #undef MACRO_CALL
   { WSSL_CLIENT_STATE_END_, WSSL_NULL }
 };
 

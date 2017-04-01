@@ -8,13 +8,13 @@ wssl_result_t wssl_clean
 {
   wssl_client_chain_t* client_link;
   wssl_client_chain_t* client_link_next;
-  WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_for_disconnecting)
-    WSSL_CALL(wssl_client_delete(wssl_client_chain_entry(client_link)));
+  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_for_disconnecting)
+    CALL(wssl_client_delete(wssl_client_chain_get_entry_from_chain_link(client_link)));
 
   wssl_server_chain_t* server_link;
   wssl_server_chain_t* server_link_next;
-  WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(server_link, server_link_next, &wssl->servers)
-    WSSL_CALL(wssl_server_delete(wssl_server_chain_entry(server_link)));
+  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(server_link, server_link_next, &wssl->servers)
+    CALL(wssl_server_delete(wssl_server_chain_get_entry_from_chain_link(server_link)));
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

@@ -8,7 +8,7 @@ wssl_result_t wssl_client_add
 {
   wssl_client_t* client = (wssl_client_t*)malloc(sizeof(wssl_client_t));
   if(client == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "client");
+    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "client");
 
   client->server = server;
   client->wssl = server->wssl;
@@ -22,7 +22,7 @@ wssl_result_t wssl_client_add
   {
     int system_errno = errno;
     free((void*)client);
-    return WSSL_MAKE_RESULT_ERRNO("accept", system_errno);
+    return MAKE_RESULT_ERRNO("accept", system_errno);
   }
 
   inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
@@ -38,7 +38,7 @@ wssl_result_t wssl_client_add
     int system_errno = errno;
     close(client->socket_descriptor);
     free((void*)client);
-    return WSSL_MAKE_RESULT_ERRNO("fcntl", system_errno);
+    return MAKE_RESULT_ERRNO("fcntl", system_errno);
   }
 
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
@@ -51,7 +51,7 @@ wssl_result_t wssl_client_add
 
     close(client->socket_descriptor);
     free((void*)client);
-    return WSSL_MAKE_RESULT_ERRNO("epoll_ctl", system_errno);
+    return MAKE_RESULT_ERRNO("epoll_ctl", system_errno);
   }
 
   client->connection_extra_data = WSSL_NULL;
@@ -70,5 +70,5 @@ wssl_result_t wssl_client_add
   if(client->wssl->connect_callback != WSSL_CALLBACK_NONE)
     (*client->wssl->connect_callback)(client);
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

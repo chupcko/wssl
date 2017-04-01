@@ -4,10 +4,10 @@ typedef uint32_t sha1_word_t;
 typedef uint64_t sha1_length_t;
 
 #define SHA1_WORD_SIZE_IN_OCTETS   sizeof(sha1_word_t)
-#define SHA1_WORD_SIZE_IN_BITS     (SHA1_WORD_SIZE_IN_OCTETS*WSSL_OCTET_SIZE_IN_BITS)
+#define SHA1_WORD_SIZE_IN_BITS     (SHA1_WORD_SIZE_IN_OCTETS*OCTET_SIZE_IN_BITS)
 #define SHA1_LENGTH_SIZE_IN_OCTETS sizeof(sha1_length_t)
 #define SHA1_CHUNK_SIZE_IN_BITS    512
-#define SHA1_CHUNK_SIZE_IN_OCTETS  (SHA1_CHUNK_SIZE_IN_BITS/WSSL_OCTET_SIZE_IN_BITS)
+#define SHA1_CHUNK_SIZE_IN_OCTETS  (SHA1_CHUNK_SIZE_IN_BITS/OCTET_SIZE_IN_BITS)
 #define SHA1_CHUNK_SIZE_IN_WORDS   (SHA1_CHUNK_SIZE_IN_OCTETS/SHA1_WORD_SIZE_IN_OCTETS)
 #define SHA1_RESULT_SIZE_IN_WORDS  (SHA1_RESULT_SIZE_IN_BITS/SHA1_WORD_SIZE_IN_BITS)
 #define SHA1_ROUND_NUMBER          (SHA1_CHUNK_SIZE_IN_WORDS*SHA1_RESULT_SIZE_IN_WORDS)
@@ -49,7 +49,7 @@ void sha1_processing_chunk
       w[i] = 0;
       for(j = 0; j < SHA1_WORD_SIZE_IN_OCTETS; j++)
       {
-        w[i] <<= WSSL_OCTET_SIZE_IN_BITS;
+        w[i] <<= OCTET_SIZE_IN_BITS;
         w[i] |= (sha1_word_t)chunk[i*SHA1_WORD_SIZE_IN_OCTETS+j];
       }
     }
@@ -118,11 +118,11 @@ void wssl_sha1
     memset((void*)chunk, 0, SHA1_CHUNK_SIZE_IN_OCTETS);
   }
 
-  sha1_length_t length = (sha1_length_t)data_size*WSSL_OCTET_SIZE_IN_BITS;
+  sha1_length_t length = (sha1_length_t)data_size*OCTET_SIZE_IN_BITS;
   for(i = 0; i < SHA1_LENGTH_SIZE_IN_OCTETS; i++)
   {
     chunk[SHA1_CHUNK_SIZE_IN_OCTETS-1-i] = (wssl_octet_t)(length&0xff);
-    length >>= WSSL_OCTET_SIZE_IN_BITS;
+    length >>= OCTET_SIZE_IN_BITS;
   }
   sha1_processing_chunk(chunk, intermediate_result);
 
@@ -130,6 +130,6 @@ void wssl_sha1
     for(j = SHA1_WORD_SIZE_IN_OCTETS-1; j >= 0; j--)
     {
       result[i*SHA1_WORD_SIZE_IN_OCTETS+j] = (wssl_octet_t)(intermediate_result[i]&0xff);
-      intermediate_result[i] >>= WSSL_OCTET_SIZE_IN_BITS;
+      intermediate_result[i] >>= OCTET_SIZE_IN_BITS;
     }
 }

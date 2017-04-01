@@ -3,10 +3,9 @@
 
 _INCLUDE_BEGIN_
 
-#define WSSL_NO_DESCRIPTOR      (-1)
-#define WSSL_NULL               NULL
-#define WSSL_OCTET_SIZE_IN_BITS 8
-#define WSSL_IP_SIZE_IN_CHAR    ((3+1)*4)
+#define WSSL_NO_DESCRIPTOR   (-1)
+#define WSSL_NULL            NULL
+#define WSSL_IP_SIZE_IN_CHAR ((3+1)*4)
 
 typedef uint8_t wssl_octet_t;
 #define WSSL_PRINT_OCTET "02" PRIx8
@@ -92,8 +91,10 @@ void wssl_string_free
   string->data_length = 0;
 }
 
+#define OCTET_SIZE_IN_BITS 8
+
 #define SHA1_RESULT_SIZE_IN_BITS   160
-#define SHA1_RESULT_SIZE_IN_OCTETS (SHA1_RESULT_SIZE_IN_BITS/WSSL_OCTET_SIZE_IN_BITS)
+#define SHA1_RESULT_SIZE_IN_OCTETS (SHA1_RESULT_SIZE_IN_BITS/OCTET_SIZE_IN_BITS)
 typedef wssl_octet_t wssl_sha1_result_t[SHA1_RESULT_SIZE_IN_OCTETS];
 
 #define BASE64_ENCODE_RESULT_SIZE(x) (((x)+2)/3*4)

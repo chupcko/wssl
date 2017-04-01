@@ -10,10 +10,10 @@ wssl_result_t wssl_client_delete
     (*client->wssl->disconnect_callback)(client, client->disconnect_reason);
 
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL) < 0)
-    return WSSL_MAKE_RESULT_ERRNO("epoll_ctl", errno);
+    return MAKE_RESULT_ERRNO("epoll_ctl", errno);
 
   if(close(client->socket_descriptor) < 0)
-    return WSSL_MAKE_RESULT_ERRNO("close", errno);
+    return MAKE_RESULT_ERRNO("close", errno);
   client->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   if(wssl_buffer_is_allocated(&client->input_buffer))
@@ -21,8 +21,8 @@ wssl_result_t wssl_client_delete
 
   wssl_chunk_chain_t* chunk_link;
   wssl_chunk_chain_t* chunk_link_next;
-  WSSL_CHAIN_FOR_EACH_LINK_SAFE_FORWARD(chunk_link, chunk_link_next, &client->output_chunks)
-    wssl_chunk_delete(wssl_chunk_chain_entry(chunk_link));
+  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(chunk_link, chunk_link_next, &client->output_chunks)
+    wssl_chunk_delete(wssl_chunk_chain_get_entry_from_chain_link(chunk_link));
 
   wssl_header_clean(&client->header);
   if(wssl_frame_is_allocated(&client->frame))
@@ -32,5 +32,5 @@ wssl_result_t wssl_client_delete
 
   free((void*)client);
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

@@ -52,8 +52,8 @@ void wssl_header_dump
   {
     fprintf(file, "\n");
     wssl_header_field_chain_t* header_field_link;
-    WSSL_CHAIN_FOR_EACH_LINK_FORWARD(header_field_link, &header->fields)
-      wssl_header_field_dump(wssl_header_field_chain_entry(header_field_link), file, indent_level+2);
+    CHAIN_FOR_EACH_LINK_FORWARD(header_field_link, &header->fields)
+      wssl_header_field_dump(wssl_header_field_chain_get_entry_from_chain_link(header_field_link), file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

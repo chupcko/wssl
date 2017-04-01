@@ -10,6 +10,6 @@ wssl_result_t wssl_client_send_binary
 {
   wssl_frame_t frame;
   wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_BINARY, false, data, data_size);
-  WSSL_CALL(wssl_client_send_frame(client, &frame));
-  return WSSL_MAKE_RESULT_OK;
+  CALL(wssl_client_send_frame(client, &frame));
+  return MAKE_RESULT_OK;
 }

@@ -15,7 +15,7 @@ wssl_result_t wssl_handshake
   wssl_size_t data_size = input_size+sizeof HANDSHAKE_MAGIC;
   char* data = (char*)malloc((size_t)data_size);
   if(data == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "handshake");
+    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "handshake");
 
   wssl_ssize_t data_length = snprintf(data, (size_t)data_size, "%s" HANDSHAKE_MAGIC, input);
   WSSL_ASSERT(data_length == data_size-1);
@@ -24,7 +24,7 @@ wssl_result_t wssl_handshake
   wssl_sha1((wssl_octet_t*)data, (wssl_size_t)data_length, sha1_result);
   free((void*)data);
 
-  WSSL_CALL(wssl_base64_encode(sha1_result, SHA1_RESULT_SIZE_IN_OCTETS, output, output_size, output_length));
+  CALL(wssl_base64_encode(sha1_result, SHA1_RESULT_SIZE_IN_OCTETS, output, output_size, output_length));
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

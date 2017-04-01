@@ -16,4 +16,6 @@ typedef struct wssl_server_t
 
 _INCLUDE_END_
 
+MAKE_CHAIN_ENTRY(wssl_server, wssl_server_chain_t, wssl_server_t, chain_link)
+
 #endif

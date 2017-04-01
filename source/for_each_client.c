@@ -11,10 +11,10 @@ void wssl_for_each_client_call
   wssl_server_chain_t* server_link;
   wssl_client_chain_t* client_link;
   wssl_client_t* client;
-  WSSL_CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
-    WSSL_CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl_server_chain_entry(server_link)->clients)
+  CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+    CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl_server_chain_get_entry_from_chain_link(server_link)->clients)
     {
-      client = wssl_client_chain_entry(client_link);
+      client = wssl_client_chain_get_entry_from_chain_link(client_link);
       if(wssl_client_is_in_frame_processing(client))
         (*callback)(client, local_extra_data);
     }

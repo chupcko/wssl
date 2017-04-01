@@ -7,7 +7,7 @@ wssl_result_t wssl_servers_start
 )
 {
   wssl_server_chain_t* server_link;
-  WSSL_CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
-    WSSL_CALL(wssl_server_start(wssl_server_chain_entry(server_link)));
-  return WSSL_MAKE_RESULT_OK;
+  CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+    CALL(wssl_server_start(wssl_server_chain_get_entry_from_chain_link(server_link)));
+  return MAKE_RESULT_OK;
 }

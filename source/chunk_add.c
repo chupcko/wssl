@@ -8,9 +8,13 @@ wssl_result_t wssl_chunk_add
   _WSSL_OUT_          wssl_chunk_t** chunk
 )
 {
-  *chunk = (wssl_chunk_t*)malloc(sizeof(wssl_chunk_t)+(size_t)size);
+  *chunk = (wssl_chunk_t*)malloc
+  (
+    sizeof(wssl_chunk_t)+
+    (size_t)size
+  );
   if(*chunk == NULL)
-    return WSSL_MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "chunk");
+    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "chunk");
 
   /*# proveri da name previse buffera */
 
@@ -21,5 +25,5 @@ wssl_result_t wssl_chunk_add
 
   wssl_chunk_chain_add_link_backward(&client->output_chunks, &(*chunk)->chain_link);
 
-  return WSSL_MAKE_RESULT_OK;
+  return MAKE_RESULT_OK;
 }

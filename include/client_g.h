@@ -1,7 +1,7 @@
 #ifndef _CLIENT_G_H_
 #define _CLIENT_G_H_
 
-#define WSSL_CLIENT_STATE_TABLE(what_call)                            \
+#define CLIENT_STATE_TABLE(what_call)                                 \
   what_call(WAIT_METHOD,                "Wait method"               ) \
   what_call(WAIT_URI_SEPARATOR,         "Wait URI separator"        ) \
   what_call(WAIT_URI,                   "Wait URI"                  ) \
@@ -16,7 +16,7 @@
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
   what_call(FOR_DISCONNECTING,          "For disconnecting"         ) \
 
-#define WSSL_CLIENT_DISCONNECT_REASON_TABLE(what_call) \
+#define CLIENT_DISCONNECT_REASON_TABLE(what_call)      \
   what_call(NONE,              "None")                 \
   what_call(FULL_RECV_BUFFER,  "Recv buffer is full")  \
   what_call(DISCONNECTED,      "Disconnecte")          \
@@ -35,17 +35,17 @@ _INCLUDE_BEGIN_
 
 typedef enum wssl_client_state_e
 {
-  #define CALL(what_id, what_name) WSSL_CLIENT_STATE_##what_id,
-  WSSL_CLIENT_STATE_TABLE(CALL)
-  #undef CALL
+  #define MACRO_CALL(what_id, what_name) WSSL_CLIENT_STATE_##what_id,
+  CLIENT_STATE_TABLE(MACRO_CALL)
+  #undef MACRO_CALL
   WSSL_CLIENT_STATE_END_
 } wssl_client_state_e;
 
 typedef enum wssl_client_disconnect_reason_e
 {
-  #define CALL(what_id, what_name) WSSL_CLIENT_DISCONNECT_REASON_##what_id,
-  WSSL_CLIENT_DISCONNECT_REASON_TABLE(CALL)
-  #undef CALL
+  #define MACRO_CALL(what_id, what_name) WSSL_CLIENT_DISCONNECT_REASON_##what_id,
+  CLIENT_DISCONNECT_REASON_TABLE(MACRO_CALL)
+  #undef MACRO_CALL
   WSSL_CLIENT_DISCONNECT_REASON_END_
 } wssl_client_disconnect_reason_e;
 
