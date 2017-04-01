@@ -18,9 +18,9 @@ else                                            \
 _LIBRARY_FUNCTION_
 void wssl_dump
 (
-  _WSSL_IN_ const wssl_t*     wssl,
-  _WSSL_IN_       FILE*       file,
-  _WSSL_IN_ const wssl_size_t indent_level
+  _WSSL_IN_     const wssl_t*     wssl,
+  _WSSL_MODIFY_       FILE*       file,
+  _WSSL_IN_     const wssl_size_t indent_level
 )
 {
   fprintf

@@ -3,8 +3,8 @@
 _LIBRARY_FUNCTION_
 void wssl_result_print
 (
-  _WSSL_IN_ const wssl_result_t result,
-  _WSSL_IN_       FILE*         file
+  _WSSL_IN_     const wssl_result_t result,
+  _WSSL_MODIFY_       FILE*         file
 )
 {
   fprintf(file, "\"%s\"", wssl_result_get_code_string(result));

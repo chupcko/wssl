@@ -78,8 +78,8 @@ bool wssl_id_is_not_equal
 static inline
 void wssl_id_print
 (
-  _WSSL_IN_ const wssl_id_t* id,
-  _WSSL_IN_       FILE*      file
+  _WSSL_IN_     const wssl_id_t* id,
+  _WSSL_MODIFY_       FILE*      file
 )
 {
   fprintf

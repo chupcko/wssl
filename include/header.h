@@ -102,4 +102,16 @@ wssl_result_t wssl_header_insert_value_at_last_field
   return WSSL_MAKE_RESULT_OK;
 }
 
+static inline
+void wssl_header_field_delete
+(
+  _WSSL_MODIFY_ wssl_header_field_t* header_field
+)
+{
+  if(wssl_string_is_allocated(&header_field->value))
+    wssl_string_free(&header_field->value);
+  wssl_header_field_chain_delete_link(&header_field->chain_link);
+  free((void*)header_field);
+}
+
 #endif

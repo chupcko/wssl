@@ -119,14 +119,14 @@ void wssl_generate_random_seed
 }
 
 static inline
-wssl_id_t wssl_get_next_client_id /*#*/
+void wssl_set_next_client_id
 (
-  _WSSL_MODIFY_ wssl_t* wssl
+  _WSSL_MODIFY_ wssl_t*    wssl,
+  _WSSL_OUT_    wssl_id_t* id
 )
 {
-  wssl_id_t id = wssl->next_client_id;
+  *id = wssl->next_client_id;
   wssl_id_next(&wssl->next_client_id);
-  return id;
 }
 
 #endif

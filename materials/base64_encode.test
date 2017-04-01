@@ -1,0 +1,16 @@
+  test_base64_encode("Man", "TWFu");
+  test_base64_encode("Ma",  "TWE=");
+  test_base64_encode("M",   "TQ==");
+
+  test_base64_encode("any carnal pleasure.", "YW55IGNhcm5hbCBwbGVhc3VyZS4=");
+  test_base64_encode("any carnal pleasure",  "YW55IGNhcm5hbCBwbGVhc3VyZQ==");
+  test_base64_encode("any carnal pleasur",   "YW55IGNhcm5hbCBwbGVhc3Vy");
+  test_base64_encode("any carnal pleasu",    "YW55IGNhcm5hbCBwbGVhc3U=");
+  test_base64_encode("any carnal pleas",     "YW55IGNhcm5hbCBwbGVhcw==");
+
+  test_base64_encode("pleasure.", "cGxlYXN1cmUu");
+  test_base64_encode("pleasure.", "cGxlYXN1cmUu");
+  test_base64_encode("leasure.",  "bGVhc3VyZS4=");
+  test_base64_encode("easure.",   "ZWFzdXJlLg==");
+  test_base64_encode("asure.",    "YXN1cmUu");
+  test_base64_encode("sure.",     "c3VyZS4=");

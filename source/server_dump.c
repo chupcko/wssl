@@ -3,9 +3,9 @@
 _LIBRARY_FUNCTION_
 void wssl_server_dump
 (
-  _WSSL_IN_ const wssl_server_t* server,
-  _WSSL_IN_       FILE*          file,
-  _WSSL_IN_ const wssl_size_t    indent_level
+  _WSSL_IN_     const wssl_server_t* server,
+  _WSSL_MODIFY_       FILE*          file,
+  _WSSL_IN_     const wssl_size_t    indent_level
 )
 {
   fprintf

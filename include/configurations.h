@@ -9,7 +9,7 @@ _INCLUDE_BEGIN_
 
 _INCLUDE_END_
 
-#define SERVER_BACKLOG_SIZE     16
-#define EPOLL_EVENTS_SIZE       16
+#define SERVER_BACKLOG_SIZE 16
+#define EPOLL_EVENTS_SIZE   16
 
 #endif

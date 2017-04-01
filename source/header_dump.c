@@ -3,9 +3,9 @@
 _LIBRARY_FUNCTION_
 void wssl_header_dump
 (
-  _WSSL_IN_ const wssl_header_t* header,
-  _WSSL_IN_       FILE*          file,
-  _WSSL_IN_ const wssl_size_t    indent_level
+  _WSSL_IN_     const wssl_header_t* header,
+  _WSSL_MODIFY_       FILE*          file,
+  _WSSL_IN_     const wssl_size_t    indent_level
 )
 {
   fprintf
@@ -18,10 +18,7 @@ void wssl_header_dump
     INDENT(indent_level),
     INDENT(indent_level+1)
   );
-  if(header->method.data != WSSL_NULL)
-    fprintf(file, "\"%s\"", header->method.data);
-  else
-    fprintf(file, "none");
+  wssl_string_print(&header->method, file);
   fprintf
   (
     file,
@@ -31,10 +28,7 @@ void wssl_header_dump
     ),
     INDENT(indent_level+1)
   );
-  if(header->uri.data != WSSL_NULL)
-    fprintf(file, "\"%s\"", header->uri.data);
-  else
-    fprintf(file, "none");
+  wssl_string_print(&header->uri, file);
   fprintf
   (
     file,
@@ -44,10 +38,7 @@ void wssl_header_dump
     ),
     INDENT(indent_level+1)
   );
-  if(header->version.data != WSSL_NULL)
-    fprintf(file, "\"%s\"", header->version.data);
-  else
-    fprintf(file, "none");
+  wssl_string_print(&header->version, file);
   fprintf
   (
     file,

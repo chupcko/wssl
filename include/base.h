@@ -12,7 +12,7 @@ typedef uint8_t wssl_octet_t;
 #define WSSL_PRINT_OCTET "02" PRIx8
 
 typedef size_t wssl_size_t;
-#define WSSL_PRINT_SIZE  "zu"
+#define WSSL_PRINT_SIZE "zu"
 
 typedef ssize_t wssl_ssize_t;
 #define WSSL_PRINT_SSIZE "zd"
@@ -22,16 +22,6 @@ typedef struct wssl_string_t
   char*       data;
   wssl_size_t data_length;
 } wssl_string_t;
-
-static inline
-void wssl_string_init
-(
-  _WSSL_MODIFY_ wssl_string_t* string
-)
-{
-  string->data = WSSL_NULL;
-  string->data_length = 0;
-}
 
 #define WSSL_MAKE_STRING(what_data, what_data_length) \
 (                                                     \
@@ -43,6 +33,64 @@ void wssl_string_init
 )                                                     \
 
 _INCLUDE_END_
+
+static inline
+void wssl_string_init
+(
+  _WSSL_MODIFY_ wssl_string_t* string
+)
+{
+  string->data = WSSL_NULL;
+  string->data_length = 0;
+}
+
+static inline
+bool wssl_string_is_allocated
+(
+  _WSSL_IN_ const wssl_string_t* string
+)
+{
+  return string->data != WSSL_NULL;
+}
+
+static inline
+bool wssl_string_is_not_allocated
+(
+  _WSSL_IN_ const wssl_string_t* string
+)
+{
+  return string->data == WSSL_NULL;
+}
+
+static inline
+void wssl_string_print
+(
+  _WSSL_IN_     const wssl_string_t* string,
+  _WSSL_MODIFY_       FILE*          file
+)
+{
+  if(wssl_string_is_allocated(string))
+    fprintf
+    (
+      file,
+      "\"%s\":%" WSSL_PRINT_SIZE,
+      string->data,
+      string->data_length
+    );
+  else
+    fprintf(file, "none");
+}
+
+static inline
+void wssl_string_free
+(
+  _WSSL_MODIFY_ wssl_string_t* string
+)
+{
+  free((void*)string->data);
+  string->data = WSSL_NULL;
+  string->data_length = 0;
+}
 
 #define SHA1_RESULT_SIZE_IN_BITS   160
 #define SHA1_RESULT_SIZE_IN_OCTETS (SHA1_RESULT_SIZE_IN_BITS/WSSL_OCTET_SIZE_IN_BITS)

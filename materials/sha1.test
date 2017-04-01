@@ -1,0 +1,50 @@
+  #define MESSAGE ""
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefgh"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefg"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgha"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefg"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+  #define MESSAGE "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgha"
+  wssl_sha1(MESSAGE, sizeof MESSAGE-1, result);
+  d(result);
+  #undef MESSAGE
+
+/*
+da39a3ee5e6b4b0d3255bfef95601890afd80709
+425af12a0743502b322e93a015bcf868e324d56a
+6b70fc1b4da1922a70686a0c4dcef6512ff5c65c
+dc81d69ad00bff0c312e703e40a19ab8e732416e
+b3a5ac39b037fc395fad28de3cd7b2bd3e564d11
+8495e26e0b2ad0cf2aebff079beb982648954212
+cbd8c1ee0779118216562290579a902da9c7080a
+4021e411111ddeb75c3a7c6e93db91b5c2a93aa3
+*/

@@ -13,7 +13,7 @@ wssl_result_t wssl_client_add
   client->server = server;
   client->wssl = server->wssl;
 
-  client->id = wssl_get_next_client_id(client->wssl);
+  wssl_set_next_client_id(client->wssl, &client->id);
 
   struct sockaddr_in client_address;
   socklen_t client_address_length = (socklen_t)sizeof client_address;
@@ -21,7 +21,6 @@ wssl_result_t wssl_client_add
   if(client->socket_descriptor  < 0)
   {
     int system_errno = errno;
-
     free((void*)client);
     return WSSL_MAKE_RESULT_ERRNO("accept", system_errno);
   }
@@ -37,7 +36,6 @@ wssl_result_t wssl_client_add
   )
   {
     int system_errno = errno;
-
     close(client->socket_descriptor);
     free((void*)client);
     return WSSL_MAKE_RESULT_ERRNO("fcntl", system_errno);

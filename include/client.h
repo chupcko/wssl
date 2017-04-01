@@ -85,8 +85,8 @@ bool wssl_client_is_not_in_frame_processing
 static inline
 void wssl_client_print
 (
-  _WSSL_IN_ const wssl_client_t* client,
-  _WSSL_IN_       FILE*          file
+  _WSSL_IN_     const wssl_client_t* client,
+  _WSSL_MODIFY_       FILE*          file
 )
 {
   wssl_id_print(&client->id, file);

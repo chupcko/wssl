@@ -3,9 +3,9 @@
 _LIBRARY_FUNCTION_
 void wssl_frame_dump
 (
-  _WSSL_IN_ const wssl_frame_t* frame,
-  _WSSL_IN_       FILE*         file,
-  _WSSL_IN_ const wssl_size_t   indent_level
+  _WSSL_IN_     const wssl_frame_t* frame,
+  _WSSL_MODIFY_       FILE*         file,
+  _WSSL_IN_     const wssl_size_t   indent_level
 )
 {
   wssl_size_t data_index;
