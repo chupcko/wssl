@@ -11,7 +11,7 @@ fprintf                                         \
   INDENT(indent_level+1)                        \
 );                                              \
 if(wssl->what_name != what_null)                \
-  fprintf(file, "%p", wssl->what_name);         \
+  fprintf(file, "%p", (void*)wssl->what_name);  \
 else                                            \
   fprintf(file, "none");                        \
 
@@ -27,10 +27,10 @@ void wssl_dump
   (
     file,
     (
-      INDENT_FORMAT "wssl=\n"
+      INDENT_FORMAT "wssl(%p)=\n"
       INDENT_FORMAT "epoll_descriptor: "
     ),
-    INDENT(indent_level),
+    INDENT(indent_level), (void*)wssl,
     INDENT(indent_level+1)
   );
   if(wssl->epoll_descriptor != WSSL_NO_DESCRIPTOR)

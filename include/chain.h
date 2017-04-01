@@ -3,11 +3,17 @@
 
 _INCLUDE_BEGIN_
 
-#define WSSL_CHAIN_INIT_VALUE(what_name) \
-{                                        \
-  .prev = &(what_name),                  \
-  .next = &(what_name)                   \
-}                                        \
+#define WSSL_CHAIN_ROOT_INIT_VALUE(what_name) \
+{                                             \
+  .prev = &(what_name),                       \
+  .next = &(what_name)                        \
+}                                             \
+
+#define WSSL_CHAIN_LINK_INIT_VALUE \
+{                                  \
+  .prev = WSSL_NULL,               \
+  .next = WSSL_NULL                \
+}                                  \
 
 _INCLUDE_END_
 
@@ -32,36 +38,36 @@ what_type_entry* what_prefix##_chain_get_entry_from_##what_entry_member         
   return entry;                                                                            \
 }                                                                                          \
 
-#define CHAIN_FOR_EACH_LINK_FORWARD(what_link, what_chain) for \
+#define CHAIN_FOR_EACH_LINK_FORWARD(what_link, what_root) for \
+(                                                             \
+  what_link = (what_root)->next;                              \
+  what_link != (what_root);                                   \
+  what_link = what_link->next                                 \
+)                                                             \
+
+#define CHAIN_FOR_EACH_LINK_BACKWARD(what_link, what_root) for \
 (                                                              \
-  what_link = (what_chain)->next;                              \
-  what_link != (what_chain);                                   \
-  what_link = what_link->next                                  \
+  what_link = (what_root)->prev;                               \
+  what_link != (what_root);                                    \
+  what_link = what_link->prev                                  \
 )                                                              \
 
-#define CHAIN_FOR_EACH_LINK_BACKWARD(what_link, what_chain) for \
-(                                                               \
-  what_link = (what_chain)->prev;                               \
-  what_link != (what_chain);                                    \
-  what_link = what_link->prev                                   \
-)                                                               \
+#define CHAIN_FOR_EACH_LINK_SAFE_FORWARD(what_link, what_link_next, what_root) for \
+(                                                                                  \
+  what_link = (what_root)->next,                                                   \
+  what_link_next = what_link->next;                                                \
+  what_link != (what_root);                                                        \
+  what_link = what_link_next,                                                      \
+  what_link_next = what_link->next                                                 \
+)                                                                                  \
 
-#define CHAIN_FOR_EACH_LINK_SAFE_FORWARD(what_link, what_link_next, what_chain) for \
+#define CHAIN_FOR_EACH_LINK_SAFE_BACKWARD(what_link, what_link_prev, what_root) for \
 (                                                                                   \
-  what_link = (what_chain)->next,                                                   \
-  what_link_next = what_link->next;                                                 \
-  what_link != (what_chain);                                                        \
-  what_link = what_link_next,                                                       \
-  what_link_next = what_link->next                                                  \
+  what_link = (what_root)->prev,                                                    \
+  what_link_prev = what_link->prev;                                                 \
+  what_link != (what_root);                                                         \
+  what_link = what_link_prev,                                                       \
+  what_link_prev = what_link->prev                                                  \
 )                                                                                   \
-
-#define CHAIN_FOR_EACH_LINK_SAFE_BACKWARD(what_link, what_link_prev, what_chain) for \
-(                                                                                    \
-  what_link = (what_chain)->prev,                                                    \
-  what_link_prev = what_link->prev;                                                  \
-  what_link != (what_chain);                                                         \
-  what_link = what_link_prev,                                                        \
-  what_link_prev = what_link->prev                                                   \
-)                                                                                    \
 
 #endif

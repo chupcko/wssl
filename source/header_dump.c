@@ -12,10 +12,10 @@ void wssl_header_dump
   (
     file,
     (
-      INDENT_FORMAT "header=\n"
+      INDENT_FORMAT "header(%p)=\n"
       INDENT_FORMAT "method: "
     ),
-    INDENT(indent_level),
+    INDENT(indent_level), (void*)header,
     INDENT(indent_level+1)
   );
   wssl_string_print(&header->method, file);

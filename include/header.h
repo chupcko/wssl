@@ -32,7 +32,7 @@ void wssl_header_init
   wssl_string_init(&header->method);
   wssl_string_init(&header->uri);
   wssl_string_init(&header->version);
-  wssl_header_field_chain_init(&header->fields);
+  wssl_header_field_chain_root_init(&header->fields);
 }
 
 #define MAKE_HEADER_INSERT(what_member)                                        \

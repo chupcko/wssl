@@ -12,10 +12,14 @@ void wssl_client_dump
   (
     file,
     (
-      INDENT_FORMAT "client=\n"
+      INDENT_FORMAT "client(%p)=\n"
+      INDENT_FORMAT "server: %p\n"
+      INDENT_FORMAT "wssl: %p\n"
       INDENT_FORMAT "id: "
     ),
-    INDENT(indent_level),
+    INDENT(indent_level), (void*)client,
+    INDENT(indent_level+1), (void*)client->server,
+    INDENT(indent_level+1), (void*)client->wssl,
     INDENT(indent_level+1)
   );
   wssl_id_print(&client->id, file);
@@ -46,7 +50,7 @@ void wssl_client_dump
     INDENT(indent_level+1)
   );
   if(client->connection_extra_data != WSSL_NULL)
-    fprintf(file, "%p", client->connection_extra_data);
+    fprintf(file, "%p", (void*)client->connection_extra_data);
   else
     fprintf(file, "none");
   fprintf

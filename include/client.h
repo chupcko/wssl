@@ -83,6 +83,34 @@ bool wssl_client_is_not_in_frame_processing
 }
 
 static inline
+bool wssl_client_disconnect_reason_is_error
+(
+  _WSSL_IN_ const wssl_client_disconnect_reason_e disconnect_reason
+)
+{
+  return
+    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_NONE &&
+    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED &&
+    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_CLOSED &&
+    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_REQUESTED &&
+    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_STOPED;
+}
+
+static inline
+bool wssl_client_disconnect_reason_is_not_error
+(
+  _WSSL_IN_ const wssl_client_disconnect_reason_e disconnect_reason
+)
+{
+  return
+    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_NONE ||
+    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED ||
+    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_CLOSED ||
+    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_REQUESTED ||
+    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_STOPED;
+}
+
+static inline
 void wssl_client_print
 (
   _WSSL_IN_     const wssl_client_t* client,

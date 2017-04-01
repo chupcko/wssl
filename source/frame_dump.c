@@ -14,14 +14,14 @@ void wssl_frame_dump
   (
     file,
     (
-      INDENT_FORMAT "frame=\n"
+      INDENT_FORMAT "frame(%p)=\n"
       INDENT_FORMAT "fin: %s\n"
       INDENT_FORMAT "opcode: %" WSSL_PRINT_OCTET "\n"
       INDENT_FORMAT "masked: %s\n"
       INDENT_FORMAT "length: %" WSSL_PRINT_OCTET "\n"
       INDENT_FORMAT "masking_key:"
     ),
-    INDENT(indent_level),
+    INDENT(indent_level), (void*)frame,
     INDENT(indent_level+1), wssl_get_bool_name(frame->fin),
     INDENT(indent_level+1), frame->opcode,
     INDENT(indent_level+1), wssl_get_bool_name(frame->masked),

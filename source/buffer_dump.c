@@ -12,10 +12,10 @@ void wssl_buffer_dump
   (
     file,
     (
-      INDENT_FORMAT "buffer=\n"
+      INDENT_FORMAT "buffer(%p)=\n"
       INDENT_FORMAT "data: "
     ),
-    INDENT(indent_level),
+    INDENT(indent_level), (void*)buffer,
     INDENT(indent_level+1)
   );
   if(wssl_buffer_is_allocated(buffer))

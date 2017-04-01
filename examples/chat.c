@@ -3,12 +3,12 @@
 
 #include "wssl.h"
 
-#define OUTPUT_SIZE 1024
-
 void on_client(wssl_client_t* client, void* local_extra_data)
 {
   wssl_client_send_text(client, (char*)local_extra_data);
 }
+
+#define OUTPUT_SIZE 1024
 
 void on_begin(wssl_client_t* client)
 {
@@ -26,7 +26,7 @@ void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_s
 
 void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e disconnect_reason)
 {
-  if(disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_REQUESTED)
+  if(wssl_client_disconnect_reason_is_not_error(disconnect_reason))
   {
     char output[OUTPUT_SIZE];
     snprintf(output, OUTPUT_SIZE, "%s:%" WSSL_PRINT_ID_SUFFIX " = LEAVE", client->header.uri.data, client->id.suffix);

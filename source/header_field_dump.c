@@ -12,10 +12,10 @@ void wssl_header_field_dump
   (
     file,
     (
-      INDENT_FORMAT "field=\n"
+      INDENT_FORMAT "field(%p)=\n"
       INDENT_FORMAT "key: "
     ),
-    INDENT(indent_level),
+    INDENT(indent_level), (void*)header_field,
     INDENT(indent_level+1)
   );
   wssl_string_print(&header_field->key, file);
