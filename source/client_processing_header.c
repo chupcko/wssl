@@ -13,7 +13,7 @@ bool wssl_client_processing_header_check
       client->wssl->header_callback != WSSL_CALLBACK_NONE &&
       !(*client->wssl->header_callback)(client)
     ) ||
-    client->header.method.data == WSSL_NULL ||
+    wssl_string_is_not_allocated(&client->header.method) ||
     strcmp(client->header.method.data, "GET") != 0 ||
     wssl_header_get_field_value(&client->header, "Host") == WSSL_NULL
   )
@@ -22,7 +22,7 @@ bool wssl_client_processing_header_check
   wssl_string_t* connection = wssl_header_get_field_value(&client->header, "Connection");
   if
   (
-    connection == WSSL_NULL ||
+    wssl_string_is_not_allocated(connection) ||
     strstr(connection->data, "Upgrade") == NULL
   )
     return false;
@@ -30,13 +30,13 @@ bool wssl_client_processing_header_check
   wssl_string_t* upgrade = wssl_header_get_field_value(&client->header, "Upgrade");
   if
   (
-    upgrade == WSSL_NULL ||
+    wssl_string_is_not_allocated(upgrade) ||
     strcmp(upgrade->data, "websocket") != 0
   )
     return false;
 
   *sec_websocket_key = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Key");
-  return *sec_websocket_key != WSSL_NULL;
+  return wssl_string_is_allocated(*sec_websocket_key);
 }
 
 _FUNCTION_

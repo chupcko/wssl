@@ -14,7 +14,7 @@ wssl_result_t wssl_chunk_add
 
   /*# proveri da name previse buffera */
 
-  (*chunk)->buffer.data = (*chunk)->data;
+  (*chunk)->buffer.data = (*chunk)->buffer_data;
   (*chunk)->buffer.size = size;
   (*chunk)->buffer.begin = 0;
   (*chunk)->buffer.end = 0;

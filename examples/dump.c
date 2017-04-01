@@ -25,7 +25,7 @@ void on_connect(wssl_client_t* client)
 
 void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e disconnect_reason)
 {
-  printf("Disconnect (%s) ", wssl_client_get_disconnect_reason_string(disconnect_reason));
+  printf("Disconnect (%s) ", wssl_client_get_disconnect_reason_name(disconnect_reason));
   wssl_client_print(client, stdout);
   printf("\n");
 }

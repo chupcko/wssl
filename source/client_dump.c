@@ -83,8 +83,8 @@ void wssl_client_dump
       INDENT_FORMAT "disconnect_reason: \"%s\"\n"
       INDENT_FORMAT "header:\n"
     ),
-    INDENT(indent_level+1), wssl_client_get_state_string(client->state),
-    INDENT(indent_level+1), wssl_client_get_disconnect_reason_string(client->disconnect_reason),
+    INDENT(indent_level+1), wssl_client_get_state_name(client->state),
+    INDENT(indent_level+1), wssl_client_get_disconnect_reason_name(client->disconnect_reason),
     INDENT(indent_level+1)
   );
   wssl_header_dump(&client->header, file, indent_level+2);

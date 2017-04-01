@@ -7,7 +7,7 @@ void wssl_result_print
   _WSSL_MODIFY_       FILE*         file
 )
 {
-  fprintf(file, "\"%s\"", wssl_result_get_code_string(result));
+  fprintf(file, "\"%s\"", wssl_result_get_code_name(result));
   switch(result.code)
   {
     case WSSL_RESULT_CODE_OK:

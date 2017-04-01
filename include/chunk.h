@@ -7,7 +7,7 @@ typedef struct wssl_chunk_t
 {
   wssl_chunk_chain_t chain_link;
   wssl_buffer_t      buffer;
-  wssl_octet_t       data[];
+  wssl_octet_t       buffer_data[];
 } wssl_chunk_t;
 
 _INCLUDE_END_

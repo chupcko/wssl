@@ -35,7 +35,7 @@ _INCLUDE_BEGIN_
 
 typedef enum wssl_client_state_e
 {
-  #define CALL(what_name, what_string) WSSL_CLIENT_STATE_##what_name,
+  #define CALL(what_id, what_name) WSSL_CLIENT_STATE_##what_id,
   WSSL_CLIENT_STATE_TABLE(CALL)
   #undef CALL
   WSSL_CLIENT_STATE_END_
@@ -43,7 +43,7 @@ typedef enum wssl_client_state_e
 
 typedef enum wssl_client_disconnect_reason_e
 {
-  #define CALL(what_name, what_string) WSSL_CLIENT_DISCONNECT_REASON_##what_name,
+  #define CALL(what_id, what_name) WSSL_CLIENT_DISCONNECT_REASON_##what_id,
   WSSL_CLIENT_DISCONNECT_REASON_TABLE(CALL)
   #undef CALL
   WSSL_CLIENT_DISCONNECT_REASON_END_
