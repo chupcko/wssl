@@ -117,10 +117,10 @@ int main(void)
   wssl_set_receive_pong_frame_callback(&wssl, &on_receive_pong_frame);
   wssl_set_tick_callback(&wssl, &on_tick);
 
-  WSSL_TRY(wssl_server_add(&wssl, "0.0.0.0", 5000));
-  WSSL_TRY(wssl_server_add(&wssl, "0.0.0.0", 6000));
-  WSSL_TRY(wssl_loop(&wssl));
-  WSSL_TRY(wssl_clean(&wssl));
+  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5000));
+  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 6000));
+  WSSL_TRY_CALL(wssl_loop(&wssl));
+  WSSL_TRY_CALL(wssl_clean(&wssl));
 
 #ifdef WSSL_DEBUG
   wssl_dump(&wssl, stdout, 0);

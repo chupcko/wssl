@@ -4,7 +4,7 @@
 _INCLUDE_BEGIN_
 
 static inline
-void wssl_try_do
+void wssl_try_call_test
 (
   _WSSL_IN_ const wssl_result_t result,
   _WSSL_IN_ const char*         file_name,
@@ -28,7 +28,7 @@ void wssl_try_do
   }
 }
 
-#define WSSL_TRY(...) wssl_try_do((__VA_ARGS__), __FILE__, __LINE__, __func__)
+#define WSSL_TRY_CALL(...) wssl_try_call_test((__VA_ARGS__), __FILE__, __LINE__, __func__)
 
 static inline
 wssl_t* wssl_client_get_wssl

@@ -11,13 +11,13 @@ wssl_size_t wssl_frame_get
   wssl_size_t i;
   wssl_size_t data_length = 0;
 
-  if(data_length >= data_size)
+  if(data_length+1 > data_size)
     return 0;
   frame->fin = (data[data_length]&0x80) != 0;
   frame->opcode = data[data_length]&0x0f;
   data_length++;
 
-  if(data_length >= data_size)
+  if(data_length+1 > data_size)
     return 0;
   frame->masked = (data[data_length]&0x80) != 0;
   frame->length = data[data_length]&0x7f;

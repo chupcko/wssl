@@ -49,13 +49,13 @@ wssl_result_t wssl_client_processing_header
   bool pass_header = wssl_client_processing_header_check(client, &sec_websocket_key);
 
   wssl_chunk_t* chunk;
-  CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
+  TRY_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
 
   if(pass_header)
   {
     char handshake_result[HANDSHAKE_RESULT_SIZE];
     wssl_size_t handshake_result_length;
-    CALL
+    TRY_CALL
     (
       wssl_handshake
       (
@@ -94,7 +94,7 @@ wssl_result_t wssl_client_processing_header
       client->wssl->server_name
     );
 
-  CALL(wssl_client_do_send(client));
+  TRY_CALL(wssl_client_do_send(client));
   if
   (
     !pass_header &&

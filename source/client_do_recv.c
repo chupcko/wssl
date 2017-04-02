@@ -10,7 +10,7 @@ wssl_result_t wssl_client_do_recv
     return MAKE_RESULT_OK;
 
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
-    CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
+    TRY_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
   wssl_ssize_t recv_size = (wssl_ssize_t)recv
   (
@@ -41,7 +41,7 @@ wssl_result_t wssl_client_do_recv
     client->input_buffer.end += (wssl_size_t)recv_size;
     while(wssl_buffer_is_not_empty(&client->input_buffer))
     {
-      CALL
+      TRY_CALL
       (
         wssl_client_processing_recv
         (

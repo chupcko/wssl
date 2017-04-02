@@ -62,7 +62,7 @@ _INCLUDE_END_
   }                                        \
 )                                          \
 
-#define CALL(...)                         \
+#define TRY_CALL(...)                     \
 do                                        \
 {                                         \
   wssl_result_t _result_ = (__VA_ARGS__); \

@@ -1,4 +1,4 @@
--proveri lokalne makroe i out/wssl.h
+-za base64_encode, frame_get i frame_put dodaj makroe koji olaksavaju
 -dodaj razlicite izlaske iz callbackova, recimo disconnect, error, ok
 -testovi
 -client last time

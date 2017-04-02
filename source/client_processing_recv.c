@@ -154,7 +154,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size > 0 && size < data_size)
       {
-        CALL(wssl_header_insert_method(&client->header, (char*)data, size));
+        TRY_CALL(wssl_header_insert_method(&client->header, (char*)data, size));
         *processed = (wssl_size_t)size;
         client->state = WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR;
       }
@@ -175,7 +175,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size > 0 && size < data_size)
       {
-        CALL(wssl_header_insert_uri(&client->header, (char*)data, size));
+        TRY_CALL(wssl_header_insert_uri(&client->header, (char*)data, size));
         *processed = (wssl_size_t)size;
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR;
       }
@@ -196,7 +196,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size > 0 && size < data_size)
       {
-        CALL(wssl_header_insert_version(&client->header, (char*)data, size));
+        TRY_CALL(wssl_header_insert_version(&client->header, (char*)data, size));
         *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
       }
@@ -218,7 +218,7 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
 
         client->state = WSSL_CLIENT_STATE_PROCESSING_HEADER;
-        CALL(wssl_client_processing_header(client));
+        TRY_CALL(wssl_client_processing_header(client));
 
         client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
         if(client->wssl->begin_callback != WSSL_CALLBACK_NONE)
@@ -229,7 +229,7 @@ wssl_result_t wssl_client_processing_recv
         size = wssl_client_processing_recv_find_word_until_colon((char*)data, data_size);
         if(size > 0 && size < data_size)
         {
-          CALL(wssl_header_add_field(&client->header, (char*)data, size));
+          TRY_CALL(wssl_header_add_field(&client->header, (char*)data, size));
           *processed = (wssl_size_t)size;
           client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
         }
@@ -249,7 +249,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size >= 0 && size < data_size)
       {
-        CALL(wssl_header_insert_value_at_last_field(&client->header, (char*)data, size));
+        TRY_CALL(wssl_header_insert_value_at_last_field(&client->header, (char*)data, size));
         *processed = size;
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
       }
@@ -259,10 +259,10 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
         if(client->frame.opcode != FRAME_OPCODE_CONTINUE)
         {
-          CALL(wssl_frame_allocate(&client->frame));
+          TRY_CALL(wssl_frame_allocate(&client->frame));
           if(client->frame.fin)
           {
-            CALL(wssl_client_processing_frame(client));
+            TRY_CALL(wssl_client_processing_frame(client));
             wssl_frame_free(&client->frame);
           }
           else
@@ -280,11 +280,11 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
         if(frame.opcode == FRAME_OPCODE_CONTINUE)
         {
-          CALL(wssl_frame_reallocate(&client->frame, &frame));
+          TRY_CALL(wssl_frame_reallocate(&client->frame, &frame));
           /*# proveri da li je previse puta se nakacio */
           if(frame.fin)
           {
-            CALL(wssl_client_processing_frame(client));
+            TRY_CALL(wssl_client_processing_frame(client));
             wssl_frame_free(&client->frame);
             client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
           }

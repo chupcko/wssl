@@ -18,7 +18,7 @@ wssl_result_t wssl_loop
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)
     return MAKE_RESULT_ERRNO("epoll_create1", errno);
-  CALL(wssl_servers_start(wssl));
+  TRY_CALL(wssl_servers_start(wssl));
 
   LOOP
   {
@@ -45,13 +45,13 @@ wssl_result_t wssl_loop
         switch(epoll_data->type)
         {
           case WSSL_EPOLL_DATA_TYPE_SERVER:
-            CALL(wssl_client_add(epoll_data->server));
+            TRY_CALL(wssl_client_add(epoll_data->server));
             break;
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
             if((events[event_index].events&EPOLLIN) != 0)
-              CALL(wssl_client_do_recv(epoll_data->client));
+              TRY_CALL(wssl_client_do_recv(epoll_data->client));
             if((events[event_index].events&EPOLLOUT) != 0)
-              CALL(wssl_client_do_send(epoll_data->client));
+              TRY_CALL(wssl_client_do_send(epoll_data->client));
             break;
         }
       }
@@ -64,10 +64,10 @@ wssl_result_t wssl_loop
       break;
 
     CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_for_disconnecting)
-      CALL(wssl_client_delete(wssl_client_chain_get_entry_from_chain_link(client_link)));
+      TRY_CALL(wssl_client_delete(wssl_client_chain_get_entry_from_chain_link(client_link)));
   }
 
-  CALL(wssl_servers_stop(wssl));
+  TRY_CALL(wssl_servers_stop(wssl));
   if(close(wssl->epoll_descriptor) < 0)
     return MAKE_RESULT_ERRNO("close", errno);
   wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;

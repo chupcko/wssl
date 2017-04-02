@@ -72,7 +72,7 @@ wssl_result_t wssl_client_do_send
     wssl_chunk_delete(chunk);
   }
 
-  CALL(wssl_client_do_send_set_epoll_event(client));
+  TRY_CALL(wssl_client_do_send_set_epoll_event(client));
 
   return MAKE_RESULT_OK;
 }

@@ -1,19 +1,19 @@
 #include "main.h"
 
-#define WSSL_DUMP_POINTER(what_name, what_null) \
-fprintf                                         \
-(                                               \
-  file,                                         \
-  (                                             \
-    "\n"                                        \
-    INDENT_FORMAT #what_name ": "               \
-  ),                                            \
-  INDENT(indent_level+1)                        \
-);                                              \
-if(wssl->what_name != what_null)                \
-  fprintf(file, "%p", (void*)wssl->what_name);  \
-else                                            \
-  fprintf(file, "none");                        \
+#define DUMP_POINTER(what_name, what_null)     \
+fprintf                                        \
+(                                              \
+  file,                                        \
+  (                                            \
+    "\n"                                       \
+    INDENT_FORMAT #what_name ": "              \
+  ),                                           \
+  INDENT(indent_level+1)                       \
+);                                             \
+if(wssl->what_name != what_null)               \
+  fprintf(file, "%p", (void*)wssl->what_name); \
+else                                           \
+  fprintf(file, "none");                       \
 
 _LIBRARY_FUNCTION_
 void wssl_dump
@@ -37,16 +37,16 @@ void wssl_dump
     fprintf(file, "%d", wssl->epoll_descriptor);
   else
     fprintf(file, "none");
-  WSSL_DUMP_POINTER(global_extra_data,             WSSL_NULL)
-  WSSL_DUMP_POINTER(connect_callback,              WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(disconnect_callback,           WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(header_callback,               WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(receive_text_frame_callback,   WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(receive_binary_frame_callback, WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(receive_close_frame_callback,  WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(receive_ping_frame_callback,   WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(receive_pong_frame_callback,   WSSL_CALLBACK_NONE)
-  WSSL_DUMP_POINTER(tick_callback,                 WSSL_CALLBACK_NONE)
+  DUMP_POINTER(global_extra_data,             WSSL_NULL)
+  DUMP_POINTER(connect_callback,              WSSL_CALLBACK_NONE)
+  DUMP_POINTER(disconnect_callback,           WSSL_CALLBACK_NONE)
+  DUMP_POINTER(header_callback,               WSSL_CALLBACK_NONE)
+  DUMP_POINTER(receive_text_frame_callback,   WSSL_CALLBACK_NONE)
+  DUMP_POINTER(receive_binary_frame_callback, WSSL_CALLBACK_NONE)
+  DUMP_POINTER(receive_close_frame_callback,  WSSL_CALLBACK_NONE)
+  DUMP_POINTER(receive_ping_frame_callback,   WSSL_CALLBACK_NONE)
+  DUMP_POINTER(receive_pong_frame_callback,   WSSL_CALLBACK_NONE)
+  DUMP_POINTER(tick_callback,                 WSSL_CALLBACK_NONE)
   fprintf
   (
     file,

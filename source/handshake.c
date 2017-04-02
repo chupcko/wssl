@@ -24,7 +24,7 @@ wssl_result_t wssl_handshake
   wssl_sha1((wssl_octet_t*)data, (wssl_size_t)data_length, sha1_result);
   free((void*)data);
 
-  CALL(wssl_base64_encode(sha1_result, SHA1_RESULT_SIZE_IN_OCTETS, output, output_size, output_length));
+  TRY_CALL(wssl_base64_encode(sha1_result, SHA1_RESULT_SIZE_IN_OCTETS, output, output_size, output_length));
 
   return MAKE_RESULT_OK;
 }

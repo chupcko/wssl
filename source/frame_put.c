@@ -14,19 +14,19 @@ wssl_result_t wssl_frame_put
 
   *data_length = 0;
 
-  if(*data_length >= data_size)
+  if(*data_length+1 > data_size)
     return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
   data[*data_length] = frame->opcode&0x0f;
   if(frame->fin)
     data[*data_length] |= 0x80;
-  ++*data_length;
+  (*data_length)++;
 
-  if(*data_length >= data_size)
+  if(*data_length+1 > data_size)
     return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put");
   data[*data_length] =  frame->length;
   if(frame->masked)
     data[*data_length] |= 0x80;
-  ++*data_length;
+  (*data_length)++;
 
   switch(frame->length)
   {

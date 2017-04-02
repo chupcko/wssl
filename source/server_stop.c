@@ -20,7 +20,7 @@ wssl_result_t wssl_server_stop
   {
     client = wssl_client_chain_get_entry_from_chain_link(client_link);
     client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_STOPED;
-    CALL(wssl_client_delete(client));
+    TRY_CALL(wssl_client_delete(client));
   }
 
   return MAKE_RESULT_OK;
