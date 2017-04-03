@@ -28,8 +28,7 @@ wssl_result_t wssl_client_do_send
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  if(wssl_client_is_for_disconnecting(client))
-    return MAKE_RESULT_OK;
+  CHECK_CLIENT_FOR_DISCONNECTING(client);
 
   wssl_ssize_t send_size;
   wssl_chunk_chain_t* chunk_link;
@@ -70,6 +69,7 @@ wssl_result_t wssl_client_do_send
       chunk->buffer.begin += (wssl_size_t)send_size;
     }
     wssl_chunk_delete(chunk);
+    client->number_of_output_chunks--;
   }
 
   TRY_CALL(wssl_client_do_send_set_epoll_event(client));

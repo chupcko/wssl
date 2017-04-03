@@ -17,10 +17,12 @@ typedef struct wssl_client_t
   void*                           connection_extra_data;
   wssl_buffer_t                   input_buffer;
   wssl_chunk_chain_t              output_chunks;
+  wssl_size_t                     number_of_output_chunks;
   wssl_client_state_e             state;
   wssl_client_disconnect_reason_e disconnect_reason;
   wssl_header_t                   header;
   wssl_frame_t                    frame;
+  wssl_size_t                     number_of_received_multi_frames;
 } wssl_client_t;
 
 static inline
@@ -132,5 +134,9 @@ void wssl_client_print
 _INCLUDE_END_
 
 MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, chain_link)
+
+#define CHECK_CLIENT_FOR_DISCONNECTING(what_client) \
+if(wssl_client_is_for_disconnecting(what_client))   \
+  return MAKE_RESULT_OK;                            \
 
 #endif

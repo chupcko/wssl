@@ -17,6 +17,8 @@ _INCLUDE_BEGIN_
 MAKE_WSSL_SET(char*,                                 server_name)
 MAKE_WSSL_SET(wssl_size_t,                           buffer_size_in_octets)
 MAKE_WSSL_SET(wssl_ssize_t,                          sleep_in_mseconds)
+MAKE_WSSL_SET(wssl_size_t,                           max_number_of_output_chunks)
+MAKE_WSSL_SET(wssl_size_t,                           max_number_of_received_multi_frames)
 MAKE_WSSL_SET(void*,                                 global_extra_data)
 MAKE_WSSL_SET(wssl_connect_callback_f*,              connect_callback)
 MAKE_WSSL_SET(wssl_disconnect_callback_f*,           disconnect_callback)

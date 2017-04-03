@@ -58,12 +58,14 @@ wssl_result_t wssl_client_add
 
   wssl_buffer_init(&client->input_buffer);
   wssl_chunk_chain_root_init(&client->output_chunks);
+  client->number_of_output_chunks = 0;
 
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_NONE;
 
   wssl_header_init(&client->header);
   wssl_frame_init(&client->frame);
+  client->number_of_received_multi_frames = 0;
 
   wssl_client_chain_add_link_backward(&server->clients, &client->chain_link);
 

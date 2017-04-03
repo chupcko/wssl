@@ -5,10 +5,12 @@ _INCLUDE_BEGIN_
 
 typedef struct wssl_t
 {
-  int                                   epoll_descriptor;
   char*                                 server_name;
   wssl_size_t                           buffer_size_in_octets;
   wssl_ssize_t                          sleep_in_mseconds;
+  wssl_size_t                           max_number_of_output_chunks;
+  wssl_size_t                           max_number_of_received_multi_frames;
+  int                                   epoll_descriptor;
   void*                                 global_extra_data;
   wssl_connect_callback_f*              connect_callback;
   wssl_disconnect_callback_f*           disconnect_callback;
@@ -26,28 +28,30 @@ typedef struct wssl_t
   wssl_client_chain_t                   clients_for_disconnecting;
 } wssl_t;
 
-#define WSSL_INIT_VALUE(what_name)                                                                 \
-{                                                                                                  \
-  .epoll_descriptor              = WSSL_NO_DESCRIPTOR,                                             \
-  .server_name                   = WSSL_DEFAULT_SERVER_NAME,                                       \
-  .buffer_size_in_octets         = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,                             \
-  .sleep_in_mseconds             = WSSL_DEFAULT_SLEEP_IN_MSECONDS,                                 \
-  .global_extra_data             = WSSL_NULL,                                                      \
-  .connect_callback              = WSSL_CALLBACK_NONE,                                             \
-  .disconnect_callback           = WSSL_CALLBACK_NONE,                                             \
-  .header_callback               = WSSL_CALLBACK_NONE,                                             \
-  .begin_callback                = WSSL_CALLBACK_NONE,                                             \
-  .receive_text_frame_callback   = WSSL_CALLBACK_NONE,                                             \
-  .receive_binary_frame_callback = WSSL_CALLBACK_NONE,                                             \
-  .receive_close_frame_callback  = WSSL_CALLBACK_NONE,                                             \
-  .receive_ping_frame_callback   = WSSL_CALLBACK_NONE,                                             \
-  .receive_pong_frame_callback   = WSSL_CALLBACK_NONE,                                             \
-  .tick_callback                 = WSSL_CALLBACK_NONE,                                             \
-  .random_seed                   = 0,                                                              \
-  .next_client_id                = WSSL_ID_INIT_VALUE,                                             \
-  .servers                       = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.servers),                  \
-  .clients_for_disconnecting     = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.clients_for_disconnecting) \
-}                                                                                                  \
+#define WSSL_INIT_VALUE(what_name)                                                                       \
+{                                                                                                        \
+  .server_name                         = WSSL_DEFAULT_SERVER_NAME,                                       \
+  .buffer_size_in_octets               = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,                             \
+  .sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,                                 \
+  .max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,                       \
+  .max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,               \
+  .epoll_descriptor                    = WSSL_NO_DESCRIPTOR,                                             \
+  .global_extra_data                   = WSSL_NULL,                                                      \
+  .connect_callback                    = WSSL_CALLBACK_NONE,                                             \
+  .disconnect_callback                 = WSSL_CALLBACK_NONE,                                             \
+  .header_callback                     = WSSL_CALLBACK_NONE,                                             \
+  .begin_callback                      = WSSL_CALLBACK_NONE,                                             \
+  .receive_text_frame_callback         = WSSL_CALLBACK_NONE,                                             \
+  .receive_binary_frame_callback       = WSSL_CALLBACK_NONE,                                             \
+  .receive_close_frame_callback        = WSSL_CALLBACK_NONE,                                             \
+  .receive_ping_frame_callback         = WSSL_CALLBACK_NONE,                                             \
+  .receive_pong_frame_callback         = WSSL_CALLBACK_NONE,                                             \
+  .tick_callback                       = WSSL_CALLBACK_NONE,                                             \
+  .random_seed                         = 0,                                                              \
+  .next_client_id                      = WSSL_ID_INIT_VALUE,                                             \
+  .servers                             = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.servers),                  \
+  .clients_for_disconnecting           = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.clients_for_disconnecting) \
+}                                                                                                        \
 
 #define WSSL_DECLARE(what_name) wssl_t what_name = WSSL_INIT_VALUE(what_name)
 
@@ -57,22 +61,24 @@ void wssl_init
   _WSSL_MODIFY_ wssl_t* wssl
 )
 {
-  wssl->epoll_descriptor              = WSSL_NO_DESCRIPTOR;
-  wssl->server_name                   = WSSL_DEFAULT_SERVER_NAME;
-  wssl->buffer_size_in_octets         = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,
-  wssl->sleep_in_mseconds             = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
-  wssl->global_extra_data             = WSSL_NULL;
-  wssl->connect_callback              = WSSL_CALLBACK_NONE;
-  wssl->disconnect_callback           = WSSL_CALLBACK_NONE;
-  wssl->header_callback               = WSSL_CALLBACK_NONE;
-  wssl->begin_callback                = WSSL_CALLBACK_NONE;
-  wssl->receive_text_frame_callback   = WSSL_CALLBACK_NONE;
-  wssl->receive_binary_frame_callback = WSSL_CALLBACK_NONE;
-  wssl->receive_close_frame_callback  = WSSL_CALLBACK_NONE;
-  wssl->receive_ping_frame_callback   = WSSL_CALLBACK_NONE;
-  wssl->receive_pong_frame_callback   = WSSL_CALLBACK_NONE;
-  wssl->tick_callback                 = WSSL_CALLBACK_NONE;
-  wssl->random_seed                   = 0;
+  wssl->server_name                         = WSSL_DEFAULT_SERVER_NAME;
+  wssl->buffer_size_in_octets               = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,
+  wssl->sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
+  wssl->max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,
+  wssl->max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,
+  wssl->epoll_descriptor                    = WSSL_NO_DESCRIPTOR;
+  wssl->global_extra_data                   = WSSL_NULL;
+  wssl->connect_callback                    = WSSL_CALLBACK_NONE;
+  wssl->disconnect_callback                 = WSSL_CALLBACK_NONE;
+  wssl->header_callback                     = WSSL_CALLBACK_NONE;
+  wssl->begin_callback                      = WSSL_CALLBACK_NONE;
+  wssl->receive_text_frame_callback         = WSSL_CALLBACK_NONE;
+  wssl->receive_binary_frame_callback       = WSSL_CALLBACK_NONE;
+  wssl->receive_close_frame_callback        = WSSL_CALLBACK_NONE;
+  wssl->receive_ping_frame_callback         = WSSL_CALLBACK_NONE;
+  wssl->receive_pong_frame_callback         = WSSL_CALLBACK_NONE;
+  wssl->tick_callback                       = WSSL_CALLBACK_NONE;
+  wssl->random_seed                         = 0;
   wssl_id_init(&wssl->next_client_id);
   wssl_server_chain_root_init(&wssl->servers);
   wssl_client_chain_root_init(&wssl->clients_for_disconnecting);

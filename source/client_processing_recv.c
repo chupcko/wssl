@@ -219,10 +219,14 @@ wssl_result_t wssl_client_processing_recv
 
         client->state = WSSL_CLIENT_STATE_PROCESSING_HEADER;
         TRY_CALL(wssl_client_processing_header(client));
+        CHECK_CLIENT_FOR_DISCONNECTING(client);
 
         client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
         if(client->wssl->begin_callback != WSSL_CALLBACK_NONE)
+        {
           (*client->wssl->begin_callback)(client);
+          CHECK_CLIENT_FOR_DISCONNECTING(client);
+        }
       }
       else
       {
@@ -263,6 +267,7 @@ wssl_result_t wssl_client_processing_recv
           if(client->frame.fin)
           {
             TRY_CALL(wssl_client_processing_frame(client));
+            CHECK_CLIENT_FOR_DISCONNECTING(client);
             wssl_frame_free(&client->frame);
           }
           else
@@ -280,15 +285,21 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
         if(frame.opcode == FRAME_OPCODE_CONTINUE)
         {
+          if(client->number_of_received_multi_frames > client->wssl->max_number_of_received_multi_frames)
+          {
+            wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
+            return MAKE_RESULT_OK;
+          }
           TRY_CALL(wssl_frame_reallocate(&client->frame, &frame));
-          /*# proveri da li je previse puta se nakacio */
           if(frame.fin)
           {
             TRY_CALL(wssl_client_processing_frame(client));
+            CHECK_CLIENT_FOR_DISCONNECTING(client);
             wssl_frame_free(&client->frame);
             client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
           }
           *processed = size;
+          client->number_of_received_multi_frames++;
         }
         else
           wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);

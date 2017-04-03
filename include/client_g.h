@@ -16,20 +16,22 @@
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
   what_call(FOR_DISCONNECTING,          "For disconnecting"         ) \
 
-#define CLIENT_DISCONNECT_REASON_TABLE(what_call)      \
-  what_call(NONE,              "None")                 \
-  what_call(FULL_RECV_BUFFER,  "Recv buffer is full")  \
-  what_call(DISCONNECTED,      "Disconnecte")          \
-  what_call(CLOSED,            "Closed")               \
-  what_call(MISSING_METHOD,    "Missing method")       \
-  what_call(MISSING_URI,       "Missing URI")          \
-  what_call(MISSING_VERSION,   "Missing URI")          \
-  what_call(MISSING_CRLF,      "Missing CRLF")         \
-  what_call(MISSING_FIELD_KEY, "Missing field key")    \
-  what_call(BAD_HANDSHAKE,     "Bad handshake")        \
-  what_call(BAD_FRAME_OPCODE,  "Bad frame opcode")     \
-  what_call(REQUESTED,         "Requested")            \
-  what_call(STOPED,            "Stoped")               \
+#define CLIENT_DISCONNECT_REASON_TABLE(what_call)                             \
+  what_call(NONE,                           "None")                           \
+  what_call(FULL_RECV_BUFFER,               "Recv buffer is full")            \
+  what_call(DISCONNECTED,                   "Disconnecte")                    \
+  what_call(CLOSED,                         "Closed")                         \
+  what_call(MISSING_METHOD,                 "Missing method")                 \
+  what_call(MISSING_URI,                    "Missing URI")                    \
+  what_call(MISSING_VERSION,                "Missing URI")                    \
+  what_call(MISSING_CRLF,                   "Missing CRLF")                   \
+  what_call(MISSING_FIELD_KEY,              "Missing field key")              \
+  what_call(BAD_HANDSHAKE,                  "Bad handshake")                  \
+  what_call(BAD_FRAME_OPCODE,               "Bad frame opcode")               \
+  what_call(TOO_MUCH_OUTPUT_CHUNKS,         "Too much output chunks")         \
+  what_call(TOO_MUCH_RECEIVED_MULTI_FRAMES, "Too much received multi frames") \
+  what_call(REQUESTED,                      "Requested")                      \
+  what_call(STOPED,                         "Stoped")                         \
 
 _INCLUDE_BEGIN_
 

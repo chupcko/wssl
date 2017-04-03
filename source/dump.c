@@ -28,9 +28,19 @@ void wssl_dump
     file,
     (
       INDENT_FORMAT "wssl(%p)=\n"
+      INDENT_FORMAT "server_name: \"%s\"\n"
+      INDENT_FORMAT "buffer_size_in_octets: %" WSSL_PRINT_SIZE "\n"
+      INDENT_FORMAT "sleep_in_mseconds: %" WSSL_PRINT_SSIZE "\n"
+      INDENT_FORMAT "max_number_of_output_chunks: %" WSSL_PRINT_SIZE "\n"
+      INDENT_FORMAT "max_number_of_received_multi_frames: %" WSSL_PRINT_SIZE "\n"
       INDENT_FORMAT "epoll_descriptor: "
     ),
     INDENT(indent_level), (void*)wssl,
+    INDENT(indent_level+1), wssl->server_name,
+    INDENT(indent_level+1), wssl->buffer_size_in_octets,
+    INDENT(indent_level+1), wssl->sleep_in_mseconds,
+    INDENT(indent_level+1), wssl->max_number_of_output_chunks,
+    INDENT(indent_level+1), wssl->max_number_of_received_multi_frames,
     INDENT(indent_level+1)
   );
   if(wssl->epoll_descriptor != WSSL_NO_DESCRIPTOR)

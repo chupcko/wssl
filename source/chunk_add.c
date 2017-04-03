@@ -8,6 +8,12 @@ wssl_result_t wssl_chunk_add
   _WSSL_OUT_          wssl_chunk_t** chunk
 )
 {
+  if(client->number_of_output_chunks > client->wssl->max_number_of_output_chunks)
+  {
+    wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_OUTPUT_CHUNKS);
+    return MAKE_RESULT_OK;
+  }
+
   *chunk = (wssl_chunk_t*)malloc
   (
     sizeof(wssl_chunk_t)+
@@ -16,14 +22,14 @@ wssl_result_t wssl_chunk_add
   if(*chunk == NULL)
     return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "chunk");
 
-  /*# proveri da name previse buffera */
-
   (*chunk)->buffer.data = (*chunk)->buffer_data;
   (*chunk)->buffer.size = size;
   (*chunk)->buffer.begin = 0;
   (*chunk)->buffer.end = 0;
 
   wssl_chunk_chain_add_link_backward(&client->output_chunks, &(*chunk)->chain_link);
+
+  client->number_of_output_chunks++;
 
   return MAKE_RESULT_OK;
 }
