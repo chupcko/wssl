@@ -261,7 +261,7 @@ wssl_result_t wssl_client_processing_recv
         if(client->frame.opcode == FRAME_OPCODE_CONTINUE)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
 
-        TRY_CALL(wssl_frame_allocate(&client->frame));
+        TRY_CALL(wssl_frame_allocate(&client->frame));/*# pomeri samo ako nema */
         if(client->frame.fin)
         {
           TRY_CALL(wssl_client_processing_frame(client));

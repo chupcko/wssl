@@ -1,4 +1,4 @@
--za base64_encode, frame_get i frame_put dodaj makroe koji olaksavaju
+-proveri frame_get i da kopira samo ako treba, novi koncpet
 -dodaj razlicite izlaske iz callbackova, recimo disconnect, error, ok
 
 -testovi
@@ -6,4 +6,4 @@
 -da mogu da se registruju funkcije koje ce ici na sve konekcije po timeoutu
 -dodaj epoll strukturu za nove stvari globalno i po klijentima
 -proveri spisak nepotrebnih funkcija
--proveri granatiku imena
+-proveri gramatiku imena

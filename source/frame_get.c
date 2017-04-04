@@ -1,5 +1,11 @@
 #include "main.h"
 
+#define FRAME_GET_CHECK(what_size)        \
+do                                        \
+  if(data_length+(what_size) > data_size) \
+    return 0;                             \
+while(false)                              \
+
 _FUNCTION_
 wssl_size_t wssl_frame_get
 (
@@ -11,14 +17,12 @@ wssl_size_t wssl_frame_get
   wssl_size_t i;
   wssl_size_t data_length = 0;
 
-  if(data_length+1 > data_size)
-    return 0;
+  FRAME_GET_CHECK(1);
   frame->fin = (data[data_length]&0x80) != 0;
   frame->opcode = data[data_length]&0x0f;
   data_length++;
 
-  if(data_length+1 > data_size)
-    return 0;
+  FRAME_GET_CHECK(1);
   frame->masked = (data[data_length]&0x80) != 0;
   frame->length = data[data_length]&0x7f;
   data_length++;
@@ -26,8 +30,7 @@ wssl_size_t wssl_frame_get
   switch(frame->length)
   {
     case FRAME_LENGTH_LONG_CODE:
-      if(data_length+FRAME_LENGTH_LONG_LENGTH > data_size)
-        return 0;
+      FRAME_GET_CHECK(FRAME_LENGTH_LONG_LENGTH);
       frame->payload_size = 0;
       for(i = 0; i < FRAME_LENGTH_LONG_LENGTH; i++)
       {
@@ -37,8 +40,7 @@ wssl_size_t wssl_frame_get
       data_length += FRAME_LENGTH_LONG_LENGTH;
       break;
     case FRAME_LENGTH_MEDIUM_CODE:
-      if(data_length+FRAME_LENGTH_MEDIUM_LENGTH > data_size)
-        return 0;
+      FRAME_GET_CHECK(FRAME_LENGTH_MEDIUM_LENGTH);
       frame->payload_size = 0;
       for(i = 0; i < FRAME_LENGTH_MEDIUM_LENGTH; i++)
       {
@@ -54,15 +56,13 @@ wssl_size_t wssl_frame_get
 
   if(frame->masked)
   {
-    if(data_length+WSSL_FRAME_MASKING_KEY_SIZE > data_size)
-      return 0;
+    FRAME_GET_CHECK(WSSL_FRAME_MASKING_KEY_SIZE);
     for(i = 0; i < WSSL_FRAME_MASKING_KEY_SIZE; i++)
       frame->masking_key[i] = data[data_length+i];
     data_length += WSSL_FRAME_MASKING_KEY_SIZE;
   }
 
-  if(data_length+(wssl_size_t)frame->payload_size > data_size)
-    return 0;
+  FRAME_GET_CHECK((wssl_size_t)frame->payload_size);
   frame->payload = &data[data_length];
   data_length += (wssl_size_t)frame->payload_size;
 
