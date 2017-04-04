@@ -153,7 +153,7 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_METHOD:
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size <= 0)
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_METHOD);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_METHOD);
       if(size < data_size)
       {
         TRY_CALL(wssl_header_insert_method(&client->header, (char*)data, size));
@@ -164,7 +164,7 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
       if(size <= 0)
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
       if(size < data_size)
       {
         client->state = WSSL_CLIENT_STATE_WAIT_URI;
@@ -174,7 +174,7 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_URI:
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size <= 0)
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
       if(size < data_size)
       {
         TRY_CALL(wssl_header_insert_uri(&client->header, (char*)data, size));
@@ -185,7 +185,7 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
       if(size <= 0)
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_VERSION);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_VERSION);
       if(size < data_size)
       {
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION;
@@ -204,7 +204,7 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_CRLF:
       size = wssl_client_processing_recv_eat_crlf((char*)data, data_size);
       if(size < 0)
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_CRLF);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_CRLF);
       client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
       *processed = (wssl_size_t)size;
       break;
@@ -228,7 +228,7 @@ wssl_result_t wssl_client_processing_recv
       {
         size = wssl_client_processing_recv_find_word_until_colon((char*)data, data_size);
         if(size <= 0)
-          MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_FIELD_KEY);
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_FIELD_KEY);
         if(size < data_size)
         {
           TRY_CALL(wssl_header_add_field(&client->header, (char*)data, size));
@@ -259,7 +259,7 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
       {
         if(client->frame.opcode == FRAME_OPCODE_CONTINUE)
-          MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
 
         TRY_CALL(wssl_frame_allocate(&client->frame));
         if(client->frame.fin)
@@ -281,9 +281,9 @@ wssl_result_t wssl_client_processing_recv
       if(size > 0)
       {
         if(frame.opcode != FRAME_OPCODE_CONTINUE)
-          MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         if(client->number_of_received_multi_frames > client->wssl->max_number_of_received_multi_frames)
-          MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
 
         TRY_CALL(wssl_frame_reallocate(&client->frame, &frame));
         if(frame.fin)
@@ -300,5 +300,5 @@ wssl_result_t wssl_client_processing_recv
     }
   }
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

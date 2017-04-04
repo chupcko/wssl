@@ -74,12 +74,12 @@ void wssl_client_mark_for_disconnecting
   wssl_client_chain_add_link_backward(&client->wssl->clients_marked_for_disconnecting, &client->chain_link);
 }
 
-#define MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(what_client, what_disconnect_reason) \
-do                                                                                  \
-{                                                                                   \
-  wssl_client_mark_for_disconnecting(what_client, what_disconnect_reason);          \
-  return MAKE_RESULT_OK;                                                            \
-}                                                                                   \
-while(false)                                                                        \
+#define MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, what_disconnect_reason) \
+do                                                                                   \
+{                                                                                    \
+  wssl_client_mark_for_disconnecting(what_client, what_disconnect_reason);           \
+  PASS;                                                                              \
+}                                                                                    \
+while(false)                                                                         \
 
 #endif

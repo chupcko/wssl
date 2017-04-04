@@ -38,7 +38,7 @@ wssl_result_t wssl_buffer_allocate
   buffer->size = size;
   buffer->begin = 0;
   buffer->end = 0;
-  return MAKE_RESULT_OK;
+  PASS;
 }
 
 static inline

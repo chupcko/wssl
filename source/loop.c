@@ -72,5 +72,5 @@ wssl_result_t wssl_loop
     return MAKE_RESULT_ERRNO("close", errno);
   wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

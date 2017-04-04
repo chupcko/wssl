@@ -23,5 +23,5 @@ wssl_result_t wssl_server_stop
     TRY_CALL(wssl_client_delete(client));
   }
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

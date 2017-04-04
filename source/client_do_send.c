@@ -19,7 +19,7 @@ wssl_result_t wssl_client_do_send_set_epoll_event
       return MAKE_RESULT_ERRNO("epoll_ctl", errno);
   }
 
-  return MAKE_RESULT_OK;
+  PASS;
 }
 
 _FUNCTION_
@@ -50,18 +50,18 @@ wssl_result_t wssl_client_do_send
         switch(errno)
         {
           case EAGAIN:
-            return MAKE_RESULT_OK;
+            PASS;
             break;
           case ECONNRESET:
           case EPIPE:
-            MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
+            MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
             break;
           default:
             return MAKE_RESULT_ERRNO("send", errno);
             break;
         }
       if(send_size == 0)
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
 
       chunk->buffer.begin += (wssl_size_t)send_size;
     }
@@ -71,5 +71,5 @@ wssl_result_t wssl_client_do_send
 
   TRY_CALL(wssl_client_do_send_set_epoll_event(client));
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

@@ -30,5 +30,5 @@ wssl_result_t wssl_server_start
   if(epoll_ctl(server->wssl->epoll_descriptor, EPOLL_CTL_ADD, server->socket_descriptor, &event) < 0)
     return MAKE_RESULT_ERRNO("epoll_ctl", errno);
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

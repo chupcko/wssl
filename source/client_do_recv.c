@@ -22,18 +22,18 @@ wssl_result_t wssl_client_do_recv
     switch(errno)
     {
       case EAGAIN:
-        return MAKE_RESULT_OK;
+        PASS;
         break;
       case ECONNRESET:
       case EPIPE:
-        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
         break;
       default:
         return MAKE_RESULT_ERRNO("recv", errno);
         break;
     }
   if(recv_size == 0)
-    MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
 
   client->input_buffer.end += (wssl_size_t)recv_size;
 
@@ -62,8 +62,8 @@ wssl_result_t wssl_client_do_recv
   {
     wssl_buffer_shift_left(&client->input_buffer);
     if(wssl_buffer_is_full(&client->input_buffer))
-      MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
+      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
   }
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

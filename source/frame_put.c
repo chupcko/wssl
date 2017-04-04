@@ -79,5 +79,5 @@ wssl_result_t wssl_frame_put
     *data_length += (wssl_size_t)frame->payload_size;
   }
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

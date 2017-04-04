@@ -32,5 +32,5 @@ wssl_result_t wssl_client_delete
 
   free((void*)client);
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

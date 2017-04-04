@@ -50,7 +50,7 @@ wssl_result_t wssl_header_insert_##what_member                                 \
   strncpy(header->what_member.data, data, data_size);                          \
   header->what_member.data[data_size] = '\0';                                  \
   header->what_member.data_length = data_size;                                 \
-  return MAKE_RESULT_OK;                                                       \
+  PASS;                                                                        \
 }                                                                              \
 
 MAKE_HEADER_INSERT(method)
@@ -82,7 +82,7 @@ wssl_result_t wssl_header_add_field
 
   wssl_header_field_chain_add_link_backward(&header->fields, &header_field->chain_link);
 
-  return MAKE_RESULT_OK;
+  PASS;
 }
 
 static inline
@@ -103,7 +103,7 @@ wssl_result_t wssl_header_insert_value_at_last_field
   header_field->value.data[data_size] = '\0';
   header_field->value.data_length = data_size;
 
-  return MAKE_RESULT_OK;
+  PASS;
 }
 
 static inline

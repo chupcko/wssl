@@ -60,7 +60,7 @@ wssl_result_t wssl_frame_allocate
   memcpy((void*)payload, (void*)frame->payload, (size_t)frame->payload_size);
   frame->payload = payload;
   frame->payload[frame->payload_size] = '\0';
-  return MAKE_RESULT_OK;
+  PASS;
 }
 
 static inline
@@ -84,7 +84,7 @@ wssl_result_t wssl_frame_reallocate
   frame_destination->payload = payload;
   frame_destination->payload_size += frame_source->payload_size;
   frame_destination->payload[frame_destination->payload_size] = '\0';
-  return MAKE_RESULT_OK;
+  PASS;
 }
 
 static inline

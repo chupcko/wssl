@@ -62,6 +62,8 @@ _INCLUDE_END_
   }                                        \
 )                                          \
 
+#define PASS return MAKE_RESULT_OK
+
 #define TRY_CALL(...)                     \
 do                                        \
 {                                         \

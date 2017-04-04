@@ -25,5 +25,5 @@ wssl_result_t wssl_server_add
 
   wssl_server_chain_add_link_backward(&wssl->servers, &server->chain_link);
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

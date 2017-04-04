@@ -66,5 +66,5 @@ wssl_result_t wssl_base64_encode
     return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "base64");
   output[*output_length] = '\0';
 
-  return MAKE_RESULT_OK;
+  PASS;
 }

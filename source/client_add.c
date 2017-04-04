@@ -72,5 +72,5 @@ wssl_result_t wssl_client_add
   if(client->wssl->on_connect_callback != WSSL_CALLBACK_NONE)
     (*client->wssl->on_connect_callback)(client);
 
-  return MAKE_RESULT_OK;
+  PASS;
 }
