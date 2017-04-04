@@ -47,16 +47,17 @@ void wssl_dump
     fprintf(file, "%d", wssl->epoll_descriptor);
   else
     fprintf(file, "none");
-  DUMP_POINTER(global_extra_data,             WSSL_NULL)
-  DUMP_POINTER(connect_callback,              WSSL_CALLBACK_NONE)
-  DUMP_POINTER(disconnect_callback,           WSSL_CALLBACK_NONE)
-  DUMP_POINTER(header_callback,               WSSL_CALLBACK_NONE)
-  DUMP_POINTER(receive_text_frame_callback,   WSSL_CALLBACK_NONE)
-  DUMP_POINTER(receive_binary_frame_callback, WSSL_CALLBACK_NONE)
-  DUMP_POINTER(receive_close_frame_callback,  WSSL_CALLBACK_NONE)
-  DUMP_POINTER(receive_ping_frame_callback,   WSSL_CALLBACK_NONE)
-  DUMP_POINTER(receive_pong_frame_callback,   WSSL_CALLBACK_NONE)
-  DUMP_POINTER(tick_callback,                 WSSL_CALLBACK_NONE)
+  DUMP_POINTER(global_extra_data,                  WSSL_NULL         )
+  DUMP_POINTER(on_connect_callback,                WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_disconnect_callback,             WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_receive_header_callback,         WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_start_receiving_frames_callback, WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_receive_text_frame_callback,     WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_receive_binary_frame_callback,   WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_receive_close_frame_callback,    WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_receive_ping_frame_callback,     WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_receive_pong_frame_callback,     WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_tick_callback,                   WSSL_CALLBACK_NONE)
   fprintf
   (
     file,
@@ -87,12 +88,12 @@ void wssl_dump
   }
   else
     fprintf(file, " none\n");
-  fprintf(file, INDENT_FORMAT "clients_for_disconnecting:", INDENT(indent_level+1));
-  if(wssl_client_chain_is_not_empty(&wssl->clients_for_disconnecting))
+  fprintf(file, INDENT_FORMAT "clients_marked_for_disconnecting:", INDENT(indent_level+1));
+  if(wssl_client_chain_is_not_empty(&wssl->clients_marked_for_disconnecting))
   {
     fprintf(file, "\n");
     wssl_client_chain_t* client_link;
-    CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_for_disconnecting)
+    CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_marked_for_disconnecting)
       wssl_client_dump(wssl_client_chain_get_entry_from_chain_link(client_link), file, indent_level+2);
   }
   else

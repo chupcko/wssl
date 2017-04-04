@@ -7,14 +7,6 @@ bool wssl_client_processing_header_check
   _WSSL_OUT_    wssl_string_t** sec_websocket_key
 )
 {
-  if(client->wssl->header_callback != WSSL_CALLBACK_NONE)
-    if
-    (
-      !(*client->wssl->header_callback)(client) ||
-      wssl_client_is_for_disconnecting(client)
-    )
-      return false;
-
   if
   (
     wssl_string_is_not_allocated(&client->header.method) ||
@@ -53,15 +45,22 @@ wssl_result_t wssl_client_processing_header
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
+  bool pass = true;
+  if(client->wssl->on_receive_header_callback != WSSL_CALLBACK_NONE)
+  {
+    pass = (*client->wssl->on_receive_header_callback)(client);
+    PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+  }
+
   wssl_string_t* sec_websocket_key;
-  bool pass_header = wssl_client_processing_header_check(client, &sec_websocket_key);
-  CHECK_CLIENT_FOR_DISCONNECTING(client);
+  if(pass)
+    pass = wssl_client_processing_header_check(client, &sec_websocket_key);
 
   wssl_chunk_t* chunk;
   TRY_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
-  CHECK_CLIENT_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
 
-  if(pass_header)
+  if(pass)
   {
     char handshake_result[HANDSHAKE_RESULT_SIZE];
     wssl_size_t handshake_result_length;
@@ -105,12 +104,10 @@ wssl_result_t wssl_client_processing_header
     );
 
   TRY_CALL(wssl_client_do_send(client));
-  if
-  (
-    !pass_header &&
-    wssl_client_is_not_for_disconnecting(client)
-  )
-    wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HANDSHAKE);
+  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+
+  if(!pass)
+    MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
 
   return MAKE_RESULT_OK;
 }

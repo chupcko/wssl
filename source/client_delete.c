@@ -6,8 +6,8 @@ wssl_result_t wssl_client_delete
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  if(client->wssl->disconnect_callback != WSSL_CALLBACK_NONE)
-    (*client->wssl->disconnect_callback)(client, client->disconnect_reason);
+  if(client->wssl->on_disconnect_callback != WSSL_CALLBACK_NONE)
+    (*client->wssl->on_disconnect_callback)(client, client->disconnect_reason);
 
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL) < 0)
     return MAKE_RESULT_ERRNO("epoll_ctl", errno);

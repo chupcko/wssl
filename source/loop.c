@@ -8,7 +8,7 @@ wssl_result_t wssl_loop
 {
   wssl_ssize_t events_number;
   struct epoll_event events[EPOLL_EVENTS_SIZE];
-  wssl_size_t event_index;
+  wssl_ssize_t event_index;
   wssl_epoll_data_t* epoll_data;
   wssl_client_chain_t* client_link;
   wssl_client_chain_t* client_link_next;
@@ -58,12 +58,12 @@ wssl_result_t wssl_loop
 
     if
     (
-      wssl->tick_callback != WSSL_CALLBACK_NONE &&
-      !(*wssl->tick_callback)(wssl)
+      wssl->on_tick_callback != WSSL_CALLBACK_NONE &&
+      !(*wssl->on_tick_callback)(wssl)
     )
       break;
 
-    CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_for_disconnecting)
+    CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_marked_for_disconnecting)
       TRY_CALL(wssl_client_delete(wssl_client_chain_get_entry_from_chain_link(client_link)));
   }
 

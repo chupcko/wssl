@@ -28,7 +28,7 @@ wssl_result_t wssl_client_do_send
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  CHECK_CLIENT_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
 
   wssl_ssize_t send_size;
   wssl_chunk_chain_t* chunk_link;
@@ -39,7 +39,7 @@ wssl_result_t wssl_client_do_send
     chunk = wssl_chunk_chain_get_entry_from_chain_link(chunk_link);
     while(wssl_buffer_is_not_empty(&chunk->buffer))
     {
-      wssl_ssize_t send_size = (wssl_ssize_t)send
+      send_size = (wssl_ssize_t)send
       (
         client->socket_descriptor,
         (void*)&chunk->buffer.data[chunk->buffer.begin],
@@ -54,18 +54,15 @@ wssl_result_t wssl_client_do_send
             break;
           case ECONNRESET:
           case EPIPE:
-            wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
-            return MAKE_RESULT_OK;
+            MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
             break;
           default:
             return MAKE_RESULT_ERRNO("send", errno);
             break;
         }
       if(send_size == 0)
-      {
-        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
-        return MAKE_RESULT_OK;
-      }
+        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+
       chunk->buffer.begin += (wssl_size_t)send_size;
     }
     wssl_chunk_delete(chunk);

@@ -6,7 +6,7 @@ wssl_result_t wssl_client_do_recv
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  CHECK_CLIENT_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
 
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
     TRY_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
@@ -22,48 +22,47 @@ wssl_result_t wssl_client_do_recv
     switch(errno)
     {
       case EAGAIN:
+        return MAKE_RESULT_OK;
         break;
       case ECONNRESET:
       case EPIPE:
-        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
+        MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
         break;
       default:
         return MAKE_RESULT_ERRNO("recv", errno);
         break;
     }
-  else if(recv_size == 0)
-    wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+  if(recv_size == 0)
+    MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+
+  client->input_buffer.end += (wssl_size_t)recv_size;
+
+  wssl_size_t processed;
+  while(wssl_buffer_is_not_empty(&client->input_buffer))
+  {
+    TRY_CALL
+    (
+      wssl_client_processing_recv
+      (
+        client,
+        &client->input_buffer.data[client->input_buffer.begin],
+        client->input_buffer.end-client->input_buffer.begin,
+        &processed
+      )
+    );
+    PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+    if(processed == 0)
+      break;
+    client->input_buffer.begin += processed;
+  }
+
+  if(wssl_buffer_is_empty(&client->input_buffer))
+    wssl_buffer_free(&client->input_buffer);
   else
   {
-    wssl_size_t processed;
-
-    client->input_buffer.end += (wssl_size_t)recv_size;
-    while(wssl_buffer_is_not_empty(&client->input_buffer))
-    {
-      TRY_CALL
-      (
-        wssl_client_processing_recv
-        (
-          client,
-          &client->input_buffer.data[client->input_buffer.begin],
-          client->input_buffer.end-client->input_buffer.begin,
-          &processed
-        )
-      );
-      CHECK_CLIENT_FOR_DISCONNECTING(client);
-      if(processed == 0)
-        break;
-      client->input_buffer.begin += processed;
-    }
-
-    if(wssl_buffer_is_empty(&client->input_buffer))
-      wssl_buffer_free(&client->input_buffer);
-    else
-    {
-      wssl_buffer_shift_left(&client->input_buffer);
-      if(wssl_buffer_is_full(&client->input_buffer))
-        wssl_client_set_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_FULL_RECV_BUFFER);
-    }
+    wssl_buffer_shift_left(&client->input_buffer);
+    if(wssl_buffer_is_full(&client->input_buffer))
+      MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
   }
 
   return MAKE_RESULT_OK;

@@ -9,10 +9,11 @@ wssl_result_t wssl_client_send_frame
 {
   wssl_chunk_t* chunk;
   TRY_CALL(wssl_chunk_add(client, wssl_frame_buffer_size(frame), &chunk));
-  CHECK_CLIENT_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
 
   TRY_CALL(wssl_frame_put(frame, chunk->buffer.data, chunk->buffer.size, &chunk->buffer.end));
   TRY_CALL(wssl_client_do_send(client));
+  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
 
   return MAKE_RESULT_OK;
 }

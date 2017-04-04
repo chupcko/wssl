@@ -135,8 +135,10 @@ _INCLUDE_END_
 
 MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, chain_link)
 
-#define CHECK_CLIENT_FOR_DISCONNECTING(what_client) \
-if(wssl_client_is_for_disconnecting(what_client))   \
-  return MAKE_RESULT_OK;                            \
+#define PASS_IF_CLIENT_IS_FOR_DISCONNECTING(what_client) \
+do                                                       \
+  if(wssl_client_is_for_disconnecting(what_client))      \
+    return MAKE_RESULT_OK;                               \
+while(false)                                             \
 
 #endif

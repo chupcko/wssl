@@ -30,17 +30,17 @@ void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e discon
   printf("\n");
 }
 
-bool on_header(wssl_client_t* client)
+bool on_receive_header(wssl_client_t* client)
 {
-  printf("Header ");
+  printf("Receive header ");
   wssl_client_print(client, stdout);
   printf("\n");
   return true;
 }
 
-void on_begin(wssl_client_t* client)
+void on_start_receiving_frames(wssl_client_t* client)
 {
-  printf("Begin ");
+  printf("Start receiving frames ");
   wssl_client_print(client, stdout);
   printf("\n");
 }
@@ -106,16 +106,16 @@ int main(void)
   if(signal(SIGINT, &on_end) == SIG_ERR)
     ERROR("Cannot signal with %d:\"%s\"", errno, strerror(errno));
 
-  wssl_set_connect_callback(&wssl, &on_connect);
-  wssl_set_disconnect_callback(&wssl, &on_disconnect);
-  wssl_set_header_callback(&wssl, &on_header);
-  wssl_set_begin_callback(&wssl, &on_begin);
-  wssl_set_receive_text_frame_callback(&wssl, &on_receive_text_frame);
-  wssl_set_receive_binary_frame_callback(&wssl, &on_receive_binary_frame);
-  wssl_set_receive_close_frame_callback(&wssl, &on_receive_close_frame);
-  wssl_set_receive_ping_frame_callback(&wssl, &on_receive_ping_frame);
-  wssl_set_receive_pong_frame_callback(&wssl, &on_receive_pong_frame);
-  wssl_set_tick_callback(&wssl, &on_tick);
+  wssl_set_on_connect_callback(&wssl, &on_connect);
+  wssl_set_on_disconnect_callback(&wssl, &on_disconnect);
+  wssl_set_on_receive_header_callback(&wssl, &on_receive_header);
+  wssl_set_on_start_receiving_frames_callback(&wssl, &on_start_receiving_frames);
+  wssl_set_on_receive_text_frame_callback(&wssl, &on_receive_text_frame);
+  wssl_set_on_receive_binary_frame_callback(&wssl, &on_receive_binary_frame);
+  wssl_set_on_receive_close_frame_callback(&wssl, &on_receive_close_frame);
+  wssl_set_on_receive_ping_frame_callback(&wssl, &on_receive_ping_frame);
+  wssl_set_on_receive_pong_frame_callback(&wssl, &on_receive_pong_frame);
+  wssl_set_on_tick_callback(&wssl, &on_tick);
 
   WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5000));
   WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 6000));

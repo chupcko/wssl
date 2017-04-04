@@ -62,7 +62,7 @@ const char* wssl_get_bool_name
 }
 
 static inline
-void wssl_client_set_for_disconnecting
+void wssl_client_mark_for_disconnecting
 (
   _WSSL_MODIFY_ wssl_client_t*                  client,
   _WSSL_IN_     wssl_client_disconnect_reason_e disconnect_reason
@@ -71,7 +71,15 @@ void wssl_client_set_for_disconnecting
   client->state = WSSL_CLIENT_STATE_FOR_DISCONNECTING;
   client->disconnect_reason = disconnect_reason;
   wssl_client_chain_delete_link(&client->chain_link);
-  wssl_client_chain_add_link_backward(&client->wssl->clients_for_disconnecting, &client->chain_link);
+  wssl_client_chain_add_link_backward(&client->wssl->clients_marked_for_disconnecting, &client->chain_link);
 }
+
+#define MARK_CLIENT_FOR_DISCONNECTING_AND_PASS(what_client, what_disconnect_reason) \
+do                                                                                  \
+{                                                                                   \
+  wssl_client_mark_for_disconnecting(what_client, what_disconnect_reason);          \
+  return MAKE_RESULT_OK;                                                            \
+}                                                                                   \
+while(false)                                                                        \
 
 #endif
