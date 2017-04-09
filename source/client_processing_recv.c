@@ -214,14 +214,7 @@ wssl_result_t wssl_client_processing_recv
       {
         client->state = WSSL_CLIENT_STATE_PROCESSING_HEADER;
         TRY_CALL(wssl_client_processing_header(client));
-        PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
-
-        client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
-        if(client->wssl->on_start_receiving_frames_callback != WSSL_CALLBACK_NONE)
-        {
-          (*client->wssl->on_start_receiving_frames_callback)(client);
-          PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
-        }
+        PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
         *processed = (wssl_size_t)size;
       }
       else
@@ -265,7 +258,7 @@ wssl_result_t wssl_client_processing_recv
         if(client->frame.fin)
         {
           TRY_CALL(wssl_client_processing_frame(client));
-          PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+          PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
           wssl_frame_free(&client->frame);
         }
         else
@@ -289,7 +282,7 @@ wssl_result_t wssl_client_processing_recv
         if(frame.fin)
         {
           TRY_CALL(wssl_client_processing_frame(client));
-          PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+          PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
           wssl_frame_free(&client->frame);
           client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
         }

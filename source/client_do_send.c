@@ -28,7 +28,7 @@ wssl_result_t wssl_client_do_send
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   wssl_ssize_t send_size;
   wssl_chunk_chain_t* chunk_link;

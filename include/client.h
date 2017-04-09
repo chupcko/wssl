@@ -45,21 +45,41 @@ void* wssl_client_get_connection_extra_data
 }
 
 static inline
-bool wssl_client_is_for_disconnecting
+bool wssl_client_is_in_wait_header
 (
   _WSSL_IN_ const wssl_client_t* client
 )
 {
-  return client->state == WSSL_CLIENT_STATE_FOR_DISCONNECTING;
+  return
+    client->state == WSSL_CLIENT_STATE_WAIT_METHOD ||
+    client->state == WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR ||
+    client->state == WSSL_CLIENT_STATE_WAIT_URI ||
+    client->state == WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR ||
+    client->state == WSSL_CLIENT_STATE_WAIT_VERSION ||
+    client->state == WSSL_CLIENT_STATE_WAIT_CRLF ||
+    client->state == WSSL_CLIENT_STATE_WAIT_FIELD_KEY ||
+    client->state == WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR ||
+    client->state == WSSL_CLIENT_STATE_WAIT_FIELD_VALUE ||
+    client->state == WSSL_CLIENT_STATE_PROCESSING_HEADER;
 }
 
 static inline
-bool wssl_client_is_not_for_disconnecting
+bool wssl_client_is_not_in_wait_header
 (
   _WSSL_IN_ const wssl_client_t* client
 )
 {
-  return client->state != WSSL_CLIENT_STATE_FOR_DISCONNECTING;
+  return
+    client->state != WSSL_CLIENT_STATE_WAIT_METHOD &&
+    client->state != WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR &&
+    client->state != WSSL_CLIENT_STATE_WAIT_URI &&
+    client->state != WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR &&
+    client->state != WSSL_CLIENT_STATE_WAIT_VERSION &&
+    client->state != WSSL_CLIENT_STATE_WAIT_CRLF &&
+    client->state != WSSL_CLIENT_STATE_WAIT_FIELD_KEY &&
+    client->state != WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR &&
+    client->state != WSSL_CLIENT_STATE_WAIT_FIELD_VALUE &&
+    client->state != WSSL_CLIENT_STATE_PROCESSING_HEADER;
 }
 
 static inline
@@ -82,6 +102,24 @@ bool wssl_client_is_not_in_frame_processing
   return
     client->state != WSSL_CLIENT_STATE_WAIT_FRAME &&
     client->state != WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
+}
+
+static inline
+bool wssl_client_is_marked_for_disconnecting
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return client->state == WSSL_CLIENT_STATE_MARKED_FOR_DISCONNECTING;
+}
+
+static inline
+bool wssl_client_is_not_marked_for_disconnecting
+(
+  _WSSL_IN_ const wssl_client_t* client
+)
+{
+  return client->state != WSSL_CLIENT_STATE_MARKED_FOR_DISCONNECTING;
 }
 
 static inline
@@ -135,10 +173,10 @@ _INCLUDE_END_
 
 MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, chain_link)
 
-#define PASS_IF_CLIENT_IS_FOR_DISCONNECTING(what_client) \
-do                                                       \
-  if(wssl_client_is_for_disconnecting(what_client))      \
-    PASS;                                                \
-while(false)                                             \
+#define PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(what_client) \
+do                                                              \
+  if(wssl_client_is_marked_for_disconnecting(what_client))      \
+    PASS;                                                       \
+while(false)                                                    \
 
 #endif

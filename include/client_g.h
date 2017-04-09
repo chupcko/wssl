@@ -14,7 +14,7 @@
   what_call(PROCESSING_HEADER,          "Processing header"         ) \
   what_call(WAIT_FRAME,                 "Wait frame"                ) \
   what_call(WAIT_FIN_FRAME,             "Wait fin frame"            ) \
-  what_call(FOR_DISCONNECTING,          "For disconnecting"         ) \
+  what_call(MARKED_FOR_DISCONNECTING,   "Marked for disconnecting"  ) \
 
 #define CLIENT_DISCONNECT_REASON_TABLE(what_call)                             \
   what_call(NONE,                           "None"                          ) \

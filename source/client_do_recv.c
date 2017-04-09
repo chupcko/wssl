@@ -6,7 +6,7 @@ wssl_result_t wssl_client_do_recv
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
     TRY_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
@@ -50,7 +50,7 @@ wssl_result_t wssl_client_do_recv
         &processed
       )
     );
-    PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
     if(processed == 0)
       break;
     client->input_buffer.begin += processed;

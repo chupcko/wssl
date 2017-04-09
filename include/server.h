@@ -11,7 +11,8 @@ typedef struct wssl_server_t
   int                 port;
   int                 socket_descriptor;
   wssl_epoll_data_t   epoll_data;
-  wssl_client_chain_t clients;
+  wssl_client_chain_t clients_in_wait_header;
+  wssl_client_chain_t clients_in_frame_processing;
 } wssl_server_t;
 
 _INCLUDE_END_

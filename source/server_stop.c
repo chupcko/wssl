@@ -16,7 +16,13 @@ wssl_result_t wssl_server_stop
   wssl_client_chain_t* client_link;
   wssl_client_chain_t* client_link_next;
   wssl_client_t* client;
-  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients)
+  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients_in_wait_header)
+  {
+    client = wssl_client_chain_get_entry_from_chain_link(client_link);
+    client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_STOPED;
+    TRY_CALL(wssl_client_delete(client));
+  }
+  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &server->clients_in_frame_processing)
   {
     client = wssl_client_chain_get_entry_from_chain_link(client_link);
     client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_STOPED;

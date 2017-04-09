@@ -68,7 +68,7 @@ void wssl_client_mark_for_disconnecting
   _WSSL_IN_     wssl_client_disconnect_reason_e disconnect_reason
 )
 {
-  client->state = WSSL_CLIENT_STATE_FOR_DISCONNECTING;
+  client->state = WSSL_CLIENT_STATE_MARKED_FOR_DISCONNECTING;
   client->disconnect_reason = disconnect_reason;
   wssl_client_chain_delete_link(&client->chain_link);
   wssl_client_chain_add_link_backward(&client->wssl->clients_marked_for_disconnecting, &client->chain_link);

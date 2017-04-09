@@ -49,7 +49,7 @@ wssl_result_t wssl_client_processing_header
   if(client->wssl->on_receive_header_callback != WSSL_CALLBACK_NONE)
   {
     pass = (*client->wssl->on_receive_header_callback)(client);
-    PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
   }
 
   wssl_string_t* sec_websocket_key;
@@ -58,7 +58,7 @@ wssl_result_t wssl_client_processing_header
 
   wssl_chunk_t* chunk;
   TRY_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
-  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   if(pass)
   {
@@ -104,10 +104,19 @@ wssl_result_t wssl_client_processing_header
     );
 
   TRY_CALL(wssl_client_do_send(client));
-  PASS_IF_CLIENT_IS_FOR_DISCONNECTING(client);
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   if(!pass)
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
+
+  client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
+  wssl_client_chain_delete_link(&client->chain_link);
+  wssl_client_chain_add_link_backward(&client->server->clients_in_frame_processing, &client->chain_link);
+  if(client->wssl->on_start_receiving_frames_callback != WSSL_CALLBACK_NONE)
+  {
+    (*client->wssl->on_start_receiving_frames_callback)(client);
+    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
+  }
 
   PASS;
 }
