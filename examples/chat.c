@@ -14,14 +14,14 @@ void on_start_receiving_frames(wssl_client_t* client)
 {
   char output[OUTPUT_SIZE];
   snprintf(output, OUTPUT_SIZE, "%s:%" WSSL_PRINT_ID_SUFFIX " = JOIN", client->header.uri.data, client->id.suffix);
-  wssl_for_each_client_call(wssl_client_get_wssl(client), &for_client, (void*)output);
+  wssl_for_each_client_in_frame_processing_call(wssl_client_get_wssl(client), &for_client, (void*)output);
 }
 
 void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
 {
   char output[OUTPUT_SIZE];
   snprintf(output, OUTPUT_SIZE, "%s:%" WSSL_PRINT_ID_SUFFIX " - %s", client->header.uri.data, client->id.suffix, data);
-  wssl_for_each_client_call(wssl_client_get_wssl(client), &for_client, (void*)output);
+  wssl_for_each_client_in_frame_processing_call(wssl_client_get_wssl(client), &for_client, (void*)output);
 }
 
 void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e disconnect_reason)
@@ -30,7 +30,7 @@ void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e discon
   {
     char output[OUTPUT_SIZE];
     snprintf(output, OUTPUT_SIZE, "%s:%" WSSL_PRINT_ID_SUFFIX " = LEAVE", client->header.uri.data, client->id.suffix);
-    wssl_for_each_client_call(wssl_client_get_wssl(client), &for_client, (void*)output);
+    wssl_for_each_client_in_frame_processing_call(wssl_client_get_wssl(client), &for_client, (void*)output);
   }
 }
 

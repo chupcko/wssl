@@ -5,7 +5,7 @@ _INCLUDE_BEGIN_
 
 typedef struct wssl_header_field_t
 {
-  wssl_header_field_chain_t chain_link;
+  wssl_header_field_chain_t header_chain_link;
   wssl_string_t             key;
   wssl_string_t             value;
   char                      key_data[];
@@ -21,7 +21,7 @@ typedef struct wssl_header_t
 
 _INCLUDE_END_
 
-MAKE_CHAIN_ENTRY(wssl_header_field, wssl_header_field_chain_t, wssl_header_field_t, chain_link)
+MAKE_CHAIN_ENTRY(wssl_header_field, wssl_header_field_chain_t, wssl_header_field_t, header_chain_link)
 
 static inline
 void wssl_header_init
@@ -80,7 +80,7 @@ wssl_result_t wssl_header_add_field
 
   wssl_string_init(&header_field->value);
 
-  wssl_header_field_chain_add_link_backward(&header->fields, &header_field->chain_link);
+  wssl_header_field_chain_add_link_backward(&header->fields, &header_field->header_chain_link);
 
   PASS;
 }
@@ -94,7 +94,7 @@ wssl_result_t wssl_header_insert_value_at_last_field
 )
 {
   WSSL_ASSERT(wssl_header_field_chain_is_not_empty(&header->fields));
-  wssl_header_field_t* header_field = wssl_header_field_chain_get_entry_from_chain_link(header->fields.prev);
+  wssl_header_field_t* header_field = wssl_header_field_chain_get_entry_from_header_chain_link(header->fields.prev);
 
   header_field->value.data = (char*)malloc((size_t)(data_size+1));
   if(header_field->value.data == NULL)
@@ -114,7 +114,7 @@ void wssl_header_field_delete
 {
   if(wssl_string_is_allocated(&header_field->value))
     wssl_string_free(&header_field->value);
-  wssl_header_field_chain_delete_link(&header_field->chain_link);
+  wssl_header_field_chain_delete_link(&header_field->header_chain_link);
   free((void*)header_field);
 }
 

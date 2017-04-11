@@ -36,7 +36,7 @@ wssl_result_t wssl_client_do_send
   wssl_chunk_t* chunk;
   CHAIN_FOR_EACH_LINK_SAFE_FORWARD(chunk_link, chunk_link_next, &client->output_chunks)
   {
-    chunk = wssl_chunk_chain_get_entry_from_chain_link(chunk_link);
+    chunk = wssl_chunk_chain_get_entry_from_client_chain_link(chunk_link);
     while(wssl_buffer_is_not_empty(&chunk->buffer))
     {
       send_size = (wssl_ssize_t)send

@@ -110,8 +110,8 @@ wssl_result_t wssl_client_processing_header
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
 
   client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
-  wssl_client_chain_delete_link(&client->chain_link);
-  wssl_client_chain_add_link_backward(&client->server->clients_in_frame_processing, &client->chain_link);
+  wssl_client_chain_delete_link(&client->wssl_chain_link);
+  wssl_client_chain_add_link_backward(&client->wssl->clients_in_frame_processing, &client->wssl_chain_link);
   if(client->wssl->on_start_receiving_frames_callback != WSSL_CALLBACK_NONE)
   {
     (*client->wssl->on_start_receiving_frames_callback)(client);

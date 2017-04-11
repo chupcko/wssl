@@ -24,7 +24,7 @@ wssl_result_t wssl_chunk_add
   (*chunk)->buffer.begin = 0;
   (*chunk)->buffer.end = 0;
 
-  wssl_chunk_chain_add_link_backward(&client->output_chunks, &(*chunk)->chain_link);
+  wssl_chunk_chain_add_link_backward(&client->output_chunks, &(*chunk)->client_chain_link);
 
   client->number_of_output_chunks++;
 

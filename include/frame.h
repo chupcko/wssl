@@ -57,7 +57,16 @@ wssl_result_t wssl_frame_allocate
   wssl_octet_t* payload = (wssl_octet_t*)malloc((size_t)frame->payload_size+1);
   if(payload == NULL)
     return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame");
-  memcpy((void*)payload, (void*)frame->payload, (size_t)frame->payload_size);
+
+  if(frame->masked)
+  {
+    wssl_size_t i;
+    for(i = 0; i < frame->payload_size; i++)
+      payload[i] = frame->payload[i]^frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
+  }
+  else
+    memcpy((void*)payload, (void*)frame->payload, (size_t)frame->payload_size);
+
   frame->payload = payload;
   frame->payload[frame->payload_size] = '\0';
   PASS;
@@ -80,7 +89,16 @@ wssl_result_t wssl_frame_reallocate
     free((void*)frame_destination->payload);
     return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame");
   }
-  memcpy((void*)&payload[frame_destination->payload_size], (void*)frame_source->payload, (size_t)frame_source->payload_size);
+
+  if(frame_source->masked)
+  {
+    wssl_size_t i;
+    for(i = 0; i < frame_source->payload_size; i++)
+      payload[frame_destination->payload_size+i] = frame_source->payload[i]^frame_source->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
+  }
+  else
+    memcpy((void*)&payload[frame_destination->payload_size], (void*)frame_source->payload, (size_t)frame_source->payload_size);
+
   frame_destination->payload = payload;
   frame_destination->payload_size += frame_source->payload_size;
   frame_destination->payload[frame_destination->payload_size] = '\0';

@@ -8,8 +8,6 @@ void wssl_server_dump
   _WSSL_IN_     const wssl_size_t    indent_level
 )
 {
-  wssl_client_chain_t* client_link;
-
   fprintf
   (
     file,
@@ -39,20 +37,12 @@ void wssl_server_dump
     ),
     INDENT(indent_level+1)
   );
-  if(wssl_client_chain_is_not_empty(&server->clients_in_wait_header))
+  if(wssl_client_chain_is_not_empty(&server->clients))
   {
     fprintf(file, "\n");
-    CHAIN_FOR_EACH_LINK_FORWARD(client_link, &server->clients_in_wait_header)
-      wssl_client_dump(wssl_client_chain_get_entry_from_chain_link(client_link), file, indent_level+2);
-  }
-  else
-    fprintf(file, " none\n");
-  fprintf(file, INDENT_FORMAT "clients_in_frame_processing:", INDENT(indent_level+1));
-  if(wssl_client_chain_is_not_empty(&server->clients_in_frame_processing))
-  {
-    fprintf(file, "\n");
-    CHAIN_FOR_EACH_LINK_FORWARD(client_link, &server->clients_in_frame_processing)
-      wssl_client_dump(wssl_client_chain_get_entry_from_chain_link(client_link), file, indent_level+2);
+    wssl_client_chain_t* client_link;
+    CHAIN_FOR_EACH_LINK_FORWARD(client_link, &server->clients)
+      wssl_client_dump(wssl_client_chain_get_entry_from_server_chain_link(client_link), file, indent_level+2);
   }
   else
     fprintf(file, " none\n");

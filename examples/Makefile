@@ -5,7 +5,7 @@ WSSL_INCLUDE = $(WSSL_DIR)/wssl.h
 SOURCES := $(wildcard *.c)
 INCLUDES := $(wildcard *.h)
 OBJECTS = $(SOURCES:.c=.o)
-TARGETS = $(SOURCES:.c=.t)
+TARGETS = $(SOURCES:.c=.e)
 
 COMPILER := gcc
 COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(WSSL_DIR)
@@ -32,5 +32,5 @@ clean:
 %.o: %.c $(WSSL_INCLUDE) $(INCLUDES)
 	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
 
-%.t: %.o
+%.e: %.o
 	$(LINKER) $(LINKER_FLAGS) -o $@ $< $(LIBRARIES)

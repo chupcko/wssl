@@ -1,4 +1,3 @@
--proveri frame_get i da kopira samo ako treba, novi koncpet
 -dodaj razlicite izlaske iz callbackova, recimo disconnect, error, ok
 
 -testovi

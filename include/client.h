@@ -5,7 +5,8 @@ _INCLUDE_BEGIN_
 
 typedef struct wssl_client_t
 {
-  wssl_client_chain_t             chain_link;
+  wssl_client_chain_t             server_chain_link;
+  wssl_client_chain_t             wssl_chain_link;
   wssl_server_t*                  server;
   struct wssl_t*                  wssl;
   wssl_id_t                       id;
@@ -171,7 +172,8 @@ void wssl_client_print
 
 _INCLUDE_END_
 
-MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, chain_link)
+MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, server_chain_link)
+MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, wssl_chain_link)
 
 #define PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(what_client) \
 do                                                              \

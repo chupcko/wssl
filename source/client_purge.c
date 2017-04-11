@@ -1,19 +1,12 @@
 #include "main.h"
 
 _FUNCTION_
-wssl_result_t wssl_client_delete
+void wssl_client_purge
 (
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  if(client->wssl->on_disconnect_callback != WSSL_CALLBACK_NONE)
-    (*client->wssl->on_disconnect_callback)(client, client->disconnect_reason);
-
-  if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL) < 0)
-    return MAKE_RESULT_ERRNO("epoll_ctl", errno);
-
-  if(close(client->socket_descriptor) < 0)
-    return MAKE_RESULT_ERRNO("close", errno);
+  close(client->socket_descriptor);
   client->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   if(wssl_buffer_is_allocated(&client->input_buffer))
@@ -32,6 +25,4 @@ wssl_result_t wssl_client_delete
   wssl_client_chain_delete_link(&client->wssl_chain_link);
 
   free((void*)client);
-
-  PASS;
 }

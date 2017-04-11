@@ -5,18 +5,17 @@ _INCLUDE_BEGIN_
 
 typedef struct wssl_server_t
 {
-  wssl_server_chain_t chain_link;
+  wssl_server_chain_t wssl_chain_link;
   struct wssl_t*      wssl;
   char                ip[WSSL_IP_SIZE_IN_CHAR];
   int                 port;
   int                 socket_descriptor;
   wssl_epoll_data_t   epoll_data;
-  wssl_client_chain_t clients_in_wait_header;
-  wssl_client_chain_t clients_in_frame_processing;
+  wssl_client_chain_t clients;
 } wssl_server_t;
 
 _INCLUDE_END_
 
-MAKE_CHAIN_ENTRY(wssl_server, wssl_server_chain_t, wssl_server_t, chain_link)
+MAKE_CHAIN_ENTRY(wssl_server, wssl_server_chain_t, wssl_server_t, wssl_chain_link)
 
 #endif

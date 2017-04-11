@@ -15,7 +15,7 @@ void for_client(wssl_client_t* client, void* local_extra_data)
 
 bool on_tick(wssl_t* wssl)
 {
-  wssl_for_each_client_call(wssl, &for_client, NULL);
+  wssl_for_each_client_in_frame_processing_call(wssl, &for_client, NULL);
   return true;
 }
 

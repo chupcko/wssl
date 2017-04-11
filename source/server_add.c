@@ -21,10 +21,9 @@ wssl_result_t wssl_server_add
   server->epoll_data.type = WSSL_EPOLL_DATA_TYPE_SERVER;
   server->epoll_data.server = server;
 
-  wssl_client_chain_root_init(&server->clients_in_wait_header);
-  wssl_client_chain_root_init(&server->clients_in_frame_processing);
+  wssl_client_chain_root_init(&server->clients);
 
-  wssl_server_chain_add_link_backward(&wssl->servers, &server->chain_link);
+  wssl_server_chain_add_link_backward(&wssl->servers, &server->wssl_chain_link);
 
   PASS;
 }

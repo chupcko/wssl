@@ -25,6 +25,8 @@ typedef struct wssl_t
   unsigned int                               random_seed;
   wssl_id_t                                  next_client_id;
   wssl_server_chain_t                        servers;
+  wssl_client_chain_t                        clients_in_wait_header;
+  wssl_client_chain_t                        clients_in_frame_processing;
   wssl_client_chain_t                        clients_marked_for_disconnecting;
 } wssl_t;
 
@@ -50,6 +52,8 @@ typedef struct wssl_t
   .random_seed                         = 0,                                                                     \
   .next_client_id                      = WSSL_ID_INIT_VALUE,                                                    \
   .servers                             = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.servers),                         \
+  .clients_in_wait_header              = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.clients_in_wait_header),          \
+  .clients_in_frame_processing         = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.clients_in_frame_processing),     \
   .clients_marked_for_disconnecting    = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.clients_marked_for_disconnecting) \
 }                                                                                                               \
 
@@ -81,6 +85,8 @@ void wssl_init
   wssl->random_seed                         = 0;
   wssl_id_init(&wssl->next_client_id);
   wssl_server_chain_root_init(&wssl->servers);
+  wssl_client_chain_root_init(&wssl->clients_in_wait_header);
+  wssl_client_chain_root_init(&wssl->clients_in_frame_processing);
   wssl_client_chain_root_init(&wssl->clients_marked_for_disconnecting);
 }
 

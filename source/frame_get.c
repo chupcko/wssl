@@ -66,9 +66,5 @@ wssl_size_t wssl_frame_get
   frame->payload = &data[data_length];
   data_length += (wssl_size_t)frame->payload_size;
 
-  if(frame->masked)
-    for(i = 0; i < frame->payload_size; i++)
-      frame->payload[i] ^= frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
-
   return data_length;
 }

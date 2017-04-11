@@ -91,7 +91,7 @@ void wssl_string_free
   string->data_length = 0;
 }
 
-#define OCTET_SIZE_IN_BITS 8
+#define OCTET_SIZE_IN_BITS CHAR_BIT
 
 #define SHA1_RESULT_SIZE_IN_BITS   160
 #define SHA1_RESULT_SIZE_IN_OCTETS (SHA1_RESULT_SIZE_IN_BITS/OCTET_SIZE_IN_BITS)

@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>

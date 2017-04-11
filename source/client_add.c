@@ -67,7 +67,8 @@ wssl_result_t wssl_client_add
   wssl_frame_init(&client->frame);
   client->number_of_received_multi_frames = 0;
 
-  wssl_client_chain_add_link_backward(&server->clients_in_wait_header, &client->chain_link);
+  wssl_client_chain_add_link_backward(&server->clients, &client->server_chain_link);
+  wssl_client_chain_add_link_backward(&server->wssl->clients_in_wait_header, &client->wssl_chain_link);
 
   if(client->wssl->on_connect_callback != WSSL_CALLBACK_NONE)
     (*client->wssl->on_connect_callback)(client);

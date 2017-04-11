@@ -1,5 +1,41 @@
 #include "main.h"
 
+static inline
+wssl_result_t wssl_loop_init
+(
+  _WSSL_MODIFY_ wssl_t* wssl
+)
+{
+  wssl_generate_random_seed(wssl);
+
+  wssl->epoll_descriptor = epoll_create1(0);
+  if(wssl->epoll_descriptor < 0)
+    return MAKE_RESULT_ERRNO("epoll_create1", errno);
+
+  wssl_server_chain_t* server_link;
+  CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+    TRY_CALL(wssl_server_start(wssl_server_chain_get_entry_from_wssl_chain_link(server_link)));
+
+  PASS;
+}
+
+static inline
+wssl_result_t wssl_loop_clean
+(
+  _WSSL_MODIFY_ wssl_t* wssl
+)
+{
+  wssl_server_chain_t* server_link;
+  CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+    TRY_CALL(wssl_server_stop(wssl_server_chain_get_entry_from_wssl_chain_link(server_link)));
+
+  if(close(wssl->epoll_descriptor) < 0)
+    return MAKE_RESULT_ERRNO("close", errno);
+  wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
+
+  PASS;
+}
+
 _LIBRARY_FUNCTION_
 wssl_result_t wssl_loop
 (
@@ -13,12 +49,7 @@ wssl_result_t wssl_loop
   wssl_client_chain_t* client_link;
   wssl_client_chain_t* client_link_next;
 
-  wssl_generate_random_seed(wssl);
-
-  wssl->epoll_descriptor = epoll_create1(0);
-  if(wssl->epoll_descriptor < 0)
-    return MAKE_RESULT_ERRNO("epoll_create1", errno);
-  TRY_CALL(wssl_servers_start(wssl));
+  TRY_CALL(wssl_loop_init(wssl));
 
   LOOP
   {
@@ -64,13 +95,10 @@ wssl_result_t wssl_loop
       break;
 
     CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_marked_for_disconnecting)
-      TRY_CALL(wssl_client_delete(wssl_client_chain_get_entry_from_chain_link(client_link)));
+      TRY_CALL(wssl_client_delete(wssl_client_chain_get_entry_from_wssl_chain_link(client_link)));
   }
 
-  TRY_CALL(wssl_servers_stop(wssl));
-  if(close(wssl->epoll_descriptor) < 0)
-    return MAKE_RESULT_ERRNO("close", errno);
-  wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
+  TRY_CALL(wssl_loop_clean(wssl));
 
   PASS;
 }
