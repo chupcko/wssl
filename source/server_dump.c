@@ -33,7 +33,7 @@ void wssl_server_dump
     file,
     (
       "\n"
-      INDENT_FORMAT "clients_in_wait_header:"
+      INDENT_FORMAT "clients:"
     ),
     INDENT(indent_level+1)
   );
