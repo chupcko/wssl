@@ -7,10 +7,10 @@ wssl_result_t wssl_server_stop
 )
 {
   if(epoll_ctl(server->wssl->epoll_descriptor, EPOLL_CTL_DEL, server->socket_descriptor, NULL) < 0)
-    return MAKE_RESULT_ERRNO("epoll_ctl", errno);
+    FAIL_ERRNO("epoll_ctl", errno);
 
   if(close(server->socket_descriptor) < 0)
-    return MAKE_RESULT_ERRNO("close", errno);
+    FAIL_ERRNO("close", errno);
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   wssl_client_chain_t* client_link;

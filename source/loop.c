@@ -10,7 +10,7 @@ wssl_result_t wssl_loop_init
 
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)
-    return MAKE_RESULT_ERRNO("epoll_create1", errno);
+    FAIL_ERRNO("epoll_create1", errno);
 
   wssl_server_chain_t* server_link;
   CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
@@ -30,7 +30,7 @@ wssl_result_t wssl_loop_clean
     TRY_CALL(wssl_server_stop(wssl_server_chain_get_entry_from_wssl_chain_link(server_link)));
 
   if(close(wssl->epoll_descriptor) < 0)
-    return MAKE_RESULT_ERRNO("close", errno);
+    FAIL_ERRNO("close", errno);
   wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
 
   PASS;
@@ -66,7 +66,7 @@ wssl_result_t wssl_loop
         case EINTR:
           break;
         default:
-          return MAKE_RESULT_ERRNO("epoll_wait", errno);
+          FAIL_ERRNO("epoll_wait", errno);
           break;
       }
     else

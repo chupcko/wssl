@@ -117,8 +117,8 @@ int main(void)
   wssl_set_on_receive_pong_frame_callback(&wssl, &on_receive_pong_frame);
   wssl_set_on_tick_callback(&wssl, &on_tick);
 
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5000));
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 6000));
+  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 6001, WSSL_NO_SSL, WSSL_NO_IPV6));
+  WSSL_TRY_CALL(wssl_server_add(&wssl, "::",      6002, WSSL_NO_SSL, WSSL_IPV6));
   WSSL_TRY_CALL(wssl_loop(&wssl));
   WSSL_TRY_CALL(wssl_clean(&wssl));
 

@@ -16,7 +16,7 @@ wssl_result_t wssl_client_do_send_set_epoll_event
   {
     client->epoll_event.events = events;
     if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_MOD, client->socket_descriptor, &client->epoll_event) < 0)
-      return MAKE_RESULT_ERRNO("epoll_ctl", errno);
+      FAIL_ERRNO("epoll_ctl", errno);
   }
 
   PASS;
@@ -57,7 +57,7 @@ wssl_result_t wssl_client_do_send
             MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
             break;
           default:
-            return MAKE_RESULT_ERRNO("send", errno);
+            FAIL_ERRNO("send", errno);
             break;
         }
       if(send_size == 0)

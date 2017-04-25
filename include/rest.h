@@ -62,6 +62,27 @@ const char* wssl_get_bool_name
 }
 
 static inline
+void wssl_str_copy
+(
+  _WSSL_OUT_       char*       destination,
+  _WSSL_IN_  const wssl_size_t destination_size,
+  _WSSL_IN_  const char*       source
+)
+{
+  wssl_size_t index = 0;
+  while
+  (
+    index < destination_size-1 &&
+    source[index] != '\0'
+  )
+  {
+    destination[index] = source[index];
+    index++;
+  }
+  destination[index] = '\0';
+}
+
+static inline
 void wssl_client_mark_for_disconnecting
 (
   _WSSL_MODIFY_ wssl_client_t*                  client,

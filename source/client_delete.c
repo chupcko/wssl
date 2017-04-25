@@ -10,10 +10,10 @@ wssl_result_t wssl_client_delete
     (*client->wssl->on_disconnect_callback)(client, client->disconnect_reason);
 
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL) < 0)
-    return MAKE_RESULT_ERRNO("epoll_ctl", errno);
+    FAIL_ERRNO("epoll_ctl", errno);
 
   if(close(client->socket_descriptor) < 0)
-    return MAKE_RESULT_ERRNO("close", errno);
+    FAIL_ERRNO("close", errno);
   client->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   if(wssl_buffer_is_allocated(&client->input_buffer))

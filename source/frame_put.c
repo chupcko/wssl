@@ -1,10 +1,10 @@
 #include "main.h"
 
-#define FRAME_PUT_CHECK(what_size)                                \
-do                                                                \
-  if(*data_length+(what_size) > data_size)                        \
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_FULL, "frame_put"); \
-while(false)                                                      \
+#define FRAME_PUT_CHECK(what_size)                            \
+do                                                            \
+  if(*data_length+(what_size) > data_size)                    \
+    FAIL_ERROR("frame_put", WSSL_RESULT_CODE_ERROR_NO_SPACE); \
+while(false)                                                  \
 
 _FUNCTION_
 wssl_result_t wssl_frame_put

@@ -8,37 +8,55 @@ wssl_result_t wssl_client_add
 {
   wssl_client_t* client = (wssl_client_t*)malloc(sizeof(wssl_client_t));
   if(client == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "client");
+    FAIL_ERROR("client", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
 
   client->server = server;
   client->wssl = server->wssl;
 
   wssl_set_next_client_id(client->wssl, &client->id);
 
-  struct sockaddr_in client_address;
-  socklen_t client_address_length = (socklen_t)sizeof client_address;
-  client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
-  if(client->socket_descriptor  < 0)
+  if(server->ipv6)
   {
-    int system_errno = errno;
-    free((void*)client);
-    return MAKE_RESULT_ERRNO("accept", system_errno);
-  }
+    struct sockaddr_in6 client_address;
+    socklen_t client_address_length = (socklen_t)sizeof client_address;
+    client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
+    if(client->socket_descriptor  < 0)
+    {
+      int system_errno = errno;
+      free((void*)client);
+      FAIL_ERRNO("accept", system_errno);
+    }
 
-  inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
-  client->port = ntohs(client_address.sin_port);
+    inet_ntop(AF_INET6, (void*)&client_address.sin6_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
+    client->port = ntohs(client_address.sin6_port);
+  }
+  else
+  {
+    struct sockaddr_in client_address;
+    socklen_t client_address_length = (socklen_t)sizeof client_address;
+    client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
+    if(client->socket_descriptor  < 0)
+    {
+      int system_errno = errno;
+      free((void*)client);
+      FAIL_ERRNO("accept", system_errno);
+    }
+
+    inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
+    client->port = ntohs(client_address.sin_port);
+  }
 
   int fcntl_flags = fcntl(client->socket_descriptor, F_GETFL, 0);
   if
   (
     fcntl_flags < 0 ||
-    fcntl(client->socket_descriptor, F_SETFL, fcntl_flags|O_NONBLOCK) < 0
+    fcntl(client->socket_descriptor, F_SETFL, fcntl_flags|O_CLOEXEC|O_NONBLOCK) < 0
   )
   {
     int system_errno = errno;
     close(client->socket_descriptor);
     free((void*)client);
-    return MAKE_RESULT_ERRNO("fcntl", system_errno);
+    FAIL_ERRNO("fcntl", system_errno);
   }
 
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
@@ -51,7 +69,7 @@ wssl_result_t wssl_client_add
 
     close(client->socket_descriptor);
     free((void*)client);
-    return MAKE_RESULT_ERRNO("epoll_ctl", system_errno);
+    FAIL_ERRNO("epoll_ctl", system_errno);
   }
 
   client->connection_extra_data = WSSL_NULL;

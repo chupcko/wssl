@@ -42,7 +42,7 @@ int main(void)
   wssl_set_on_receive_text_frame_callback(&wssl, &on_receive_text_frame);
   wssl_set_on_disconnect_callback(&wssl, &on_disconnect);
 
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5003));
+  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5003, WSSL_NO_SSL, WSSL_NO_IPV6));
   WSSL_TRY_CALL(wssl_loop(&wssl));
   WSSL_TRY_CALL(wssl_clean(&wssl));
 

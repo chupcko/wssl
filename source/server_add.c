@@ -5,17 +5,21 @@ wssl_result_t wssl_server_add
 (
   _WSSL_MODIFY_       wssl_t* wssl,
   _WSSL_IN_     const char*   ip,
-  _WSSL_IN_     const int     port
+  _WSSL_IN_     const int     port,
+  _WSSL_IN_     const bool    ssl,
+  _WSSL_IN_     const bool    ipv6
 )
 {
   wssl_server_t* server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
   if(server == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "server");
+    FAIL_ERROR("server", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
 
   server->wssl = wssl;
 
-  snprintf(server->ip, WSSL_IP_SIZE_IN_CHAR, "%s", ip);
+  wssl_str_copy(server->ip, WSSL_IP_SIZE_IN_CHAR, ip);
   server->port = port;
+  server->ssl = ssl;
+  server->ipv6 = ipv6;
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   server->epoll_data.type = WSSL_EPOLL_DATA_TYPE_SERVER;

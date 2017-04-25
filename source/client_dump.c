@@ -41,7 +41,7 @@ void wssl_client_dump
     file,
     (
       "\n"
-      INDENT_FORMAT "ip: %s\n"
+      INDENT_FORMAT "ip: [%s]\n"
       INDENT_FORMAT "port: %d\n"
       INDENT_FORMAT "connection_extra_data: "
     ),

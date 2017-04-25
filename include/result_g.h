@@ -1,11 +1,12 @@
 #ifndef _RESULT_G_H_
 #define _RESULT_G_H_
 
-#define RESULT_CODE_TABLE(what_call)                       \
-  what_call(OK,            0,   "OK"                     ) \
-  what_call(ERROR_ERRNO,  -101, "System error with errno") \
-  what_call(ERROR_MEMORY, -102, "No memory"              ) \
-  what_call(ERROR_FULL,   -103, "Buffer is full"         ) \
+#define RESULT_CODE_TABLE(what_call)                           \
+  what_call(OK,                0,   "OK"                     ) \
+  what_call(ERROR_ERRNO,      -101, "System error with errno") \
+  what_call(ERROR_NO_MEMORY,  -102, "No memory"              ) \
+  what_call(ERROR_NO_SPACE,   -103, "No space"               ) \
+  what_call(ERROR_BAD_SYNTAX, -104, "Bad syntax"             ) \
 
 _INCLUDE_BEGIN_
 

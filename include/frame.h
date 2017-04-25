@@ -56,7 +56,7 @@ wssl_result_t wssl_frame_allocate
 {
   wssl_octet_t* payload = (wssl_octet_t*)malloc((size_t)frame->payload_size+1);
   if(payload == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame");
+    FAIL_ERROR("frame", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
 
   if(frame->masked)
   {
@@ -87,7 +87,7 @@ wssl_result_t wssl_frame_reallocate
   if(payload == NULL)
   {
     free((void*)frame_destination->payload);
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "frame");
+    FAIL_ERROR("frame", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
   }
 
   if(frame_source->masked)

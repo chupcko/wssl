@@ -162,7 +162,7 @@ void wssl_client_print
   fprintf
   (
     file,
-    " %s:%d -> %s:%d",
+    " [%s]:%d -> [%s]:%d",
     client->ip,
     client->port,
     client->server->ip,

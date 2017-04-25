@@ -17,7 +17,7 @@ wssl_result_t wssl_chunk_add
     (size_t)size
   );
   if(*chunk == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "chunk");
+    FAIL_ERROR("chunk", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
 
   (*chunk)->buffer.data = (*chunk)->buffer_data;
   (*chunk)->buffer.size = size;

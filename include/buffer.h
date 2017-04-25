@@ -34,7 +34,7 @@ wssl_result_t wssl_buffer_allocate
 {
   buffer->data = (wssl_octet_t*)malloc((size_t)size);
   if(buffer->data == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "buffer");
+    FAIL_ERROR("buffer", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
   buffer->size = size;
   buffer->begin = 0;
   buffer->end = 0;

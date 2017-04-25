@@ -35,23 +35,23 @@ void wssl_header_init
   wssl_header_field_chain_root_init(&header->fields);
 }
 
-#define MAKE_HEADER_INSERT(what_member)                                        \
-static inline                                                                  \
-wssl_result_t wssl_header_insert_##what_member                                 \
-(                                                                              \
-  _WSSL_MODIFY_       wssl_header_t* header,                                   \
-  _WSSL_IN_           char*          data,                                     \
-  _WSSL_IN_     const wssl_size_t    data_size                                 \
-)                                                                              \
-{                                                                              \
-  header->what_member.data = (char*)malloc((size_t)(data_size+1));             \
-  if(header->what_member.data == NULL)                                         \
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_" #what_member); \
-  strncpy(header->what_member.data, data, data_size);                          \
-  header->what_member.data[data_size] = '\0';                                  \
-  header->what_member.data_length = data_size;                                 \
-  PASS;                                                                        \
-}                                                                              \
+#define MAKE_HEADER_INSERT(what_member)                                   \
+static inline                                                             \
+wssl_result_t wssl_header_insert_##what_member                            \
+(                                                                         \
+  _WSSL_MODIFY_       wssl_header_t* header,                              \
+  _WSSL_IN_           char*          data,                                \
+  _WSSL_IN_     const wssl_size_t    data_size                            \
+)                                                                         \
+{                                                                         \
+  header->what_member.data = (char*)malloc((size_t)(data_size+1));        \
+  if(header->what_member.data == NULL)                                    \
+    FAIL_ERROR("header_" #what_member, WSSL_RESULT_CODE_ERROR_NO_MEMORY); \
+  strncpy(header->what_member.data, data, data_size);                     \
+  header->what_member.data[data_size] = '\0';                             \
+  header->what_member.data_length = data_size;                            \
+  PASS;                                                                   \
+}                                                                         \
 
 MAKE_HEADER_INSERT(method)
 MAKE_HEADER_INSERT(uri)
@@ -71,7 +71,7 @@ wssl_result_t wssl_header_add_field
     (size_t)(key_data_size+1)
   );
   if(header_field == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_field");
+    FAIL_ERROR("header_field", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
 
   header_field->key.data = header_field->key_data;
   strncpy(header_field->key.data, key_data, key_data_size);
@@ -98,7 +98,7 @@ wssl_result_t wssl_header_insert_value_at_last_field
 
   header_field->value.data = (char*)malloc((size_t)(data_size+1));
   if(header_field->value.data == NULL)
-    return MAKE_RESULT(WSSL_RESULT_CODE_ERROR_MEMORY, "header_field_key");
+    FAIL_ERROR("header_field_key", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
   strncpy(header_field->value.data, data, data_size);
   header_field->value.data[data_size] = '\0';
   header_field->value.data_length = data_size;

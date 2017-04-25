@@ -62,7 +62,9 @@ _INCLUDE_END_
   }                                        \
 )                                          \
 
-#define PASS return MAKE_RESULT_OK
+#define PASS                                      return MAKE_RESULT_OK
+#define FAIL_ERRNO(what_where, what_system_errno) return MAKE_RESULT_ERRNO(what_where, what_system_errno)
+#define FAIL_ERROR(what_where, what_code)         return MAKE_RESULT(what_code, what_where)
 
 #define TRY_CALL(...)                     \
 do                                        \

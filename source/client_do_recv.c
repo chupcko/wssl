@@ -29,7 +29,7 @@ wssl_result_t wssl_client_do_recv
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
         break;
       default:
-        return MAKE_RESULT_ERRNO("recv", errno);
+        FAIL_ERRNO("recv", errno);
         break;
     }
   if(recv_size == 0)

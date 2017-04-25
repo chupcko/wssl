@@ -6,3 +6,4 @@ http://www.websocket.org/echo.html
 
 https://en.wikipedia.org/wiki/SHA-1
 http://www.metamorphosite.com/one-way-hash-encryption-sha1-data-software
+https://gist.github.com/MartinMReed/6393150
