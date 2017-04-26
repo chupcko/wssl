@@ -85,7 +85,7 @@ void wssl_id_print
   fprintf
   (
     file,
-    "[%" WSSL_PRINT_ID_PREFIX ":%" WSSL_PRINT_ID_SUFFIX "]",
+    "{%" WSSL_PRINT_ID_PREFIX ",%" WSSL_PRINT_ID_SUFFIX "}",
     id->prefix,
     id->suffix
   );

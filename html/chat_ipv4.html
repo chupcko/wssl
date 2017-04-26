@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WSSL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <style type="text/css">
+      /*<![CDATA[*/
+      /*]]>*/
+    </style>
+    <script src="index.js"></script>
+    <script type="text/javascript">
+      /*<![CDATA[*/
+
+      var serverPort = 5003;
+      var serverName = serverIPV4Name;
+
+      /*]]>*/
+    </script>
+    <script src="chat.js"></script>
+  </head>
+  <body onload="init();">
+    IPV4 server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/master/examples/chat.c" target="_blank" class="link">source</a>
+    <p/>
+    <button onclick="clean();">Clean</button>
+    Nickname: <input type="text" id="nickname"/>
+    <button id="connect" onclick="connect();">Connect</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
+    <input type="text" id="message"/>
+    <button id="send" onclick="send();">Send</button>
+    <div id="output" class="box"></div>
+  </body>
+</html>

@@ -13,8 +13,11 @@
     <script type="text/javascript">
       /*<![CDATA[*/
 
-      var serverPort = 6001;
+      var serverPort = undefined;
+      var serverName = undefined;
 
+      var ipv4Id = undefined;
+      var ipv6Id = undefined;
       var addressId = undefined;
       var connectId = undefined;
       var disconnectId = undefined;
@@ -25,20 +28,38 @@
 
       function init()
       {
+        ipv4Id = document.getElementById('ipv4');
+        ipv6Id = document.getElementById('ipv6');
         addressId = document.getElementById('address');
-        addressId.value = 'ws://'+serverName+':'+serverPort+'/';
         connectId = document.getElementById('connect');
         disconnectId = document.getElementById('disconnect');
         messageId = document.getElementById('message');
         sendId = document.getElementById('send');
         outputId = document.getElementById('output');
+        ipv4();
         abled();
+      }
+
+      function ipv4()
+      {
+        serverPort = 6001;
+        serverName = serverIPV4Name;
+        addressId.value = 'ws://'+serverName+':'+serverPort+'/';
+      }
+
+      function ipv6()
+      {
+        serverPort = 6101;
+        serverName = serverIPV6Name;
+        addressId.value = 'ws://'+serverName+':'+serverPort+'/';
       }
 
       function abled()
       {
         if(webSocket === undefined)
         {
+          ipv4Id.disabled = false;
+          ipv6Id.disabled = false;
           addressId.disabled = false;
           connectId.disabled = false;
           disconnectId.disabled = true;
@@ -47,6 +68,8 @@
         }
         else
         {
+          ipv4Id.disabled = true;
+          ipv6Id.disabled = true;
           addressId.disabled = true;
           connectId.disabled = true;
           disconnectId.disabled = false;
@@ -113,6 +136,8 @@
   </head>
   <body onload="init();">
     <button onclick="clean();">Clean</button>
+    <button id="ipv4" onclick="ipv4();">IPV4</button>
+    <button id="ipv6" onclick="ipv6();">IPV6</button>
     <input type="text" id="address"/>
     <button id="connect" onclick="connect();">Connect</button>
     <button id="disconnect" onclick="disconnect();">Disconnect</button>
