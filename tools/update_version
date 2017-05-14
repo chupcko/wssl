@@ -3,25 +3,21 @@
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
 INCLUDE_FILE="${BASE_DIR}/include/version.h"
-INCLUDE_FILE_NEW="${INCLUDE_FILE}.new"
 JAVASCRIPT_FILE="${BASE_DIR}/html/index.js"
 VERSION_FILE="${BASE_DIR}/VERSION"
 
-NOW="$(date +%Y%m%d)"
+INCLUDE_FILE_TEMPLATE="${INCLUDE_FILE}.template"
+INCLUDE_FILE_NEW="${INCLUDE_FILE}.new"
+JAVASCRIPT_FILE_TEMPLATE="${JAVASCRIPT_FILE}.template"
 
-cat << _EOF_ > ${INCLUDE_FILE_NEW}
-#ifndef _VERSION_H_
-#define _VERSION_H_
+VERSION="$(date +%Y%m%d)"
 
-_INCLUDE_BEGIN_
+function filter()
+{
+  sed "s/{{{VERSION}}}/${VERSION}/g"
+}
 
-#define WSSL_VERSION "${NOW}"
-
-_INCLUDE_END_
-
-#endif
-_EOF_
-
+cat ${INCLUDE_FILE_TEMPLATE} | filter > ${INCLUDE_FILE_NEW}
 if [ ! -e ${INCLUDE_FILE} ]
 then
   mv ${INCLUDE_FILE_NEW} ${INCLUDE_FILE}
@@ -34,13 +30,6 @@ else
   fi
 fi
 
-cat << _EOF_ > ${JAVASCRIPT_FILE}
-var version = '${NOW}';
+cat ${JAVASCRIPT_FILE_TEMPLATE} | filter > ${JAVASCRIPT_FILE}
 
-/* var serverIPV4Name = '185.69.54.116'; */
-/* var serverIPV6Name = '[2a02:7b40:b945:3674::1]'; */
-var serverIPV4Name = '127.0.0.1';
-var serverIPV6Name = '[::1]';
-_EOF_
-
-echo ${NOW} > ${VERSION_FILE}
+echo ${VERSION} > ${VERSION_FILE}

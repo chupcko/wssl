@@ -1,4 +1,4 @@
-var version = '20170514';
+var version = '{{{VERSION}}}';
 
 /* var serverIPV4Name = 'wssl4.chupcko.org'; */
 /* var serverIPV6Name = 'wssl6.chupcko.org'; */
