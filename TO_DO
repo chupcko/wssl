@@ -1,3 +1,4 @@
+-int v6only = 1; setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, &v6only, sizeof(v6only))
 -dodaj openssl
 -dodaj razlicite izlaske iz callbackova, recimo disconnect, error, ok
 
