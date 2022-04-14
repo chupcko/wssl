@@ -1,137 +1,136 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
+    <meta charset="utf-8">
     <title>WSSL</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="index.css"/>
     <style type="text/css">
-      /*<![CDATA[*/
-      /*]]>*/
+/*<![CDATA[*/
+/*]]>*/
     </style>
     <script src="index.js"></script>
     <script type="text/javascript">
-      /*<![CDATA[*/
+/*<![CDATA[*/
 
-      var serverPort = undefined;
-      var serverName = undefined;
+var serverPort = undefined;
+var serverName = undefined;
 
-      var ipv4Id = undefined;
-      var ipv6Id = undefined;
-      var addressId = undefined;
-      var connectId = undefined;
-      var disconnectId = undefined;
-      var messageId = undefined;
-      var sendId = undefined;
-      var outputId = undefined;
-      var webSocket = undefined;
+var ipv4Id = undefined;
+var ipv6Id = undefined;
+var addressId = undefined;
+var connectId = undefined;
+var disconnectId = undefined;
+var messageId = undefined;
+var sendId = undefined;
+var outputId = undefined;
+var webSocket = undefined;
 
-      function init()
-      {
-        ipv4Id = document.getElementById('ipv4');
-        ipv6Id = document.getElementById('ipv6');
-        addressId = document.getElementById('address');
-        connectId = document.getElementById('connect');
-        disconnectId = document.getElementById('disconnect');
-        messageId = document.getElementById('message');
-        sendId = document.getElementById('send');
-        outputId = document.getElementById('output');
-        ipv4();
-        abled();
-      }
+function init()
+{
+  ipv4Id = document.getElementById('ipv4');
+  ipv6Id = document.getElementById('ipv6');
+  addressId = document.getElementById('address');
+  connectId = document.getElementById('connect');
+  disconnectId = document.getElementById('disconnect');
+  messageId = document.getElementById('message');
+  sendId = document.getElementById('send');
+  outputId = document.getElementById('output');
+  ipv4();
+  abled();
+}
 
-      function ipv4()
-      {
-        serverPort = 6001;
-        serverName = serverIPV4Name;
-        addressId.value = 'ws://'+serverName+':'+serverPort+'/';
-      }
+function ipv4()
+{
+  serverPort = 6001;
+  serverName = serverIPV4Name;
+  addressId.value = 'ws://'+serverName+':'+serverPort+'/';
+}
 
-      function ipv6()
-      {
-        serverPort = 6101;
-        serverName = serverIPV6Name;
-        addressId.value = 'ws://'+serverName+':'+serverPort+'/';
-      }
+function ipv6()
+{
+  serverPort = 6101;
+  serverName = serverIPV6Name;
+  addressId.value = 'ws://'+serverName+':'+serverPort+'/';
+}
 
-      function abled()
-      {
-        if(webSocket === undefined)
-        {
-          ipv4Id.disabled = false;
-          ipv6Id.disabled = false;
-          addressId.disabled = false;
-          connectId.disabled = false;
-          disconnectId.disabled = true;
-          messageId.disabled = true;
-          sendId.disabled = true;
-        }
-        else
-        {
-          ipv4Id.disabled = true;
-          ipv6Id.disabled = true;
-          addressId.disabled = true;
-          connectId.disabled = true;
-          disconnectId.disabled = false;
-          messageId.disabled = false;
-          sendId.disabled = false;
-        }
-      }
+function abled()
+{
+  if(webSocket === undefined)
+  {
+    ipv4Id.disabled = false;
+    ipv6Id.disabled = false;
+    addressId.disabled = false;
+    connectId.disabled = false;
+    disconnectId.disabled = true;
+    messageId.disabled = true;
+    sendId.disabled = true;
+  }
+  else
+  {
+    ipv4Id.disabled = true;
+    ipv6Id.disabled = true;
+    addressId.disabled = true;
+    connectId.disabled = true;
+    disconnectId.disabled = false;
+    messageId.disabled = false;
+    sendId.disabled = false;
+  }
+}
 
-      function clean()
-      {
-        output.innerHTML = '';
-      }
+function clean()
+{
+  output.innerHTML = '';
+}
 
-      function write(message)
-      {
-        var newData = document.createElement('p');
-        newData.innerHTML = message;
-        outputId.insertBefore(newData, outputId.firstChild);
-      }
+function write(message)
+{
+  var newData = document.createElement('p');
+  newData.innerHTML = message;
+  outputId.insertBefore(newData, outputId.firstChild);
+}
 
-      function connect()
-      {
-        if(webSocket !== undefined)
-          write('ERROR: already connected');
-        webSocket = new WebSocket(addressId.value);
-        webSocket.onopen = function(event)
-        {
-          write("onOpen");
-        };
-        webSocket.onclose = function(event)
-        {
-          write("onClose");
-          webSocket = undefined;
-          abled();
-        };
-        webSocket.onmessage = function(event)
-        {
-          write('onMessage: '+event.data);
-        };
-        webSocket.onerror = function(event)
-        {
-          write('onError: '+event.type);
-        };
-        abled();
-      }
+function connect()
+{
+  if(webSocket !== undefined)
+    write('ERROR: already connected');
+  webSocket = new WebSocket(addressId.value);
+  webSocket.onopen = function(event)
+  {
+    write("onOpen");
+  };
+  webSocket.onclose = function(event)
+  {
+    write("onClose");
+    webSocket = undefined;
+    abled();
+  };
+  webSocket.onmessage = function(event)
+  {
+    write('onMessage: '+event.data);
+  };
+  webSocket.onerror = function(event)
+  {
+    write('onError: '+event.type);
+  };
+  abled();
+}
 
-      function disconnect()
-      {
-        if(webSocket === undefined)
-          write('ERROR: not connected');
-        webSocket.close();
-      }
+function disconnect()
+{
+  if(webSocket === undefined)
+    write('ERROR: not connected');
+  webSocket.close();
+}
 
-      function send()
-      {
-        if(webSocket === undefined)
-          write('ERROR: not connected');
-        webSocket.send(messageId.value);
-        write('Sent: '+messageId.value);
-      }
+function send()
+{
+  if(webSocket === undefined)
+    write('ERROR: not connected');
+  webSocket.send(messageId.value);
+  write('Sent: '+messageId.value);
+}
 
-      /*]]>*/
+/*]]>*/
     </script>
   </head>
   <body onload="init();">
