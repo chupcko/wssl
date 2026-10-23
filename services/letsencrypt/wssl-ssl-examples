@@ -1,0 +1,6 @@
+#!/bin/sh
+# certbot deploy hook: restart wssl SSL services after renewal.
+# Install as /etc/letsencrypt/renewal-hooks/deploy/wssl-ssl-examples
+# (executable). Domain specific certificate paths live in the
+# systemd units, this hook only restarts.
+systemctl restart wssl-echo-ssl wssl-time-ssl wssl-chat-ssl

@@ -1,0 +1,12 @@
+[Unit]
+Description=WSSL time SSL service
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=/opt/wssl
+ExecStart=/opt/wssl/examples/time_ssl.e /etc/letsencrypt/live/example.com/fullchain.pem /etc/letsencrypt/live/example.com/privkey.pem
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
