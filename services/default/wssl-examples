@@ -1,0 +1,5 @@
+# Certificates used by wssl *-ssl services.
+# Conffile: local edits survive package upgrades.
+# Set these to the fullchain and private key of your domain.
+WSSL_CERT=/etc/letsencrypt/live/example.com/fullchain.pem
+WSSL_KEY=/etc/letsencrypt/live/example.com/privkey.pem

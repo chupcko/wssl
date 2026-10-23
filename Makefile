@@ -9,6 +9,10 @@ debug: clean source-debug examples-debug
 clean: source-clean examples-clean
 	rm -r -f out core
 
+.PHONY: deb
+deb: all
+	./tools/make_deb
+
 define GENERATE_GOALS_CORE =
   GOALS += $(1)-$(2:all=)
 endef

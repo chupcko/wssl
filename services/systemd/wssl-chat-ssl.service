@@ -5,7 +5,8 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/wssl
-ExecStart=/opt/wssl/examples/chat_ssl.e /etc/letsencrypt/live/example.com/fullchain.pem /etc/letsencrypt/live/example.com/privkey.pem
+EnvironmentFile=/etc/default/wssl-examples
+ExecStart=/opt/wssl/examples/chat_ssl.e ${WSSL_CERT} ${WSSL_KEY}
 Restart=always
 RestartSec=5
 [Install]
