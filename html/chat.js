@@ -54,7 +54,7 @@ function connect()
 {
   if(webSocket !== undefined)
     write('ERROR: already connected');
-  webSocket = new WebSocket('ws://'+serverName+':'+serverPort+'/'+nicknameId.value);
+  webSocket = new WebSocket(serverScheme+serverName+':'+serverPort+'/'+nicknameId.value);
   webSocket.onopen = function(event)
   {
     write("Connected");
