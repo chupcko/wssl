@@ -7,6 +7,7 @@
   what_call(ERROR_NO_MEMORY,  -102, "No memory"              ) \
   what_call(ERROR_NO_SPACE,   -103, "No space"               ) \
   what_call(ERROR_BAD_SYNTAX, -104, "Bad syntax"             ) \
+  what_call(ERROR_SSL,       -105, "OpenSSL error"          ) \
 
 _INCLUDE_BEGIN_
 

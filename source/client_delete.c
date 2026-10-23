@@ -9,6 +9,13 @@ wssl_result_t wssl_client_delete
   if(client->wssl->on_disconnect_callback != WSSL_CALLBACK_NONE)
     (*client->wssl->on_disconnect_callback)(client, client->disconnect_reason);
 
+  if(client->ssl != WSSL_NULL)
+  {
+    SSL_shutdown(client->ssl);
+    SSL_free(client->ssl);
+    client->ssl = WSSL_NULL;
+  }
+
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL) < 0)
     FAIL_ERRNO("epoll_ctl", errno);
 

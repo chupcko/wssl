@@ -59,9 +59,19 @@ wssl_result_t wssl_client_add
     FAIL_ERRNO("fcntl", system_errno);
   }
 
+  client->ssl = WSSL_NULL;
+  client->ssl_handshake_done = false;
+  client->ssl_want = 0;
+
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
   client->epoll_data.client = client;
-  client->epoll_event.events = EPOLLIN;
+  if(server->ssl_ctx != WSSL_NULL)
+    client->epoll_event.events = EPOLLIN|EPOLLOUT;
+  else
+  {
+    client->epoll_event.events = EPOLLIN;
+    client->ssl_handshake_done = true;
+  }
   client->epoll_event.data.ptr = (void*)&client->epoll_data;
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_ADD, client->socket_descriptor, &client->epoll_event) < 0)
   {
@@ -70,6 +80,20 @@ wssl_result_t wssl_client_add
     close(client->socket_descriptor);
     free((void*)client);
     FAIL_ERRNO("epoll_ctl", system_errno);
+  }
+
+  if(server->ssl_ctx != WSSL_NULL)
+  {
+    client->ssl = SSL_new(server->ssl_ctx);
+    if(client->ssl == WSSL_NULL)
+    {
+      epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL);
+      close(client->socket_descriptor);
+      free((void*)client);
+      FAIL_ERROR("SSL_new", WSSL_RESULT_CODE_ERROR_SSL);
+    }
+    SSL_set_fd(client->ssl, client->socket_descriptor);
+    SSL_set_accept_state(client->ssl);
   }
 
   client->connection_extra_data = WSSL_NULL;

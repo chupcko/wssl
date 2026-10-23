@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 _INCLUDE_BEGIN_
 

@@ -24,7 +24,11 @@ typedef struct wssl_client_t
   wssl_header_t                   header;
   wssl_frame_t                    frame;
   wssl_size_t                     number_of_received_multi_frames;
+  struct ssl_st*              ssl;
+  bool                          ssl_handshake_done;
+  int                           ssl_want;
 } wssl_client_t;
+
 
 static inline
 void wssl_client_set_connection_extra_data

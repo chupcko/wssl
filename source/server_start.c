@@ -68,6 +68,13 @@ wssl_result_t wssl_server_start
   if(listen(server->socket_descriptor, SERVER_BACKLOG_SIZE) < 0)
     FAIL_ERRNO("listen", errno);
 
+  if(server->ssl && server->ssl_ctx == WSSL_NULL)
+  {
+    close(server->socket_descriptor);
+    server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+    FAIL_ERROR("server_ssl", WSSL_RESULT_CODE_ERROR_SSL);
+  }
+
   struct epoll_event event;
   event.events = EPOLLIN;
   event.data.ptr = (void*)&server->epoll_data;
