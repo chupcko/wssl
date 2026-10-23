@@ -1,0 +1,12 @@
+[Unit]
+Description=WSSL echo plain service
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=/opt/wssl
+ExecStart=/opt/wssl/examples/echo.e
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
