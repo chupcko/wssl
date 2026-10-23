@@ -1,0 +1,13 @@
+#!/bin/sh
+# Generates a self signed certificate for local wssl OpenSSL tests.
+# Usage: tools/make_ssl_certificate [output_directory]
+# Produces server.crt and server.key in the output directory (default .).
+
+OUT_DIR=${1:-.}
+mkdir -p "${OUT_DIR}"
+
+openssl req -x509 -newkey rsa:2048 -nodes \
+  -keyout "${OUT_DIR}/server.key" \
+  -out "${OUT_DIR}/server.crt" \
+  -days 825 \
+  -subj "/CN=localhost"

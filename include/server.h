@@ -14,6 +14,7 @@ typedef struct wssl_server_t
   int                 socket_descriptor;
   wssl_epoll_data_t   epoll_data;
   wssl_client_chain_t clients;
+  struct ssl_ctx_st*  ssl_ctx;
 } wssl_server_t;
 
 #define WSSL_NO_SSL  false

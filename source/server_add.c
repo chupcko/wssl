@@ -21,6 +21,7 @@ wssl_result_t wssl_server_add
   server->ssl = ssl;
   server->ipv6 = ipv6;
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+  server->ssl_ctx = WSSL_NULL;
 
   server->epoll_data.type = WSSL_EPOLL_DATA_TYPE_SERVER;
   server->epoll_data.server = server;
