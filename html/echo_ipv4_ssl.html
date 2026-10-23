@@ -8,12 +8,26 @@
 /*<![CDATA[*/
 /*]]>*/
     </style>
+    <script src="index.js"></script>
     <script type="text/javascript">
 /*<![CDATA[*/
+
+var serverScheme = 'wss://';
+var serverPort = 5011;
+var serverName = serverIPV4Name;
+
 /*]]>*/
     </script>
+    <script src="echo.js"></script>
   </head>
-  <body>
-    TBD
+  <body onload="init();">
+    IPV4+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/echo_ssl.c" target="_blank" class="link">source</a>
+    <p/>
+    <button onclick="clean();">Clean</button>
+    <button id="connect" onclick="connect();">Connect</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
+    <input type="text" id="message" value="test"/>
+    <button id="send" onclick="send();">Send</button>
+    <div id="output" class="box"></div>
   </body>
 </html>

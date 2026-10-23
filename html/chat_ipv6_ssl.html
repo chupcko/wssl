@@ -8,12 +8,27 @@
 /*<![CDATA[*/
 /*]]>*/
     </style>
+    <script src="index.js"></script>
     <script type="text/javascript">
 /*<![CDATA[*/
+
+var serverScheme = 'wss://';
+var serverPort = 5113;
+var serverName = serverIPV6Name;
+
 /*]]>*/
     </script>
+    <script src="chat.js"></script>
   </head>
-  <body>
-    TBD
+  <body onload="init();">
+    IPV6+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/chat_ssl.c" target="_blank" class="link">source</a>
+    <p/>
+    <button onclick="clean();">Clean</button>
+    Nickname: <input type="text" id="nickname"/>
+    <button id="connect" onclick="connect();">Connect</button>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
+    <input type="text" id="message"/>
+    <button id="send" onclick="send();">Send</button>
+    <div id="output" class="box"></div>
   </body>
 </html>
