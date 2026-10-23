@@ -186,16 +186,3 @@ EOF
 ```
 
 Expected: `HTTP/1.1 101 Web Socket Protocol Handshake`.
-
-## 9. Troubleshooting
-
-- `openssl/ssl.h: No such file or directory` — install `libssl-dev`.
-- `make_out: Syntax error: "(" unexpected` — old script revisions used
-  a bashism; current scripts are POSIX `sh` clean.
-- `undefined reference to SSL_*` at example link time — libraries
-  must follow objects on the link line (fixed in `examples/Makefile`).
-- An SSL client that disconnects without TLS `close_notify` must not
-  kill the server: since this branch such clients are only marked for
-  disconnecting (`WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED`).
-- Browsers refuse `ws://` pages loaded from `https://` (mixed
-  content): serve the test pages over https and use the `_ssl` pages.
