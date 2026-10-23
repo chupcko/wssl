@@ -18,10 +18,10 @@ wssl_result_t wssl_server_enable_ssl
   if(ssl_ctx == WSSL_NULL)
     FAIL_ERROR("SSL_CTX_new", WSSL_RESULT_CODE_ERROR_SSL);
 
-  if(SSL_CTX_use_certificate_file(ssl_ctx, certificate_file, SSL_FILETYPE_PEM) != 1)
+  if(SSL_CTX_use_certificate_chain_file(ssl_ctx, certificate_file) != 1)
   {
     SSL_CTX_free(ssl_ctx);
-    FAIL_ERROR("SSL_CTX_use_certificate_file", WSSL_RESULT_CODE_ERROR_SSL);
+    FAIL_ERROR("SSL_CTX_use_certificate_chain_file", WSSL_RESULT_CODE_ERROR_SSL);
   }
 
   if(SSL_CTX_use_PrivateKey_file(ssl_ctx, private_key_file, SSL_FILETYPE_PEM) != 1)
