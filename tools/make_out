@@ -8,12 +8,12 @@ INCLUDE_FILE="${BASE_DIR}/out/${INCLUDE_NAME}"
 LIBRARY_FILE="${BASE_DIR}/out/${LIBRARY_NAME}"
 LIBRARY_ORGIN="${BASE_DIR}/source/${LIBRARY_NAME}"
 
-function include_filter()
+include_filter()
 {
   awk -f ${BASE_DIR}/tools/awk/make_out_include.awk
 }
 
-function include_exec()
+include_exec()
 {
   gcc -E -P -I {BASE_DIR}/include ${1}
 }

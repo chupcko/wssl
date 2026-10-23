@@ -12,7 +12,7 @@ JAVASCRIPT_FILE_TEMPLATE="${JAVASCRIPT_FILE}.template"
 
 VERSION="$(date +%Y%m%d)"
 
-function filter()
+filter()
 {
   sed "s/{{{VERSION}}}/${VERSION}/g"
 }
