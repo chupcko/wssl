@@ -67,9 +67,9 @@ wssl_result_t wssl_client_add
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
   client->epoll_data.client = client;
   if(server->ssl_ctx != NULL)
-    client->epoll_event.events = EPOLLIN|EPOLLOUT;
+    client->epoll_event.events = EPOLLIN|EPOLLOUT|EPOLLRDHUP;
   else
-    client->epoll_event.events = EPOLLIN;
+    client->epoll_event.events = EPOLLIN|EPOLLRDHUP;
   client->epoll_event.data.ptr = (void*)&client->epoll_data;
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_ADD, client->socket_descriptor, &client->epoll_event) < 0)
   {
@@ -91,6 +91,7 @@ wssl_result_t wssl_client_add
       FAIL_ERROR("SSL_new", WSSL_RESULT_CODE_ERROR_SSL);
     }
     SSL_set_mode(client->ssl, SSL_MODE_ENABLE_PARTIAL_WRITE|SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
+    SSL_set_quiet_shutdown(client->ssl, 1);
     if(SSL_set_fd(client->ssl, client->socket_descriptor) == 0)
     {
       epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL);

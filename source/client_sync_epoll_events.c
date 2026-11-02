@@ -25,6 +25,8 @@ wssl_result_t wssl_client_sync_epoll_events
       events |= EPOLLOUT;
   }
 
+  events |= (uint32_t)EPOLLRDHUP;
+
   if(client->epoll_event.events != events)
   {
     client->epoll_event.events = events;

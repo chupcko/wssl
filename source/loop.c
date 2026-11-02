@@ -127,9 +127,9 @@ wssl_result_t wssl_loop
             TRY_CALL(wssl_loop_accept_clients(epoll_data->server));
             break;
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
-            if((events[event_index].events&EPOLLIN) != 0)
+            if((events[event_index].events&(EPOLLIN|EPOLLERR|EPOLLHUP|EPOLLRDHUP)) != 0)
               TRY_CALL(wssl_client_do_recv(epoll_data->client));
-            if((events[event_index].events&EPOLLOUT) != 0)
+            if((events[event_index].events&(EPOLLOUT|EPOLLERR|EPOLLHUP)) != 0)
               TRY_CALL(wssl_client_do_send(epoll_data->client));
             break;
         }

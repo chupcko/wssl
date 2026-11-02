@@ -15,4 +15,12 @@ _INCLUDE_END_
 #define SERVER_BACKLOG_SIZE 16
 #define EPOLL_EVENTS_SIZE   16
 
+#define WSSL_SSL_MIN_PROTOCOL_VERSION TLS1_2_VERSION
+#define WSSL_SSL_CIPHER_LIST          "ECDHE-ECDSA-AES256-GCM-SHA384:" \
+                                      "ECDHE-RSA-AES256-GCM-SHA384:"   \
+                                      "ECDHE-ECDSA-AES128-GCM-SHA256:" \
+                                      "ECDHE-RSA-AES128-GCM-SHA256"
+#define WSSL_SSL_CIPHER_SUITES        "TLS_AES_256_GCM_SHA384:" \
+                                      "TLS_AES_128_GCM_SHA256"
+
 #endif
