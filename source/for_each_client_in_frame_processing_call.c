@@ -9,6 +9,7 @@ void wssl_for_each_client_in_frame_processing_call
 )
 {
   wssl_client_chain_t* client_link;
-  CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_in_frame_processing)
+  wssl_client_chain_t* client_link_next;
+  CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_in_frame_processing)
     (*callback)(wssl_client_chain_get_entry_from_wssl_chain_link(client_link), local_extra_data);
 }
