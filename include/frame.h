@@ -16,6 +16,7 @@ typedef struct wssl_frame_t
   wssl_octet_t      masking_key[WSSL_FRAME_MASKING_KEY_SIZE];
   wssl_octet_t*     payload;
   wssl_frame_size_t payload_size;
+  bool              payload_owned;
 } wssl_frame_t;
 
 _INCLUDE_END_
@@ -46,6 +47,7 @@ void wssl_frame_init
   frame->length       = 0;
   frame->payload      = WSSL_NULL;
   frame->payload_size = 0;
+  frame->payload_owned = false;
 }
 
 static inline
@@ -69,6 +71,7 @@ wssl_result_t wssl_frame_allocate
 
   frame->payload = payload;
   frame->payload[frame->payload_size] = '\0';
+  frame->payload_owned = true;
   PASS;
 }
 
@@ -85,10 +88,7 @@ wssl_result_t wssl_frame_reallocate
     (size_t)(frame_destination->payload_size+frame_source->payload_size)+1
   );
   if(payload == NULL)
-  {
-    free((void*)frame_destination->payload);
     FAIL_ERROR("frame", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
-  }
 
   if(frame_source->masked)
   {
@@ -102,6 +102,7 @@ wssl_result_t wssl_frame_reallocate
   frame_destination->payload = payload;
   frame_destination->payload_size += frame_source->payload_size;
   frame_destination->payload[frame_destination->payload_size] = '\0';
+  frame_destination->payload_owned = true;
   PASS;
 }
 
@@ -129,9 +130,11 @@ void wssl_frame_free
   _WSSL_MODIFY_ wssl_frame_t* frame
 )
 {
-  free((void*)frame->payload);
+  if(frame->payload_owned)
+    free((void*)frame->payload);
   frame->payload = WSSL_NULL;
   frame->payload_size = 0;
+  frame->payload_owned = false;
 }
 
 static inline

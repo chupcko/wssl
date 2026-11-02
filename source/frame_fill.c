@@ -22,6 +22,7 @@ void wssl_frame_fill
     frame->length = FRAME_LENGTH_LONG_CODE;
   frame->payload      = payload;
   frame->payload_size = payload_size;
+  frame->payload_owned = false;
   if(masked)
   {
     wssl_size_t i;

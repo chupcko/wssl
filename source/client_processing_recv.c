@@ -249,6 +249,8 @@ wssl_result_t wssl_client_processing_recv
       break;
     case WSSL_CLIENT_STATE_WAIT_FRAME:
       size = wssl_frame_get(&client->frame, data, data_size);
+      if(size == 0 && client->frame.payload_size > (wssl_frame_size_t)client->wssl->buffer_size_in_octets)
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
       if(size > 0)
       {
         if(client->frame.opcode == FRAME_OPCODE_CONTINUE)
@@ -271,6 +273,8 @@ wssl_result_t wssl_client_processing_recv
       wssl_frame_t frame;
       wssl_frame_init(&frame);
       size = wssl_frame_get(&frame, data, data_size);
+      if(size == 0 && frame.payload_size > (wssl_frame_size_t)client->wssl->buffer_size_in_octets)
+        MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
       if(size > 0)
       {
         if(frame.opcode != FRAME_OPCODE_CONTINUE)
