@@ -17,6 +17,7 @@ typedef struct wssl_header_t
   wssl_string_t             uri;
   wssl_string_t             version;
   wssl_header_field_chain_t fields;
+  wssl_size_t               number_of_fields;
 } wssl_header_t;
 
 _INCLUDE_END_
@@ -33,6 +34,7 @@ void wssl_header_init
   wssl_string_init(&header->uri);
   wssl_string_init(&header->version);
   wssl_header_field_chain_root_init(&header->fields);
+  header->number_of_fields = 0;
 }
 
 #define MAKE_HEADER_INSERT(what_member)                                   \
@@ -81,6 +83,7 @@ wssl_result_t wssl_header_add_field
   wssl_string_init(&header_field->value);
 
   wssl_header_field_chain_add_link_backward(&header->fields, &header_field->header_chain_link);
+  header->number_of_fields++;
 
   PASS;
 }

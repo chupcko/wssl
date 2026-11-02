@@ -53,7 +53,7 @@ wssl_result_t wssl_client_processing_frame
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
-    defualt:
+    default:
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
   }

@@ -12,7 +12,7 @@ wssl_string_t* wssl_header_get_field_value
   CHAIN_FOR_EACH_LINK_FORWARD(header_field_link, &header->fields)
   {
     header_field = wssl_header_field_chain_get_entry_from_header_chain_link(header_field_link);
-    if(strcmp(header_field->key.data, key) == 0)
+    if(wssl_str_case_is_equal(header_field->key.data, key))
       return &header_field->value;
   }
   return WSSL_NULL;

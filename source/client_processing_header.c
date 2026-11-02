@@ -1,6 +1,33 @@
 #include "main.h"
 
 static inline
+bool wssl_key_is_base64
+(
+  _WSSL_IN_ const char*      data,
+  _WSSL_IN_ const wssl_size_t data_length
+)
+{
+  wssl_size_t i;
+  for(i = 0; i < data_length; i++)
+  {
+    char c = data[i];
+    bool alphabet =
+      (c >= 'A' && c <= 'Z') ||
+      (c >= 'a' && c <= 'z') ||
+      (c >= '0' && c <= '9') ||
+      c == '+' || c == '/';
+    if(i < data_length-2)
+    {
+      if(!alphabet)
+        return false;
+    }
+    else if(c != '=')
+      return false;
+  }
+  return true;
+}
+
+static inline
 bool wssl_client_processing_header_check
 (
   _WSSL_MODIFY_ wssl_client_t*  client,
@@ -20,7 +47,7 @@ bool wssl_client_processing_header_check
   (
     connection == WSSL_NULL ||
     wssl_string_is_not_allocated(connection) ||
-    strstr(connection->data, "Upgrade") == NULL
+    !wssl_str_case_contains(connection->data, "upgrade")
   )
     return false;
 
@@ -29,14 +56,30 @@ bool wssl_client_processing_header_check
   (
     upgrade == WSSL_NULL ||
     wssl_string_is_not_allocated(upgrade) ||
-    strcmp(upgrade->data, "websocket") != 0
+    !wssl_str_case_contains(upgrade->data, "websocket")
+  )
+    return false;
+
+  wssl_string_t* version = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Version");
+  if
+  (
+    version == WSSL_NULL ||
+    wssl_string_is_not_allocated(version) ||
+    strcmp(version->data, "13") != 0
   )
     return false;
 
   *sec_websocket_key = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Key");
-  return
-    *sec_websocket_key != WSSL_NULL &&
-    wssl_string_is_allocated(*sec_websocket_key);
+  if
+  (
+    *sec_websocket_key == WSSL_NULL ||
+    wssl_string_is_not_allocated(*sec_websocket_key) ||
+    (*sec_websocket_key)->data_length != 24 ||
+    !wssl_key_is_base64((*sec_websocket_key)->data, (*sec_websocket_key)->data_length)
+  )
+    return false;
+
+  return true;
 }
 
 _FUNCTION_

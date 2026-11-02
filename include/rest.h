@@ -62,6 +62,60 @@ const char* wssl_get_bool_name
 }
 
 static inline
+bool wssl_str_case_starts_with
+(
+  _WSSL_IN_ const char* text,
+  _WSSL_IN_ const char* prefix
+)
+{
+  while(*prefix != '\0')
+  {
+    char left = *text;
+    char right = *prefix;
+    if(left >= 'A' && left <= 'Z')
+      left = (char)(left-('A'-'a'));
+    if(right >= 'A' && right <= 'Z')
+      right = (char)(right-('A'-'a'));
+    if(left != right)
+      return false;
+    text++;
+    prefix++;
+  }
+  return true;
+}
+
+static inline
+bool wssl_str_case_contains
+(
+  _WSSL_IN_ const char* text,
+  _WSSL_IN_ const char* word
+)
+{
+  wssl_size_t word_length = strlen(word);
+  if(word_length == 0)
+    return true;
+  while(*text != '\0')
+  {
+    if(wssl_str_case_starts_with(text, word))
+      return true;
+    text++;
+  }
+  return false;
+}
+
+static inline
+bool wssl_str_case_is_equal
+(
+  _WSSL_IN_ const char* first,
+  _WSSL_IN_ const char* second
+)
+{
+  return
+    wssl_str_case_starts_with(first, second) &&
+    wssl_str_case_starts_with(second, first);
+}
+
+static inline
 void wssl_str_copy
 (
   _WSSL_OUT_       char*       destination,

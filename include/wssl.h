@@ -10,6 +10,7 @@ typedef struct wssl_t
   wssl_ssize_t                               sleep_in_mseconds;
   wssl_size_t                                max_number_of_output_chunks;
   wssl_size_t                                max_number_of_received_multi_frames;
+  wssl_size_t                                max_number_of_header_fields;
   int                                        epoll_descriptor;
   void*                                      global_extra_data;
   wssl_on_connect_callback_f*                on_connect_callback;
@@ -37,6 +38,7 @@ typedef struct wssl_t
   .sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,                                        \
   .max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,                              \
   .max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,                      \
+  .max_number_of_header_fields         = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,                               \
   .epoll_descriptor                    = WSSL_NO_DESCRIPTOR,                                                    \
   .global_extra_data                   = WSSL_NULL,                                                             \
   .on_connect_callback                 = WSSL_CALLBACK_NONE,                                                    \
@@ -70,6 +72,7 @@ void wssl_init
   wssl->sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
   wssl->max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,
   wssl->max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,
+  wssl->max_number_of_header_fields = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,
   wssl->epoll_descriptor                    = WSSL_NO_DESCRIPTOR;
   wssl->global_extra_data                   = WSSL_NULL;
   wssl->on_connect_callback                 = WSSL_CALLBACK_NONE;

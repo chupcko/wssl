@@ -224,6 +224,8 @@ wssl_result_t wssl_client_processing_recv
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_FIELD_KEY);
         if(size < data_size)
         {
+          if(client->header.number_of_fields >= client->wssl->max_number_of_header_fields)
+            MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
           TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_add_field(&client->header, (char*)data, size));
           client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
           *processed = (wssl_size_t)size;
@@ -253,8 +255,12 @@ wssl_result_t wssl_client_processing_recv
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
       if(size > 0)
       {
+        if((data[0]&0x70) != 0)
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         if(client->frame.opcode == FRAME_OPCODE_CONTINUE)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        if(!client->frame.masked)
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
 
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_allocate(&client->frame));
         if(client->frame.fin)
@@ -277,8 +283,12 @@ wssl_result_t wssl_client_processing_recv
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
       if(size > 0)
       {
+        if((data[0]&0x70) != 0)
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         if(frame.opcode != FRAME_OPCODE_CONTINUE)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        if(!frame.masked)
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
         if(client->number_of_received_multi_frames > client->wssl->max_number_of_received_multi_frames)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
 
