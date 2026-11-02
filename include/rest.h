@@ -166,4 +166,24 @@ do                                                                              
 }                                                                                      \
 while(false)                                                                           \
 
+#define HONOR_CALLBACK_RESULT_THEN_PASS(what_client, what_callback_result) \
+do                                                                         \
+{                                                                          \
+  if((what_callback_result) == WSSL_CALLBACK_RESULT_DISCONNECT)            \
+    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED); \
+  if((what_callback_result) == WSSL_CALLBACK_RESULT_ERROR)                 \
+    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+}                                                                          \
+while(false)                                                                 \
+
+#define HONOR_CALLBACK_RESULT(what_client, what_callback_result) \
+do                                                               \
+{                                                                \
+  if((what_callback_result) == WSSL_CALLBACK_RESULT_DISCONNECT)  \
+    wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED); \
+  else if((what_callback_result) == WSSL_CALLBACK_RESULT_ERROR)  \
+    wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+}                                                                \
+while(false)                                                                         \
+
 #endif

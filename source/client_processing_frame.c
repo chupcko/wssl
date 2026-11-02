@@ -14,21 +14,21 @@ wssl_result_t wssl_client_processing_frame
     case FRAME_OPCODE_TEXT:
       if(client->wssl->on_receive_text_frame_callback != WSSL_CALLBACK_NONE)
       {
-        (*client->wssl->on_receive_text_frame_callback)(client, (char*)client->frame.payload, client->frame.payload_size);
+        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_text_frame_callback)(client, (char*)client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
     case FRAME_OPCODE_BINARY:
       if(client->wssl->on_receive_binary_frame_callback != WSSL_CALLBACK_NONE)
       {
-        (*client->wssl->on_receive_binary_frame_callback)(client, client->frame.payload, client->frame.payload_size);
+        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_binary_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
     case FRAME_OPCODE_CLOSE:
       if(client->wssl->on_receive_close_frame_callback != WSSL_CALLBACK_NONE)
       {
-        (*client->wssl->on_receive_close_frame_callback)(client);
+        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_close_frame_callback)(client));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_CLOSE, false, WSSL_NULL, 0);
@@ -39,7 +39,7 @@ wssl_result_t wssl_client_processing_frame
     case FRAME_OPCODE_PING:
       if(client->wssl->on_receive_ping_frame_callback != WSSL_CALLBACK_NONE)
       {
-        (*client->wssl->on_receive_ping_frame_callback)(client, client->frame.payload, client->frame.payload_size);
+        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_ping_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_PONG, false, client->frame.payload, client->frame.payload_size);
@@ -49,7 +49,7 @@ wssl_result_t wssl_client_processing_frame
     case FRAME_OPCODE_PONG:
       if(client->wssl->on_receive_pong_frame_callback != WSSL_CALLBACK_NONE)
       {
-        (*client->wssl->on_receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size);
+        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;

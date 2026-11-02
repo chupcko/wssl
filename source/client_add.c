@@ -120,7 +120,7 @@ wssl_result_t wssl_client_add
   wssl_client_chain_add_link_backward(&server->wssl->clients_in_wait_header, &client->wssl_chain_link);
 
   if(client->wssl->on_connect_callback != WSSL_CALLBACK_NONE)
-    (*client->wssl->on_connect_callback)(client);
+    HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_connect_callback)(client));
 
   PASS;
 }
