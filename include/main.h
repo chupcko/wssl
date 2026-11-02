@@ -15,14 +15,15 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <limits.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <openssl/sha.h>
 
 _INCLUDE_BEGIN_
 

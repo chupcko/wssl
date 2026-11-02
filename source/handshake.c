@@ -20,8 +20,14 @@ wssl_result_t wssl_handshake
   wssl_ssize_t data_length = snprintf(data, (size_t)data_size, "%s" HANDSHAKE_MAGIC, input);
   WSSL_ASSERT(data_length == data_size-1);
 
+  WSSL_ASSERT(SHA1_RESULT_SIZE_IN_OCTETS == SHA_DIGEST_LENGTH);
+
   wssl_sha1_result_t sha1_result;
-  wssl_sha1((wssl_octet_t*)data, (wssl_size_t)data_length, sha1_result);
+  if(SHA1((wssl_octet_t*)data, (size_t)data_length, sha1_result) == NULL)
+  {
+    free((void*)data);
+    FAIL_ERROR("SHA1", WSSL_RESULT_CODE_ERROR_SSL);
+  }
   free((void*)data);
 
   TRY_CALL(wssl_base64_encode(sha1_result, SHA1_RESULT_SIZE_IN_OCTETS, output, output_size, output_length));
