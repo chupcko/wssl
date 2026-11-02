@@ -28,7 +28,12 @@ wssl_result_t wssl_server_start
 
   int socket_reusable = 1;
   if(setsockopt(server->socket_descriptor, SOL_SOCKET, SO_REUSEADDR, &socket_reusable, sizeof socket_reusable) < 0)
-    FAIL_ERRNO("setsockopt", errno);
+  {
+    int system_errno = errno;
+    close(server->socket_descriptor);
+    server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+    FAIL_ERRNO("setsockopt", system_errno);
+  }
 
   int return_value;
   if(server->configuration.ipv6 == true)
@@ -55,20 +60,39 @@ wssl_result_t wssl_server_start
     server_address.sin6_flowinfo = 0;
     return_value = inet_pton(AF_INET6, ip_copy, (void*)&server_address.sin6_addr);
     if(return_value < 0)
-      FAIL_ERRNO("inet_pton", errno);
+    {
+      int system_errno = errno;
+      close(server->socket_descriptor);
+      server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+      FAIL_ERRNO("inet_pton", system_errno);
+    }
     if(return_value == 0)
+    {
+      close(server->socket_descriptor);
+      server->socket_descriptor = WSSL_NO_DESCRIPTOR;
       FAIL_ERROR("server_ip", WSSL_RESULT_CODE_ERROR_BAD_SYNTAX);
+    }
     if(device != NULL)
     {
       server_address.sin6_scope_id = if_nametoindex(device);
       if(server_address.sin6_scope_id == 0)
-        FAIL_ERRNO("if_nametoindex", errno);
+      {
+        int system_errno = errno;
+        close(server->socket_descriptor);
+        server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+        FAIL_ERRNO("if_nametoindex", system_errno);
+      }
     }
     else
       server_address.sin6_scope_id = 0;
 
     if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof server_address) < 0)
-      FAIL_ERRNO("bind", errno);
+    {
+      int system_errno = errno;
+      close(server->socket_descriptor);
+      server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+      FAIL_ERRNO("bind", system_errno);
+    }
   }
   else
   {
@@ -77,16 +101,35 @@ wssl_result_t wssl_server_start
     server_address.sin_port = htons(server->configuration.port);
     return_value = inet_pton(AF_INET, server->configuration.ip, (void*)&server_address.sin_addr);
     if(return_value < 0)
-      FAIL_ERRNO("inet_pton", errno);
+    {
+      int system_errno = errno;
+      close(server->socket_descriptor);
+      server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+      FAIL_ERRNO("inet_pton", system_errno);
+    }
     if(return_value == 0)
+    {
+      close(server->socket_descriptor);
+      server->socket_descriptor = WSSL_NO_DESCRIPTOR;
       FAIL_ERROR("server_ip", WSSL_RESULT_CODE_ERROR_BAD_SYNTAX);
+    }
 
     if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof server_address) < 0)
-      FAIL_ERRNO("bind", errno);
+    {
+      int system_errno = errno;
+      close(server->socket_descriptor);
+      server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+      FAIL_ERRNO("bind", system_errno);
+    }
   }
 
   if(listen(server->socket_descriptor, SERVER_BACKLOG_SIZE) < 0)
-    FAIL_ERRNO("listen", errno);
+  {
+    int system_errno = errno;
+    close(server->socket_descriptor);
+    server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+    FAIL_ERRNO("listen", system_errno);
+  }
 
   if(server->configuration.ssl == true)
     TRY_CALL(wssl_server_enable_ssl(server));
@@ -95,7 +138,12 @@ wssl_result_t wssl_server_start
   event.events = EPOLLIN;
   event.data.ptr = (void*)&server->epoll_data;
   if(epoll_ctl(server->wssl->epoll_descriptor, EPOLL_CTL_ADD, server->socket_descriptor, &event) < 0)
-    FAIL_ERRNO("epoll_ctl", errno);
+  {
+    int system_errno = errno;
+    close(server->socket_descriptor);
+    server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+    FAIL_ERRNO("epoll_ctl", system_errno);
+  }
 
   PASS;
 }

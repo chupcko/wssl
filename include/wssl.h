@@ -119,7 +119,7 @@ void wssl_set_id_suffix
   _WSSL_IN_     const wssl_id_suffix_t suffix
 )
 {
-  wssl_id_set_prefix(&wssl->next_client_id, suffix);
+  wssl_id_set_suffix(&wssl->next_client_id, suffix);
 }
 
 _INCLUDE_END_

@@ -19,7 +19,7 @@
 #define CLIENT_DISCONNECT_REASON_TABLE(what_call)                             \
   what_call(NONE,                           "None"                          ) \
   what_call(INPUT_BUFFER_IS_FULL,           "Input buffer is full"          ) \
-  what_call(DISCONNECTED,                   "Disconnecte"                   ) \
+  what_call(DISCONNECTED,                   "Disconnected"                  ) \
   what_call(CLOSED,                         "Closed"                        ) \
   what_call(MISSING_METHOD,                 "Missing method"                ) \
   what_call(MISSING_URI,                    "Missing URI"                   ) \
@@ -33,7 +33,7 @@
   what_call(TOO_MUCH_OUTPUT_CHUNKS,         "Too much output chunks"        ) \
   what_call(TOO_MUCH_RECEIVED_MULTI_FRAMES, "Too much received multi frames") \
   what_call(REQUESTED,                      "Requested"                     ) \
-  what_call(STOPED,                         "Stoped"                        ) \
+  what_call(STOPED,                         "Stopped"                       ) \
 
 _INCLUDE_BEGIN_
 

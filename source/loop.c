@@ -8,6 +8,9 @@ wssl_result_t wssl_loop_init
 {
   wssl_generate_random_seed(wssl);
 
+  if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+    FAIL_ERRNO("signal", errno);
+
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)
     FAIL_ERRNO("epoll_create1", errno);
