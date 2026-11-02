@@ -14,6 +14,18 @@ wssl_result_t wssl_client_do_recv
     PASS;
   }
 
+  if
+  (
+    client->ssl != WSSL_NULL &&
+    !client->ssl_read_blocked &&
+    client->ssl_want == SSL_ERROR_WANT_READ &&
+    wssl_chunk_chain_is_not_empty(&client->output_chunks)
+  )
+  {
+    TRY_CALL(wssl_client_do_send(client));
+    PASS;
+  }
+
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
     TRY_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
@@ -34,6 +46,7 @@ wssl_result_t wssl_client_do_recv
         case SSL_ERROR_WANT_READ:
         case SSL_ERROR_WANT_WRITE:
           client->ssl_want = ssl_error;
+          client->ssl_read_blocked = true;
           TRY_CALL(wssl_client_sync_epoll_events(client));
           PASS;
           break;
@@ -43,16 +56,8 @@ wssl_result_t wssl_client_do_recv
         case SSL_ERROR_SYSCALL:
           if(read_result == 0)
             MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
-          switch(errno)
-          {
-            case ECONNRESET:
-            case EPIPE:
-              MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
-              break;
-            default:
-              FAIL_ERRNO("SSL_read", errno);
-              break;
-          }
+          ERR_clear_error();
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
           break;
         default:
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
@@ -60,6 +65,8 @@ wssl_result_t wssl_client_do_recv
       }
     }
     client->ssl_want = 0;
+    client->ssl_read_blocked = false;
+    TRY_CALL(wssl_client_sync_epoll_events(client));
     recv_size = (wssl_ssize_t)read_result;
   }
   else
@@ -75,6 +82,9 @@ wssl_result_t wssl_client_do_recv
       switch(errno)
       {
         case EAGAIN:
+#if defined(EWOULDBLOCK) && EWOULDBLOCK != EAGAIN
+        case EWOULDBLOCK:
+#endif
           PASS;
           break;
         case ECONNRESET:

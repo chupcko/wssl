@@ -62,6 +62,7 @@ wssl_result_t wssl_client_add
   client->ssl = NULL;
   client->ssl_handshake_done = false;
   client->ssl_want = 0;
+  client->ssl_read_blocked = false;
 
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
   client->epoll_data.client = client;
@@ -89,7 +90,15 @@ wssl_result_t wssl_client_add
       free((void*)client);
       FAIL_ERROR("SSL_new", WSSL_RESULT_CODE_ERROR_SSL);
     }
-    SSL_set_fd(client->ssl, client->socket_descriptor);
+    SSL_set_mode(client->ssl, SSL_MODE_ENABLE_PARTIAL_WRITE|SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
+    if(SSL_set_fd(client->ssl, client->socket_descriptor) == 0)
+    {
+      epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL);
+      close(client->socket_descriptor);
+      SSL_free(client->ssl);
+      free((void*)client);
+      FAIL_ERROR("SSL_set_fd", WSSL_RESULT_CODE_ERROR_SSL);
+    }
     SSL_set_accept_state(client->ssl);
   }
 

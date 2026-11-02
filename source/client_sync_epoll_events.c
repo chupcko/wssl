@@ -15,9 +15,13 @@ wssl_result_t wssl_client_sync_epoll_events
   else
   {
     events = EPOLLIN;
-    if(wssl_chunk_chain_is_not_empty(&client->output_chunks))
+    if
+    (
+      wssl_chunk_chain_is_not_empty(&client->output_chunks) &&
+      (client->ssl_want != SSL_ERROR_WANT_READ || client->ssl_read_blocked)
+    )
       events |= EPOLLOUT;
-    if(client->ssl_want == SSL_ERROR_WANT_WRITE)
+    if(client->ssl_read_blocked && client->ssl_want == SSL_ERROR_WANT_WRITE)
       events |= EPOLLOUT;
   }
 

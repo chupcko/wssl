@@ -14,6 +14,12 @@ wssl_result_t wssl_client_do_send
     PASS;
   }
 
+  if(client->ssl_read_blocked)
+  {
+    TRY_CALL(wssl_client_do_recv(client));
+    PASS;
+  }
+
   wssl_ssize_t send_size;
   wssl_chunk_chain_t* chunk_link;
   wssl_chunk_chain_t* chunk_link_next;
@@ -39,6 +45,7 @@ wssl_result_t wssl_client_do_send
             case SSL_ERROR_WANT_READ:
             case SSL_ERROR_WANT_WRITE:
               client->ssl_want = ssl_error;
+              client->ssl_read_blocked = false;
               TRY_CALL(wssl_client_sync_epoll_events(client));
               PASS;
               break;
@@ -48,16 +55,8 @@ wssl_result_t wssl_client_do_send
             case SSL_ERROR_SYSCALL:
               if(write_result == 0)
                 MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
-              switch(errno)
-              {
-                case ECONNRESET:
-                case EPIPE:
-                  MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
-                  break;
-                default:
-                  FAIL_ERRNO("SSL_write", errno);
-                  break;
-              }
+              ERR_clear_error();
+              MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
               break;
             default:
               MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
@@ -80,6 +79,9 @@ wssl_result_t wssl_client_do_send
           switch(errno)
           {
             case EAGAIN:
+#if defined(EWOULDBLOCK) && EWOULDBLOCK != EAGAIN
+            case EWOULDBLOCK:
+#endif
               PASS;
               break;
             case ECONNRESET:

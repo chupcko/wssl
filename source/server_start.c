@@ -13,6 +13,19 @@ wssl_result_t wssl_server_start
   if(server->socket_descriptor < 0)
     FAIL_ERRNO("socket", errno);
 
+  int fcntl_flags = fcntl(server->socket_descriptor, F_GETFL, 0);
+  if
+  (
+    fcntl_flags < 0 ||
+    fcntl(server->socket_descriptor, F_SETFL, fcntl_flags|O_CLOEXEC|O_NONBLOCK) < 0
+  )
+  {
+    int system_errno = errno;
+    close(server->socket_descriptor);
+    server->socket_descriptor = WSSL_NO_DESCRIPTOR;
+    FAIL_ERRNO("fcntl", system_errno);
+  }
+
   int socket_reusable = 1;
   if(setsockopt(server->socket_descriptor, SOL_SOCKET, SO_REUSEADDR, &socket_reusable, sizeof socket_reusable) < 0)
     FAIL_ERRNO("setsockopt", errno);

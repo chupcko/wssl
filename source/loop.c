@@ -76,7 +76,35 @@ wssl_result_t wssl_loop
         switch(epoll_data->type)
         {
           case WSSL_EPOLL_DATA_TYPE_SERVER:
-            TRY_CALL(wssl_client_add(epoll_data->server));
+            LOOP
+            {
+              wssl_result_t accept_result = wssl_client_add(epoll_data->server);
+              if(wssl_result_is_ok(accept_result))
+                continue;
+              if
+              (
+                accept_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
+                (
+                  accept_result.system_errno == EAGAIN ||
+                  accept_result.system_errno == EWOULDBLOCK ||
+                  accept_result.system_errno == EMFILE ||
+                  accept_result.system_errno == ENFILE ||
+                  accept_result.system_errno == ENOMEM
+                )
+              )
+                break;
+              if
+              (
+                accept_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
+                (
+                  accept_result.system_errno == EINTR ||
+                  accept_result.system_errno == ECONNABORTED ||
+                  accept_result.system_errno == EPROTO
+                )
+              )
+                continue;
+              return accept_result;
+            }
             break;
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
             if((events[event_index].events&EPOLLIN) != 0)

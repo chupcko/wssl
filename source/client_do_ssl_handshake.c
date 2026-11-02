@@ -35,16 +35,8 @@ wssl_result_t wssl_client_do_ssl_handshake
     case SSL_ERROR_SYSCALL:
       if(accept_result == 0)
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
-      switch(errno)
-      {
-        case ECONNRESET:
-        case EPIPE:
-          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
-          break;
-        default:
-          FAIL_ERRNO("SSL_accept", errno);
-          break;
-      }
+      ERR_clear_error();
+      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
       break;
     default:
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
