@@ -64,8 +64,10 @@ wssl_result_t wssl_client_processing_header
   {
     char handshake_result[HANDSHAKE_RESULT_SIZE];
     wssl_size_t handshake_result_length;
-    TRY_CALL
+    TRY_CALL_ELSE_MARK_FOR_DISCONNECTING
     (
+      client,
+      WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY,
       wssl_handshake
       (
         sec_websocket_key->data,

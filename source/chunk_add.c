@@ -17,7 +17,7 @@ wssl_result_t wssl_chunk_add
     (size_t)size
   );
   if(*chunk == NULL)
-    FAIL_ERROR("chunk", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
+    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY);
 
   (*chunk)->buffer.data = (*chunk)->buffer_data;
   (*chunk)->buffer.size = size;

@@ -27,7 +27,7 @@ wssl_result_t wssl_client_do_recv
   }
 
   if(wssl_buffer_is_not_allocated(&client->input_buffer))
-    TRY_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
+    TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
   wssl_ssize_t recv_size;
   if(client->ssl != NULL)
