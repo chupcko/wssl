@@ -60,15 +60,6 @@ bool wssl_client_processing_header_check
   )
     return false;
 
-  wssl_string_t* version = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Version");
-  if
-  (
-    version == WSSL_NULL ||
-    wssl_string_is_not_allocated(version) ||
-    strcmp(version->data, "13") != 0
-  )
-    return false;
-
   *sec_websocket_key = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Key");
   if
   (
@@ -76,6 +67,15 @@ bool wssl_client_processing_header_check
     wssl_string_is_not_allocated(*sec_websocket_key) ||
     (*sec_websocket_key)->data_length != 24 ||
     !wssl_key_is_base64((*sec_websocket_key)->data, (*sec_websocket_key)->data_length)
+  )
+    return false;
+
+  wssl_string_t* version = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Version");
+  if
+  (
+    version == WSSL_NULL ||
+    wssl_string_is_not_allocated(version) ||
+    strcmp(version->data, "13") != 0
   )
     return false;
 

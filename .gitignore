@@ -1,3 +1,4 @@
 out
 core
 tests/kick_server.e
+__pycache__/
