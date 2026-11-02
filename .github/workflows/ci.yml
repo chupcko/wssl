@@ -1,0 +1,15 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: docker build -t wssl .
+      - run: docker run --rm wssl
+      - if: always()
+        run: docker rmi wssl:latest || true

@@ -35,3 +35,8 @@ GET_GOAL = $(word 2,$(subst -, ,$(1)))
 .PHONY: $(GOALS)
 $(GOALS):
 	$(MAKE) -C $(call GET_DIR,$@) $(call GET_GOAL,$@)
+
+.PHONY: test
+test: all
+	$(CC) -std=c99 -O3 -Werror -Iout -o tests/kick_server.e tests/kick_server.c out/libwssl.a -lssl -lcrypto
+	python3 -m pytest tests -q
