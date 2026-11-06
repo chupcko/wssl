@@ -2,8 +2,12 @@
 
 #define FRAME_PUT_CHECK(what_size)                            \
 do                                                            \
+{                                                             \
   if(*data_length+(what_size) > data_size)                    \
+  {                                                           \
     FAIL_ERROR("frame_put", WSSL_RESULT_CODE_ERROR_NO_SPACE); \
+  }                                                           \
+}                                                             \
 while(false)                                                  \
 
 _FUNCTION_
@@ -23,13 +27,17 @@ wssl_result_t wssl_frame_put
   FRAME_PUT_CHECK(1);
   data[*data_length] = frame->opcode&0x0f;
   if(frame->fin)
+  {
     data[*data_length] |= 0x80;
+  }
   (*data_length)++;
 
   FRAME_PUT_CHECK(1);
   data[*data_length] =  frame->length;
   if(frame->masked)
+  {
     data[*data_length] |= 0x80;
+  }
   (*data_length)++;
 
   switch(frame->length)
@@ -60,7 +68,9 @@ wssl_result_t wssl_frame_put
   {
     FRAME_PUT_CHECK(WSSL_FRAME_MASKING_KEY_SIZE);
     for(i = 0; i < WSSL_FRAME_MASKING_KEY_SIZE; i++)
+    {
       data[*data_length+i] = frame->masking_key[i];
+    }
     *data_length += WSSL_FRAME_MASKING_KEY_SIZE;
   }
 
@@ -72,10 +82,16 @@ wssl_result_t wssl_frame_put
   {
     FRAME_PUT_CHECK((wssl_size_t)frame->payload_size);
     if(frame->masked)
+    {
       for(i = 0; i < frame->payload_size; i++)
+      {
         data[*data_length+i] = frame->payload[i]^frame->masking_key[i%WSSL_FRAME_MASKING_KEY_SIZE];
+      }
+    }
     else
+    {
       memcpy((void*)&data[*data_length], (void*)frame->payload, (size_t)frame->payload_size);
+    }
     *data_length += (wssl_size_t)frame->payload_size;
   }
 

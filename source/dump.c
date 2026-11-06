@@ -11,9 +11,13 @@ fprintf                                        \
   INDENT(indent_level+1)                       \
 );                                             \
 if(wssl->what_name != what_null)               \
+{                                              \
   fprintf(file, "%p", (void*)wssl->what_name); \
+}                                              \
 else                                           \
+{                                              \
   fprintf(file, "none");                       \
+}                                              \
 
 _LIBRARY_FUNCTION_
 void wssl_dump
@@ -46,9 +50,13 @@ void wssl_dump
     INDENT(indent_level+1)
   );
   if(wssl->epoll_descriptor != WSSL_NO_DESCRIPTOR)
+  {
     fprintf(file, "%d", wssl->epoll_descriptor);
+  }
   else
+  {
     fprintf(file, "none");
+  }
   DUMP_POINTER(global_extra_data,                  WSSL_NULL         )
   DUMP_POINTER(on_connect_callback,                WSSL_CALLBACK_NONE)
   DUMP_POINTER(on_disconnect_callback,             WSSL_CALLBACK_NONE)
@@ -86,35 +94,51 @@ void wssl_dump
     fprintf(file, "\n");
     wssl_server_chain_t* server_link;
     CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+    {
       wssl_server_dump(wssl_server_chain_get_entry_from_wssl_chain_link(server_link), file, indent_level+2);
+    }
   }
   else
+  {
     fprintf(file, " none\n");
+  }
   fprintf(file, INDENT_FORMAT "clients_in_wait_header:", INDENT(indent_level+1));
   if(wssl_client_chain_is_not_empty(&wssl->clients_in_wait_header))
   {
     fprintf(file, "\n");
     CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_in_wait_header)
+    {
       wssl_client_dump(wssl_client_chain_get_entry_from_wssl_chain_link(client_link), file, indent_level+2);
+    }
   }
   else
+  {
     fprintf(file, " none\n");
+  }
   fprintf(file, INDENT_FORMAT "clients_in_frame_processing:", INDENT(indent_level+1));
   if(wssl_client_chain_is_not_empty(&wssl->clients_in_frame_processing))
   {
     fprintf(file, "\n");
     CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_in_frame_processing)
+    {
       wssl_client_dump(wssl_client_chain_get_entry_from_wssl_chain_link(client_link), file, indent_level+2);
+    }
   }
   else
+  {
     fprintf(file, " none\n");
+  }
   fprintf(file, INDENT_FORMAT "clients_marked_for_disconnecting:", INDENT(indent_level+1));
   if(wssl_client_chain_is_not_empty(&wssl->clients_marked_for_disconnecting))
   {
     fprintf(file, "\n");
     CHAIN_FOR_EACH_LINK_FORWARD(client_link, &wssl->clients_marked_for_disconnecting)
+    {
       wssl_client_dump(wssl_client_chain_get_entry_from_wssl_chain_link(client_link), file, indent_level+2);
+    }
   }
   else
+  {
     fprintf(file, " none\n");
+  }
 }

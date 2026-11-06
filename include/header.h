@@ -48,7 +48,9 @@ wssl_result_t wssl_header_insert_##what_member                            \
 {                                                                         \
   header->what_member.data = (char*)malloc((size_t)(data_size+1));        \
   if(header->what_member.data == NULL)                                    \
+  {                                                                       \
     FAIL_ERROR("header_" #what_member, WSSL_RESULT_CODE_ERROR_NO_MEMORY); \
+  }                                                                       \
   strncpy(header->what_member.data, data, data_size);                     \
   header->what_member.data[data_size] = '\0';                             \
   header->what_member.data_length = data_size;                            \
@@ -73,7 +75,9 @@ wssl_result_t wssl_header_add_field
     (size_t)(key_data_size+1)
   );
   if(header_field == NULL)
+  {
     FAIL_ERROR("header_field", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
+  }
 
   header_field->key.data = header_field->key_data;
   strncpy(header_field->key.data, key_data, key_data_size);
@@ -101,7 +105,9 @@ wssl_result_t wssl_header_insert_value_at_last_field
 
   header_field->value.data = (char*)malloc((size_t)(data_size+1));
   if(header_field->value.data == NULL)
+  {
     FAIL_ERROR("header_field_key", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
+  }
   strncpy(header_field->value.data, data, data_size);
   header_field->value.data[data_size] = '\0';
   header_field->value.data_length = data_size;
@@ -116,7 +122,9 @@ void wssl_header_field_delete
 )
 {
   if(wssl_string_is_allocated(&header_field->value))
+  {
     wssl_string_free(&header_field->value);
+  }
   wssl_header_field_chain_delete_link(&header_field->header_chain_link);
   free((void*)header_field);
 }

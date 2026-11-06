@@ -8,7 +8,9 @@ wssl_result_t wssl_server_enable_ssl
 {
   SSL_CTX* ssl_ctx = SSL_CTX_new(TLS_server_method());
   if(ssl_ctx == NULL)
+  {
     FAIL_ERROR("SSL_CTX_new", WSSL_RESULT_CODE_ERROR_SSL);
+  }
 
   if(SSL_CTX_use_certificate_chain_file(ssl_ctx, server->configuration.certificate_file) != 1)
   {

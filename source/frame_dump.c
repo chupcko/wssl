@@ -29,10 +29,16 @@ void wssl_frame_dump
     INDENT(indent_level+1)
   );
   if(frame->masked)
+  {
     for(data_index = 0; data_index < WSSL_FRAME_MASKING_KEY_SIZE; data_index++)
+    {
       fprintf(file, " %" WSSL_PRINT_OCTET, frame->masking_key[data_index]);
+    }
+  }
   else
+  {
     fprintf(file, " none");
+  }
   fprintf
   (
     file,
@@ -48,13 +54,17 @@ void wssl_frame_dump
     for(data_index = 0; data_index < frame->payload_size; data_index++)
     {
       if(data_index != 0)
+      {
         fprintf(file, " ");
+      }
       fprintf(file, "%" WSSL_PRINT_OCTET, frame->payload[data_index]);
     }
     fprintf(file, "\"");
   }
   else
+  {
     fprintf(file, "none");
+  }
   fprintf
   (
     file,

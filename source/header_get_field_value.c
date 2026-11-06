@@ -13,7 +13,9 @@ wssl_string_t* wssl_header_get_field_value
   {
     header_field = wssl_header_field_chain_get_entry_from_header_chain_link(header_field_link);
     if(wssl_str_case_is_equal(header_field->key.data, key))
+    {
       return &header_field->value;
+    }
   }
   return WSSL_NULL;
 }

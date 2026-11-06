@@ -20,7 +20,11 @@ const char* wssl_client_get_disconnect_reason_name
 {
   wssl_size_t i;
   for(i = 0; Wssl_client_disconnect_reason_table[i].name != WSSL_NULL; i++)
+  {
     if(Wssl_client_disconnect_reason_table[i].disconnect_reason == disconnect_reason)
+    {
       return Wssl_client_disconnect_reason_table[i].name;
+    }
+  }
   return "Unknown";
 }

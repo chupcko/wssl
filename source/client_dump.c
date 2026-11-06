@@ -33,9 +33,13 @@ void wssl_client_dump
     INDENT(indent_level+1)
   );
   if(client->socket_descriptor != WSSL_NO_DESCRIPTOR)
+  {
     fprintf(file, "%d", client->socket_descriptor);
+  }
   else
+  {
     fprintf(file, "none");
+  }
   fprintf
   (
     file,
@@ -50,9 +54,13 @@ void wssl_client_dump
     INDENT(indent_level+1)
   );
   if(client->connection_extra_data != WSSL_NULL)
+  {
     fprintf(file, "%p", (void*)client->connection_extra_data);
+  }
   else
+  {
     fprintf(file, "none");
+  }
   fprintf
   (
     file,
@@ -68,17 +76,23 @@ void wssl_client_dump
     wssl_buffer_dump(&client->input_buffer, file, indent_level+2);
   }
   else
+  {
     fprintf(file, " none\n");
+  }
   fprintf(file, INDENT_FORMAT "output_chunks:", INDENT(indent_level+1));
   if(wssl_chunk_chain_is_not_empty(&client->output_chunks))
   {
     fprintf(file, "\n");
     wssl_chunk_chain_t* chunk_link;
     CHAIN_FOR_EACH_LINK_FORWARD(chunk_link, &client->output_chunks)
+    {
       wssl_buffer_dump(&wssl_chunk_chain_get_entry_from_client_chain_link(chunk_link)->buffer, file, indent_level+2);
+    }
   }
   else
+  {
     fprintf(file, " none\n");
+  }
   fprintf
   (
     file,

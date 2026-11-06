@@ -20,11 +20,15 @@ void wssl_buffer_printf
   va_end(arguments);
 
   if(length < 0)
+  {
     buffer->end = buffer->begin;
+  }
   else
   {
     buffer->end = buffer->begin+(wssl_size_t)length;
     if(buffer->end > buffer->size)
+    {
       buffer->end = buffer->size;
+    }
   }
 }

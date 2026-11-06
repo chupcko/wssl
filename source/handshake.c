@@ -15,7 +15,9 @@ wssl_result_t wssl_handshake
   wssl_size_t data_size = input_size+sizeof HANDSHAKE_MAGIC;
   char* data = (char*)malloc((size_t)data_size);
   if(data == NULL)
+  {
     FAIL_ERROR("handshake", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
+  }
 
   wssl_ssize_t data_length = snprintf(data, (size_t)data_size, "%s" HANDSHAKE_MAGIC, input);
   WSSL_ASSERT(data_length == data_size-1);

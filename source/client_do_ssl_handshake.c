@@ -9,7 +9,9 @@ wssl_result_t wssl_client_do_ssl_handshake
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   if(client->ssl_handshake_done)
+  {
     PASS;
+  }
 
   int accept_result = SSL_accept(client->ssl);
   if(accept_result == 1)
@@ -34,7 +36,9 @@ wssl_result_t wssl_client_do_ssl_handshake
       break;
     case SSL_ERROR_SYSCALL:
       if(accept_result == 0)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+      }
       ERR_clear_error();
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
       break;

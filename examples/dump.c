@@ -114,9 +114,13 @@ int main(int arguments_count, char* arguments_value[])
   WSSL_DECLARE(wssl);
 
   if(signal(SIGTERM, &on_end) == SIG_ERR)
+  {
     ERROR("Cannot signal with %d:\"%s\"", errno, strerror(errno));
+  }
   if(signal(SIGINT, &on_end) == SIG_ERR)
+  {
     ERROR("Cannot signal with %d:\"%s\"", errno, strerror(errno));
+  }
 
   wssl_set_on_connect_callback(&wssl, &on_connect);
   wssl_set_on_disconnect_callback(&wssl, &on_disconnect);
