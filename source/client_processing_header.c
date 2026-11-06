@@ -57,7 +57,7 @@ wssl_result_t wssl_client_processing_header
     pass = wssl_client_processing_header_check(client, &sec_websocket_key);
 
   wssl_chunk_t* chunk;
-  TRY_CALL(wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
+  TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   if(pass)

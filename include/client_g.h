@@ -28,7 +28,7 @@
   what_call(MISSING_FIELD_KEY,              "Missing field key"             ) \
   what_call(BAD_HEADER,                     "Bad header"                    ) \
   what_call(BAD_FRAME_OPCODE,               "Bad frame opcode"              ) \
-  what_call(NO_MEMORY,                     "No memory"                     ) \
+  what_call(NO_MEMORY,                      "No memory"                     ) \
   what_call(TOO_MUCH_OUTPUT_CHUNKS,         "Too much output chunks"        ) \
   what_call(TOO_MUCH_RECEIVED_MULTI_FRAMES, "Too much received multi frames") \
   what_call(REQUESTED,                      "Requested"                     ) \

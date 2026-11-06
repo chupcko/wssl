@@ -110,6 +110,6 @@ do                                                                              
   if(wssl_result_is_not_ok(_result_))                                                  \
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, what_disconnect_reason);      \
 }                                                                                      \
-while(false)                                                                         \
+while(false)                                                                           \
 
 #endif
