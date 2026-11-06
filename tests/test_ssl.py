@@ -68,26 +68,6 @@ def test_weak_cipher_rejected(echo_ssl_server) :
 #$
 
 
-def test_rst_storm_keeps_server_alive(echo_server) :
-  import struct as struct_module
-  host, port = echo_server
-  for _ in range(20) :
-    sock = socket.create_connection((host, port), timeout=5)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER,
-                    struct_module.pack('ii', 1, 0))
-    sock.sendall(
-      b'GET / HTTP/1.1\r\nHost: x\r\nUpgrade: websocket\r\n'
-      b'Connection: Upgrade\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n'
-      b'Sec-WebSocket-Version: 13\r\n\r\n'
-    )
-    sock.close()
-  #$
-  response, sock = helpers.ws_handshake(host, port)
-  assert b'101' in helpers.status_line(response)
-  sock.close()
-#$
-
-
 def test_ssl_handshake_and_echo(echo_ssl_server) :
   host, port = echo_ssl_server
   sock = tls_connect(host, port)

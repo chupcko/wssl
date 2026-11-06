@@ -148,3 +148,22 @@ def test_close_frame_gets_reply(echo_server) :
   assert helpers.recv_frame(sock) == (0x8, b'')
   sock.close()
 #$
+
+
+def test_rst_storm_keeps_server_alive(echo_server) :
+  host, port = echo_server
+  for _ in range(20) :
+    sock = socket.create_connection((host, port), timeout=5)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER,
+                    struct.pack('ii', 1, 0))
+    sock.sendall(
+      b'GET / HTTP/1.1\r\nHost: x\r\nUpgrade: websocket\r\n'
+      b'Connection: Upgrade\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n'
+      b'Sec-WebSocket-Version: 13\r\n\r\n'
+    )
+    sock.close()
+  #$
+  response, sock = helpers.ws_handshake(host, port)
+  assert b'101' in helpers.status_line(response)
+  sock.close()
+#$
