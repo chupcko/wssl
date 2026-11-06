@@ -3,4 +3,4 @@
 # Install as /etc/letsencrypt/renewal-hooks/deploy/wssl-ssl-examples
 # (executable). Domain specific certificate paths live in
 # /etc/default/wssl-examples, this hook only restarts.
-systemctl restart wssl-echo wssl-time wssl-chat
+systemctl restart wssl-echo-ssl wssl-time-ssl wssl-chat-ssl

@@ -40,7 +40,7 @@ git checkout openssl
 make
 ```
 
-Result: `examples/echo.e`, `time.e`, `chat.e` (plain) and
+Result: `examples/wssl_echo.e`, `wssl_time.e`, `wssl_chat.e` (plain) and
 `examples/echo_ssl.e`, `time_ssl.e`, `chat_ssl.e` (SSL),
 plus `out/libwssl.a` and `out/wssl.h`.
 
@@ -92,8 +92,8 @@ After=network-online.target
 Wants=network-online.target
 [Service]
 Type=simple
-WorkingDirectory=/root/wssl
-ExecStart=/root/wssl/examples/echo_ssl.e /etc/letsencrypt/live/example.com/fullchain.pem /etc/letsencrypt/live/example.com/privkey.pem
+WorkingDirectory=/opt/wssl
+ExecStart=/opt/wssl/examples/echo_ssl.e /etc/letsencrypt/live/example.com/fullchain.pem /etc/letsencrypt/live/example.com/privkey.pem
 Restart=always
 RestartSec=5
 [Install]
@@ -101,7 +101,7 @@ WantedBy=multi-user.target
 ```
 
 Plain example (`/etc/systemd/system/wssl-echo.service`): same file
-with `ExecStart=/root/wssl/examples/echo.e`. Repeat for time and
+with `ExecStart=/opt/wssl/examples/wssl_echo.e`. Repeat for time and
 chat with their binaries and ports from the table above.
 
 Enable and start:
