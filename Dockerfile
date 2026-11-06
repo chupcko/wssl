@@ -10,7 +10,7 @@ RUN apt-get update                             \
     python3-pip                                \
     openssl                                    \
     &&                                         \
-    rm -rf /var/lib/apt/lists/*                \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --break-system-packages pytest
 
