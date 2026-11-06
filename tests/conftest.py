@@ -7,7 +7,7 @@ import pytest
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLAIN_PORT = 5001
-SSL_PORT = 5001
+SSL_PORT = 5011
 
 
 def wait_for_port(host, port, timeout=15) :
