@@ -261,6 +261,19 @@ wssl_result_t wssl_client_processing_recv
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         if(!client->frame.masked)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
+        if
+        (
+          (
+            client->frame.opcode == FRAME_OPCODE_CLOSE ||
+            client->frame.opcode == FRAME_OPCODE_PING ||
+            client->frame.opcode == FRAME_OPCODE_PONG
+          ) &&
+          (
+            !client->frame.fin ||
+            client->frame.payload_size > FRAME_PAYLOAD_SIZE_SHORT
+          )
+        )
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
 
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_allocate(&client->frame));
         if(client->frame.fin)
@@ -289,7 +302,7 @@ wssl_result_t wssl_client_processing_recv
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         if(!frame.masked)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
-        if(client->number_of_received_multi_frames > client->wssl->max_number_of_received_multi_frames)
+        if(client->number_of_received_multi_frames >= client->wssl->max_number_of_received_multi_frames)
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
 
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_reallocate(&client->frame, &frame));

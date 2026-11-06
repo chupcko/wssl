@@ -167,3 +167,77 @@ def test_rst_storm_keeps_server_alive(echo_server) :
   assert b'101' in helpers.status_line(response)
   sock.close()
 #$
+
+
+def _send_raw_frame(sock, first_byte, payload) :
+  mask = b'\x01\x02\x03\x04'
+  body = bytes(b ^ mask[i % 4] for i, b in enumerate(payload))
+  length = len(payload)
+  if length <= 125 :
+    sock.sendall(bytes([first_byte, 0x80 | length]) + mask + body)
+  else :
+    sock.sendall(bytes([first_byte, 0x80 | 126]) + struct.pack('!H', length) + mask + body)
+  #$
+#$
+
+
+def test_ping_gets_pong(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  helpers.send_frame(sock, 0x9, b'abcd')
+  assert helpers.recv_frame(sock) == (0xa, b'abcd')
+  sock.close()
+#$
+
+
+def test_fragmented_ping_disconnects(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  _send_raw_frame(sock, 0x09, b'abcd')
+  sock.settimeout(2)
+  assert sock.recv(100) == b''
+  sock.close()
+#$
+
+
+def test_oversize_ping_disconnects(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  _send_raw_frame(sock, 0x89, b'A' * 200)
+  sock.settimeout(2)
+  assert sock.recv(100) == b''
+  sock.close()
+#$
+
+
+def test_fragmented_close_disconnects(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  _send_raw_frame(sock, 0x08, b'bye')
+  sock.settimeout(2)
+  assert sock.recv(100) == b''
+  sock.close()
+#$
+
+
+def test_fragmented_text_within_limit_echoes(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  _send_raw_frame(sock, 0x01, b'hello ')
+  _send_raw_frame(sock, 0x80, b'world')
+  assert helpers.recv_frame(sock) == (0x1, b'hello world')
+  sock.close()
+#$
+
+
+def test_too_many_continuations_disconnect(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  _send_raw_frame(sock, 0x01, b'x')
+  for _ in range(9) :
+    _send_raw_frame(sock, 0x00, b'x')
+  #$
+  sock.settimeout(2)
+  assert sock.recv(100) == b''
+  sock.close()
+#$

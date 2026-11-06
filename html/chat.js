@@ -46,7 +46,7 @@ function clean()
 function write(message)
 {
   var newData = document.createElement('p');
-  newData.innerHTML = message;
+  newData.textContent = message;
   outputId.insertBefore(newData, outputId.firstChild);
 }
 
