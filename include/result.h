@@ -66,15 +66,15 @@ _INCLUDE_END_
 #define FAIL_ERRNO(what_where, what_system_errno) return MAKE_RESULT_ERRNO(what_where, what_system_errno)
 #define FAIL_ERROR(what_where, what_code)         return MAKE_RESULT(what_code, what_where)
 
-#define TRY_CALL(...)                     \
-do                                        \
-{                                         \
-  wssl_result_t _result_ = (__VA_ARGS__); \
-  if(wssl_result_is_not_ok(_result_))     \
-  {                                       \
-    return _result_;                      \
-  }                                       \
-}                                         \
-while(false)                              \
+#define TRY_CALL(...)                   \
+do                                      \
+{                                       \
+  wssl_result_t result = (__VA_ARGS__); \
+  if(wssl_result_is_not_ok(result))     \
+  {                                     \
+    return result;                      \
+  }                                     \
+}                                       \
+while(false)                            \
 
 #endif

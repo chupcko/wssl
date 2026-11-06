@@ -1,0 +1,12 @@
+[Unit]
+Description=WSSL chat plain service
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=/root/wssl
+ExecStart=/root/wssl/examples/chat.e
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

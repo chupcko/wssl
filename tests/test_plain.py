@@ -26,6 +26,21 @@ def test_echo_small_and_medium(echo_server) :
 #$
 
 
+def test_echo_replies_exactly_once(echo_server) :
+  host, port = echo_server
+  _, sock = helpers.ws_handshake(host, port)
+  helpers.send_frame(sock, 0x1, b'abc')
+  assert helpers.recv_frame(sock) == (0x1, b'abc')
+  sock.settimeout(1)
+  try :
+    extra = sock.recv(4096)
+  except socket.timeout :
+    extra = b''
+  assert extra == b''
+  sock.close()
+#$
+
+
 def test_burst_handshakes(echo_server) :
   host, port = echo_server
   sockets = []
