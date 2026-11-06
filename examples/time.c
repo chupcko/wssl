@@ -6,11 +6,12 @@
 
 #define OUTPUT_SIZE 64
 
-void for_client(wssl_client_t* client, void* local_extra_data)
+wssl_callback_result_e for_client(wssl_client_t* client, void* local_extra_data)
 {
   char output[OUTPUT_SIZE];
   snprintf(output, OUTPUT_SIZE, "t=%ld", (long)time(NULL));
   wssl_client_send_text(client, output);
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
 bool on_tick(wssl_t* wssl)

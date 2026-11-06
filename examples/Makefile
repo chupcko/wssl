@@ -1,3 +1,5 @@
+IPV6 ?= 1
+
 WSSL_DIR := ../out
 
 WSSL_INCLUDE = $(WSSL_DIR)/wssl.h
@@ -9,13 +11,8 @@ OBJECTS = $(SOURCES:.c=.o)
 TARGETS = $(SOURCES:.c=.e)
 
 COMPILER := gcc
-COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(WSSL_DIR)
+COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(WSSL_DIR) -DWSSL_EXAMPLE_IPV6=$(IPV6)
 LINKER := gcc
-
-# IPv6 example servers: 1 to bind both 0.0.0.0 and ::, 0 for IPv4 only.
-# Usage: make IPV6=0
-IPV6 ?= 1
-COMPILER_FLAGS += -DWSSL_EXAMPLE_IPV6=$(IPV6)
 LINKER_FLAGS =
 LIBRARIES := $(or $(shell pkg-config --libs openssl 2>/dev/null),-lssl -lcrypto)
 

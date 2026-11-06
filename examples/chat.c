@@ -3,25 +3,28 @@
 
 #include "wssl.h"
 
-void for_client(wssl_client_t* client, void* local_extra_data)
+wssl_callback_result_e for_client(wssl_client_t* client, void* local_extra_data)
 {
   wssl_client_send_text(client, (char*)local_extra_data);
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
 #define OUTPUT_SIZE 1024
 
-void on_start_receiving_frames(wssl_client_t* client)
+wssl_callback_result_e on_start_receiving_frames(wssl_client_t* client)
 {
   char output[OUTPUT_SIZE];
   snprintf(output, OUTPUT_SIZE, "%s:%" WSSL_PRINT_ID_SUFFIX " = JOIN", client->header.uri.data, client->id.suffix);
   wssl_for_each_client_in_frame_processing_call(wssl_client_get_wssl(client), &for_client, (void*)output);
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
+wssl_callback_result_e on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
 {
   char output[OUTPUT_SIZE];
   snprintf(output, OUTPUT_SIZE, "%s:%" WSSL_PRINT_ID_SUFFIX " - %s", client->header.uri.data, client->id.suffix, data);
   wssl_for_each_client_in_frame_processing_call(wssl_client_get_wssl(client), &for_client, (void*)output);
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
 void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e disconnect_reason)

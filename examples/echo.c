@@ -3,9 +3,10 @@
 
 #include "wssl.h"
 
-void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
+wssl_callback_result_e on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
 {
   wssl_client_send_string(client, &WSSL_MAKE_STRING(data, data_size));
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
 int main(int arguments_count, char* arguments_value[])

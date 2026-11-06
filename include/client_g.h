@@ -29,7 +29,7 @@
   what_call(BAD_HEADER,                     "Bad header"                    ) \
   what_call(BAD_FRAME_OPCODE,               "Bad frame opcode"              ) \
   what_call(NO_MEMORY,                      "No memory"                     ) \
-  what_call(CALLBACK_ERROR,                "Callback error"                ) \
+  what_call(CALLBACK_ERROR,                 "Callback error"                ) \
   what_call(FRAME_NOT_MASKED,               "Frame not masked"              ) \
   what_call(TOO_MUCH_OUTPUT_CHUNKS,         "Too much output chunks"        ) \
   what_call(TOO_MUCH_RECEIVED_MULTI_FRAMES, "Too much received multi frames") \

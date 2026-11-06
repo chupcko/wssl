@@ -96,8 +96,8 @@ wssl_result_t wssl_client_processing_header
   }
 
   wssl_string_t* sec_websocket_key;
-  bool pass = header_callback_result == WSSL_CALLBACK_RESULT_OK;
-  if(pass)
+  bool pass;
+  if(header_callback_result == WSSL_CALLBACK_RESULT_OK)
     pass = wssl_client_processing_header_check(client, &sec_websocket_key);
 
   wssl_chunk_t* chunk;

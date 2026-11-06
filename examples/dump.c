@@ -16,11 +16,12 @@ while(false)                              \
 
 bool Work = true;
 
-void on_connect(wssl_client_t* client)
+wssl_callback_result_e on_connect(wssl_client_t* client)
 {
   printf("Connect ");
   wssl_client_print(client, stdout);
   printf("\n");
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
 void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e disconnect_reason)
@@ -30,50 +31,55 @@ void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e discon
   printf("\n");
 }
 
-bool on_receive_header(wssl_client_t* client)
+wssl_callback_result_e on_receive_header(wssl_client_t* client)
 {
   printf("Receive header ");
   wssl_client_print(client, stdout);
   printf("\n");
-  return true;
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_start_receiving_frames(wssl_client_t* client)
+wssl_callback_result_e on_start_receiving_frames(wssl_client_t* client)
 {
   printf("Start receiving frames ");
   wssl_client_print(client, stdout);
   printf("\n");
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
+wssl_callback_result_e on_receive_text_frame(wssl_client_t* client, char* data, wssl_size_t data_size)
 {
   printf("Receive text frame ");
   wssl_client_print(client, stdout);
   printf("\n");
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_receive_binary_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_t data_size)
+wssl_callback_result_e on_receive_binary_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_t data_size)
 {
   printf("Receive binary frame ");
   wssl_client_print(client, stdout);
   printf("\n");
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_receive_close_frame(wssl_client_t* client)
+wssl_callback_result_e on_receive_close_frame(wssl_client_t* client)
 {
   printf("Receive close frame ");
   wssl_client_print(client, stdout);
   printf("\n");
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_receive_ping_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_t data_size)
+wssl_callback_result_e on_receive_ping_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_t data_size)
 {
   printf("Receive ping frame ");
   wssl_client_print(client, stdout);
   printf("\n");
+  return WSSL_CALLBACK_RESULT_OK;
 }
 
-void on_receive_pong_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_t data_size)
+wssl_callback_result_e on_receive_pong_frame(wssl_client_t* client, wssl_octet_t* data, wssl_size_t data_size)
 {
   printf("Receive pong frame ");
   wssl_client_print(client, stdout);
