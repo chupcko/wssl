@@ -15,8 +15,6 @@ wssl_result_t wssl_client_add
   client->server = server;
   client->wssl = server->wssl;
 
-  wssl_set_next_client_id(client->wssl, &client->id);
-
   if(server->configuration.ipv6 == true)
   {
     struct sockaddr_in6 client_address;
@@ -47,6 +45,8 @@ wssl_result_t wssl_client_add
     inet_ntop(AF_INET, (void*)&client_address.sin_addr, client->ip, WSSL_IP_SIZE_IN_CHAR);
     client->port = ntohs(client_address.sin_port);
   }
+
+  wssl_set_next_client_id(client->wssl, &client->id);
 
   int fcntl_flags = fcntl(client->socket_descriptor, F_GETFL, 0);
   if

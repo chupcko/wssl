@@ -73,7 +73,6 @@ wssl_result_t wssl_loop_accept_clients
       client_add_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
       (
         client_add_result.system_errno == EAGAIN ||
-        client_add_result.system_errno == EWOULDBLOCK ||
         client_add_result.system_errno == EMFILE ||
         client_add_result.system_errno == ENFILE ||
         client_add_result.system_errno == ENOMEM
