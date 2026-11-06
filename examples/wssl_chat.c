@@ -51,17 +51,22 @@ int main(int arguments_count, char* arguments_value[])
   wssl_set_on_receive_text_frame_callback(&wssl, &on_receive_text_frame);
   wssl_set_on_disconnect_callback(&wssl, &on_disconnect);
 
+#if WSSL_EXAMPLE_IPV6
   wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
+#else
+  wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV4;
+#endif
+
+  WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5003));
+  WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
+
   if(arguments_count == 3)
   {
     WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5013));
     WSSL_TRY_CALL(wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]));
+    WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
   }
-  else
-  {
-    WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5003));
-  }
-  WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
+
   WSSL_TRY_CALL(wssl_loop_init_signals());
   WSSL_TRY_CALL(wssl_loop(&wssl));
   WSSL_TRY_CALL(wssl_clean(&wssl));
