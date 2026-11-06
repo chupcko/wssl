@@ -18,14 +18,16 @@ void wssl_server_dump
       INDENT_FORMAT "port: %d\n"
       INDENT_FORMAT "ssl: %s\n"
       INDENT_FORMAT "ipv6: %s\n"
+      INDENT_FORMAT "ipv6_dual_stack: %s\n"
       INDENT_FORMAT "socket_descriptor: "
     ),
     INDENT(indent_level), (void*)server,
     INDENT(indent_level+1), (void*)server->wssl,
-    INDENT(indent_level+1), server->ip,
-    INDENT(indent_level+1), server->port,
-    INDENT(indent_level+1), wssl_get_bool_name(server->ssl),
-    INDENT(indent_level+1), wssl_get_bool_name(server->ipv6),
+    INDENT(indent_level+1), server->configuration.ip,
+    INDENT(indent_level+1), server->configuration.port,
+    INDENT(indent_level+1), wssl_get_bool_name(server->configuration.ssl),
+    INDENT(indent_level+1), wssl_get_bool_name(server->configuration.ipv6),
+    INDENT(indent_level+1), wssl_get_bool_name(server->configuration.ipv6_dual_stack),
     INDENT(indent_level+1)
   );
   if(server->socket_descriptor != WSSL_NO_DESCRIPTOR)

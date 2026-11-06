@@ -13,7 +13,7 @@
 /*<![CDATA[*/
 
 var serverScheme = 'wss://';
-var serverPort = 5012;
+var serverPort = 5002;
 var serverName = serverIPV4Name;
 
 /*]]>*/
@@ -21,7 +21,7 @@ var serverName = serverIPV4Name;
     <script src="time.js"></script>
   </head>
   <body onload="init();">
-    IPV4+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/time_ssl.c" target="_blank" class="link">source</a>
+    IPV4+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/time.c" target="_blank" class="link">source</a>
     <p/>
     <button onclick="clean();">Clean</button>
     <button id="connect" onclick="connect();">Connect</button>

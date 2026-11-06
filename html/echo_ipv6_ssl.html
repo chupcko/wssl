@@ -13,7 +13,7 @@
 /*<![CDATA[*/
 
 var serverScheme = 'wss://';
-var serverPort = 5111;
+var serverPort = 5001;
 var serverName = serverIPV6Name;
 
 /*]]>*/
@@ -21,7 +21,7 @@ var serverName = serverIPV6Name;
     <script src="echo.js"></script>
   </head>
   <body onload="init();">
-    IPV6+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/echo_ssl.c" target="_blank" class="link">source</a>
+    IPV6+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/echo.c" target="_blank" class="link">source</a>
     <p/>
     <button onclick="clean();">Clean</button>
     <button id="connect" onclick="connect();">Connect</button>

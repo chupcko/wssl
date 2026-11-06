@@ -3,11 +3,8 @@
 _LIBRARY_FUNCTION_
 wssl_result_t wssl_server_add
 (
-  _WSSL_MODIFY_       wssl_t* wssl,
-  _WSSL_IN_     const char*   ip,
-  _WSSL_IN_     const int     port,
-  _WSSL_IN_     const bool    ssl,
-  _WSSL_IN_     const bool    ipv6
+  _WSSL_MODIFY_       wssl_t*                      wssl,
+  _WSSL_IN_     const wssl_server_configuration_t* configuration
 )
 {
   wssl_server_t* server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
@@ -16,12 +13,10 @@ wssl_result_t wssl_server_add
 
   server->wssl = wssl;
 
-  wssl_str_copy(server->ip, WSSL_IP_SIZE_IN_CHAR, ip);
-  server->port = port;
-  server->ssl = ssl;
-  server->ipv6 = ipv6;
+  server->configuration = *configuration;
+
   server->socket_descriptor = WSSL_NO_DESCRIPTOR;
-  server->ssl_ctx = WSSL_NULL;
+  server->ssl_ctx = NULL;
 
   server->epoll_data.type = WSSL_EPOLL_DATA_TYPE_SERVER;
   server->epoll_data.server = server;

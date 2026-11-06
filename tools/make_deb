@@ -1,7 +1,4 @@
 #!/bin/sh
-# Assemble the wssl-examples .deb from an already built tree.
-# Needs only dpkg-deb (fakeroot is used when available).
-# No debhelper required.
 
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 VERSION=$(cat ${BASE_DIR}/VERSION)
@@ -22,13 +19,12 @@ mkdir -p ${STAGE}/DEBIAN ${STAGE}/usr/bin ${STAGE}/lib/systemd/system ${STAGE}/e
 for example in echo time chat
 do
   cp ${BASE_DIR}/examples/${example}.e ${STAGE}/usr/bin/wssl-${example}
-  cp ${BASE_DIR}/examples/${example}_ssl.e ${STAGE}/usr/bin/wssl-${example}-ssl
 done
 chmod 0755 ${STAGE}/usr/bin/*
 
-for service in echo time chat echo-ssl time-ssl chat-ssl
+for service in echo time chat
 do
-  sed -e 's|/opt/wssl/examples/\([a-z][a-z_]*\)\.e|/usr/bin/wssl-\1|' -e 's|wssl-\([a-z]*\)_ssl|wssl-\1-ssl|' \
+  sed -e 's|/opt/wssl/examples/\([a-z][a-z_]*\)\.e|/usr/bin/wssl-\1|' \
     ${BASE_DIR}/services/systemd/wssl-${service}.service > ${STAGE}/lib/systemd/system/wssl-${service}.service
 done
 
@@ -48,9 +44,9 @@ Recommends: certbot
 Maintainer: chupcko <https://github.com/chupcko/wssl>
 Description: wssl websocket example servers, plain and OpenSSL
  Example echo, time and chat servers from the wssl project,
- each as a plain and an OpenSSL (TLS) variant, with systemd
- units, default certificate configuration and a certbot
- deploy hook.
+ each either plain or OpenSSL (TLS) depending on the
+ certificate configuration, with systemd units, default
+ certificate configuration and a certbot deploy hook.
 EOF
 
 echo "/etc/default/wssl-examples" > ${STAGE}/DEBIAN/conffiles
@@ -59,7 +55,7 @@ cat > ${STAGE}/DEBIAN/postinst <<'EOF'
 #!/bin/sh
 set -e
 systemctl daemon-reload
-for service in echo time chat echo-ssl time-ssl chat-ssl
+for service in echo time chat
 do
   systemctl enable --now wssl-${service} || true
 done
@@ -68,7 +64,7 @@ EOF
 cat > ${STAGE}/DEBIAN/prerm <<'EOF'
 #!/bin/sh
 set -e
-for service in echo time chat echo-ssl time-ssl chat-ssl
+for service in echo time chat
 do
   systemctl disable --now wssl-${service} || true
 done

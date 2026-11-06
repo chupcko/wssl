@@ -8,14 +8,9 @@ PROTOTYPE = prototype.h
 INCLUDES = $(PROTOTYPE) $(wildcard $(INCLUDE_DIR)/*.h)
 
 COMPILER := gcc
-COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(INCLUDE_DIR)
+COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(INCLUDE_DIR) $(shell pkg-config --cflags openssl 2>/dev/null)
 ARCHIVER := ar
 ARCHIVER_FLAGS := csr
-
-# OpenSSL compile flags, no autoconf used.
-# Empty when pkg-config is missing, then the defaults assume
-# headers from libssl-dev in /usr/include.
-COMPILER_FLAGS += $(shell pkg-config --cflags openssl 2>/dev/null)
 
 .DEFAULT_GOAL := all
 .PHONY: all

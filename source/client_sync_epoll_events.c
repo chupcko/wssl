@@ -7,7 +7,7 @@ wssl_result_t wssl_client_sync_epoll_events
 )
 {
   uint32_t events;
-  if(client->ssl != WSSL_NULL && !client->ssl_handshake_done)
+  if(client->ssl != NULL && client->ssl_handshake_done == false)
     if(client->ssl_want == SSL_ERROR_WANT_WRITE)
       events = EPOLLOUT;
     else
@@ -21,7 +21,12 @@ wssl_result_t wssl_client_sync_epoll_events
       events |= EPOLLOUT;
   }
 
-  TRY_CALL(wssl_client_set_epoll_events(client, events));
+  if(client->epoll_event.events != events)
+  {
+    client->epoll_event.events = events;
+    if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_MOD, client->socket_descriptor, &client->epoll_event) < 0)
+      FAIL_ERRNO("epoll_ctl", errno);
+  }
 
   PASS;
 }

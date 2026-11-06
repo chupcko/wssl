@@ -6,7 +6,7 @@ wssl_result_t wssl_server_start
   _WSSL_MODIFY_ wssl_server_t* server
 )
 {
-  if(server->ipv6)
+  if(server->configuration.ipv6 == true)
     server->socket_descriptor = socket(AF_INET6, SOCK_STREAM, 0);
   else
     server->socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -18,10 +18,17 @@ wssl_result_t wssl_server_start
     FAIL_ERRNO("setsockopt", errno);
 
   int return_value;
-  if(server->ipv6)
+  if(server->configuration.ipv6 == true)
   {
+    if(server->configuration.ipv6_dual_stack == false)
+    {
+      int ipv6_only = 1;
+      if(setsockopt(server->socket_descriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6_only, sizeof ipv6_only) < 0)
+        FAIL_ERRNO("setsockopt", errno);
+    }
+
     char ip_copy[WSSL_IP_SIZE_IN_CHAR];
-    wssl_str_copy(ip_copy, WSSL_IP_SIZE_IN_CHAR, server->ip);
+    wssl_str_copy(ip_copy, WSSL_IP_SIZE_IN_CHAR, server->configuration.ip);
     char* device = strchr(ip_copy, '%');
     if(device != NULL)
     {
@@ -31,7 +38,7 @@ wssl_result_t wssl_server_start
 
     struct sockaddr_in6 server_address;
     server_address.sin6_family = AF_INET6;
-    server_address.sin6_port = htons(server->port);
+    server_address.sin6_port = htons(server->configuration.port);
     server_address.sin6_flowinfo = 0;
     return_value = inet_pton(AF_INET6, ip_copy, (void*)&server_address.sin6_addr);
     if(return_value < 0)
@@ -54,8 +61,8 @@ wssl_result_t wssl_server_start
   {
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(server->port);
-    return_value = inet_pton(AF_INET, server->ip, (void*)&server_address.sin_addr);
+    server_address.sin_port = htons(server->configuration.port);
+    return_value = inet_pton(AF_INET, server->configuration.ip, (void*)&server_address.sin_addr);
     if(return_value < 0)
       FAIL_ERRNO("inet_pton", errno);
     if(return_value == 0)
@@ -68,12 +75,8 @@ wssl_result_t wssl_server_start
   if(listen(server->socket_descriptor, SERVER_BACKLOG_SIZE) < 0)
     FAIL_ERRNO("listen", errno);
 
-  if(server->ssl && server->ssl_ctx == WSSL_NULL)
-  {
-    close(server->socket_descriptor);
-    server->socket_descriptor = WSSL_NO_DESCRIPTOR;
-    FAIL_ERROR("server_ssl", WSSL_RESULT_CODE_ERROR_SSL);
-  }
+  if(server->configuration.ssl == true)
+    TRY_CALL(wssl_server_enable_ssl(server));
 
   struct epoll_event event;
   event.events = EPOLLIN;

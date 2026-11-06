@@ -7,3 +7,6 @@
 -dodaj epoll strukturu za nove stvari globalno i po klijentima
 -proveri spisak nepotrebnih funkcija
 -proveri gramatiku imena
+-promeni stil C koda (objasnjenje sledi)
+-sredi html
+-napravi deb pakete dobro

@@ -50,4 +50,6 @@ wssl_result_t wssl_client_do_ssl_handshake
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
       break;
   }
+
+  PASS;
 }

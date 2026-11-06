@@ -3,9 +3,10 @@
 
 _INCLUDE_BEGIN_
 
-#define WSSL_NO_DESCRIPTOR   (-1)
-#define WSSL_NULL            NULL
-#define WSSL_IP_SIZE_IN_CHAR ((4+1)*8+16)
+#define WSSL_NO_DESCRIPTOR          (-1)
+#define WSSL_NULL                   NULL
+#define WSSL_IP_SIZE_IN_CHAR        64
+#define WSSL_FILE_PATH_SIZE_IN_CHAR 4096
 
 typedef uint8_t wssl_octet_t;
 #define WSSL_PRINT_OCTET "02" PRIx8

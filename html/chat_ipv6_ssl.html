@@ -13,7 +13,7 @@
 /*<![CDATA[*/
 
 var serverScheme = 'wss://';
-var serverPort = 5113;
+var serverPort = 5003;
 var serverName = serverIPV6Name;
 
 /*]]>*/
@@ -21,7 +21,7 @@ var serverName = serverIPV6Name;
     <script src="chat.js"></script>
   </head>
   <body onload="init();">
-    IPV6+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/chat_ssl.c" target="_blank" class="link">source</a>
+    IPV6+SSL server on "<span id="server"></span>" with <a href="https://github.com/chupcko/wssl/blob/openssl/examples/chat.c" target="_blank" class="link">source</a>
     <p/>
     <button onclick="clean();">Clean</button>
     Nickname: <input type="text" id="nickname"/>

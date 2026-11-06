@@ -8,7 +8,7 @@ wssl_result_t wssl_client_do_recv
 {
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
-  if(client->ssl != WSSL_NULL && !client->ssl_handshake_done)
+  if(client->ssl != NULL && client->ssl_handshake_done == false)
   {
     TRY_CALL(wssl_client_do_ssl_handshake(client));
     PASS;
@@ -18,7 +18,7 @@ wssl_result_t wssl_client_do_recv
     TRY_CALL(wssl_buffer_allocate(&client->input_buffer, client->wssl->buffer_size_in_octets));
 
   wssl_ssize_t recv_size;
-  if(client->ssl != WSSL_NULL)
+  if(client->ssl != NULL)
   {
     int read_result = SSL_read
     (

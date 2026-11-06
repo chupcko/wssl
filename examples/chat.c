@@ -34,16 +34,27 @@ void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e discon
   }
 }
 
-int main(void)
+int main(int arguments_count, char* arguments_value[])
 {
+  if(arguments_count != 1 && arguments_count != 3)
+  {
+    fprintf(stderr, "usage: %s [certificate_file private_key_file]\n", arguments_value[0]);
+    return EXIT_FAILURE;
+  }
+
   WSSL_DECLARE(wssl);
 
   wssl_set_on_start_receiving_frames_callback(&wssl, &on_start_receiving_frames);
   wssl_set_on_receive_text_frame_callback(&wssl, &on_receive_text_frame);
   wssl_set_on_disconnect_callback(&wssl, &on_disconnect);
 
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5003, WSSL_NO_SSL, WSSL_NO_IPV6));
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "::",      5103, WSSL_NO_SSL, WSSL_IPV6));
+  wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
+  WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5003));
+  if(arguments_count == 3)
+  {
+    WSSL_TRY_CALL(wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]));
+  }
+  WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
   WSSL_TRY_CALL(wssl_loop(&wssl));
   WSSL_TRY_CALL(wssl_clean(&wssl));
 

@@ -15,7 +15,7 @@ wssl_result_t wssl_client_add
 
   wssl_set_next_client_id(client->wssl, &client->id);
 
-  if(server->ipv6)
+  if(server->configuration.ipv6 == true)
   {
     struct sockaddr_in6 client_address;
     socklen_t client_address_length = (socklen_t)sizeof client_address;
@@ -59,19 +59,16 @@ wssl_result_t wssl_client_add
     FAIL_ERRNO("fcntl", system_errno);
   }
 
-  client->ssl = WSSL_NULL;
+  client->ssl = NULL;
   client->ssl_handshake_done = false;
   client->ssl_want = 0;
 
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
   client->epoll_data.client = client;
-  if(server->ssl_ctx != WSSL_NULL)
+  if(server->ssl_ctx != NULL)
     client->epoll_event.events = EPOLLIN|EPOLLOUT;
   else
-  {
     client->epoll_event.events = EPOLLIN;
-    client->ssl_handshake_done = true;
-  }
   client->epoll_event.data.ptr = (void*)&client->epoll_data;
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_ADD, client->socket_descriptor, &client->epoll_event) < 0)
   {
@@ -82,10 +79,10 @@ wssl_result_t wssl_client_add
     FAIL_ERRNO("epoll_ctl", system_errno);
   }
 
-  if(server->ssl_ctx != WSSL_NULL)
+  if(server->ssl_ctx != NULL)
   {
     client->ssl = SSL_new(server->ssl_ctx);
-    if(client->ssl == WSSL_NULL)
+    if(client->ssl == NULL)
     {
       epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_DEL, client->socket_descriptor, NULL);
       close(client->socket_descriptor);

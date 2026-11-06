@@ -50,6 +50,7 @@ _INCLUDE_END_
 #include "result_g.h"
 #include "result.h"
 #include "epoll_data.h"
+#include "server_configuration.h"
 #include "server.h"
 #include "id.h"
 #include "buffer.h"

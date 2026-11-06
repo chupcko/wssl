@@ -19,15 +19,26 @@ bool on_tick(wssl_t* wssl)
   return true;
 }
 
-int main(void)
+int main(int arguments_count, char* arguments_value[])
 {
+  if(arguments_count != 1 && arguments_count != 3)
+  {
+    fprintf(stderr, "usage: %s [certificate_file private_key_file]\n", arguments_value[0]);
+    return EXIT_FAILURE;
+  }
+
   WSSL_DECLARE(wssl);
 
   wssl_set_sleep_in_mseconds(&wssl, 500);
   wssl_set_on_tick_callback(&wssl, &on_tick);
 
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "0.0.0.0", 5002, WSSL_NO_SSL, WSSL_NO_IPV6));
-  WSSL_TRY_CALL(wssl_server_add(&wssl, "::",      5102, WSSL_NO_SSL, WSSL_IPV6));
+  wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
+  WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5002));
+  if(arguments_count == 3)
+  {
+    WSSL_TRY_CALL(wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]));
+  }
+  WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
   WSSL_TRY_CALL(wssl_loop(&wssl));
   WSSL_TRY_CALL(wssl_clean(&wssl));
 

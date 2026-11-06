@@ -2,16 +2,16 @@
 .PHONY: all
 all: source- examples-
 
+.PHONY: deb
+deb: all
+	./tools/make_deb
+
 .PHONY: debug
 debug: clean source-debug examples-debug
 
 .PHONY: clean
 clean: source-clean examples-clean
 	rm -r -f out core
-
-.PHONY: deb
-deb: all
-	./tools/make_deb
 
 define GENERATE_GOALS_CORE =
   GOALS += $(1)-$(2:all=)

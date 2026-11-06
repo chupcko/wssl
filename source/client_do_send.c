@@ -8,7 +8,7 @@ wssl_result_t wssl_client_do_send
 {
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
-  if(client->ssl != WSSL_NULL && !client->ssl_handshake_done)
+  if(client->ssl != NULL && client->ssl_handshake_done == false)
   {
     TRY_CALL(wssl_client_do_ssl_handshake(client));
     PASS;
@@ -23,7 +23,7 @@ wssl_result_t wssl_client_do_send
     chunk = wssl_chunk_chain_get_entry_from_client_chain_link(chunk_link);
     while(wssl_buffer_is_not_empty(&chunk->buffer))
     {
-      if(client->ssl != WSSL_NULL)
+      if(client->ssl != NULL)
       {
         int write_result = SSL_write
         (

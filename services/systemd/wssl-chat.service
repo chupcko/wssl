@@ -1,11 +1,12 @@
 [Unit]
-Description=WSSL chat plain service
+Description=WSSL chat service
 After=network-online.target
 Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/wssl
-ExecStart=/opt/wssl/examples/chat.e
+EnvironmentFile=/etc/default/wssl-examples
+ExecStart=/opt/wssl/examples/chat.e ${WSSL_CERT} ${WSSL_KEY}
 Restart=always
 RestartSec=5
 [Install]
