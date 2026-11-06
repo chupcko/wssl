@@ -72,7 +72,7 @@ void wssl_init
   wssl->sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
   wssl->max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,
   wssl->max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,
-  wssl->max_number_of_header_fields = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,
+  wssl->max_number_of_header_fields         = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,
   wssl->epoll_descriptor                    = WSSL_NO_DESCRIPTOR;
   wssl->global_extra_data                   = WSSL_NULL;
   wssl->on_connect_callback                 = WSSL_CALLBACK_NONE;
