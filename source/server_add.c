@@ -9,7 +9,9 @@ wssl_result_t wssl_server_add
 {
   wssl_server_t* server = (wssl_server_t*)malloc(sizeof(wssl_server_t));
   if(server == NULL)
+  {
     FAIL_ERROR("server", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
+  }
 
   server->wssl = wssl;
 

@@ -8,7 +8,9 @@ wssl_result_t wssl_client_add
 {
   wssl_client_t* client = (wssl_client_t*)malloc(sizeof(wssl_client_t));
   if(client == NULL)
+  {
     FAIL_ERROR("client", WSSL_RESULT_CODE_ERROR_NO_MEMORY);
+  }
 
   client->server = server;
   client->wssl = server->wssl;
@@ -67,9 +69,13 @@ wssl_result_t wssl_client_add
   client->epoll_data.type = WSSL_EPOLL_DATA_TYPE_CLIENT;
   client->epoll_data.client = client;
   if(server->ssl_ctx != NULL)
+  {
     client->epoll_event.events = EPOLLIN|EPOLLOUT|EPOLLRDHUP;
+  }
   else
+  {
     client->epoll_event.events = EPOLLIN|EPOLLRDHUP;
+  }
   client->epoll_event.data.ptr = (void*)&client->epoll_data;
   if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_ADD, client->socket_descriptor, &client->epoll_event) < 0)
   {
@@ -120,7 +126,9 @@ wssl_result_t wssl_client_add
   wssl_client_chain_add_link_backward(&server->wssl->clients_in_wait_header, &client->wssl_chain_link);
 
   if(client->wssl->on_connect_callback != WSSL_CALLBACK_NONE)
+  {
     HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_connect_callback)(client));
+  }
 
   PASS;
 }

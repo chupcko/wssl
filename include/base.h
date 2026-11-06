@@ -70,6 +70,7 @@ void wssl_string_print
 )
 {
   if(wssl_string_is_allocated(string))
+  {
     fprintf
     (
       file,
@@ -77,8 +78,11 @@ void wssl_string_print
       string->data,
       string->data_length
     );
+  }
   else
+  {
     fprintf(file, "none");
+  }
 }
 
 static inline

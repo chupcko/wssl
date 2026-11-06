@@ -71,7 +71,9 @@ do                                        \
 {                                         \
   wssl_result_t _result_ = (__VA_ARGS__); \
   if(wssl_result_is_not_ok(_result_))     \
+  {                                       \
     return _result_;                      \
+  }                                       \
 }                                         \
 while(false)                              \
 

@@ -181,8 +181,12 @@ MAKE_CHAIN_ENTRY(wssl_client, wssl_client_chain_t, wssl_client_t, wssl_chain_lin
 
 #define PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(what_client) \
 do                                                              \
+{                                                               \
   if(wssl_client_is_marked_for_disconnecting(what_client))      \
+  {                                                             \
     PASS;                                                       \
+  }                                                             \
+}                                                               \
 while(false)                                                    \
 
 #endif

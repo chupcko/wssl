@@ -7,11 +7,17 @@ wssl_result_t wssl_server_start
 )
 {
   if(server->configuration.ipv6 == true)
+  {
     server->socket_descriptor = socket(AF_INET6, SOCK_STREAM, 0);
+  }
   else
+  {
     server->socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
+  }
   if(server->socket_descriptor < 0)
+  {
     FAIL_ERRNO("socket", errno);
+  }
 
   int fcntl_flags = fcntl(server->socket_descriptor, F_GETFL, 0);
   if
@@ -42,7 +48,9 @@ wssl_result_t wssl_server_start
     {
       int ipv6_only = 1;
       if(setsockopt(server->socket_descriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6_only, sizeof ipv6_only) < 0)
+      {
         FAIL_ERRNO("setsockopt", errno);
+      }
     }
 
     char ip_copy[WSSL_IP_SIZE_IN_CHAR];
@@ -84,7 +92,9 @@ wssl_result_t wssl_server_start
       }
     }
     else
+    {
       server_address.sin6_scope_id = 0;
+    }
 
     if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof server_address) < 0)
     {
@@ -132,7 +142,9 @@ wssl_result_t wssl_server_start
   }
 
   if(server->configuration.ssl == true)
+  {
     TRY_CALL(wssl_server_enable_ssl(server));
+  }
 
   struct epoll_event event;
   event.events = EPOLLIN;

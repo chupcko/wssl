@@ -9,7 +9,9 @@ wssl_result_t wssl_chunk_add
 )
 {
   if(client->number_of_output_chunks > client->wssl->max_number_of_output_chunks)
+  {
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_OUTPUT_CHUNKS);
+  }
 
   *chunk = (wssl_chunk_t*)malloc
   (
@@ -17,7 +19,9 @@ wssl_result_t wssl_chunk_add
     (size_t)size
   );
   if(*chunk == NULL)
+  {
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY);
+  }
 
   (*chunk)->buffer.data = (*chunk)->buffer_data;
   (*chunk)->buffer.size = size;

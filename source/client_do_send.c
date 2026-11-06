@@ -54,7 +54,9 @@ wssl_result_t wssl_client_do_send
               break;
             case SSL_ERROR_SYSCALL:
               if(write_result == 0)
+              {
                 MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+              }
               ERR_clear_error();
               MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
               break;
@@ -76,6 +78,7 @@ wssl_result_t wssl_client_do_send
           0
         );
         if(send_size < 0)
+        {
           switch(errno)
           {
             case EAGAIN:
@@ -89,8 +92,11 @@ wssl_result_t wssl_client_do_send
               FAIL_ERRNO("send", errno);
               break;
           }
+        }
         if(send_size == 0)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
+        }
       }
 
       chunk->buffer.begin += (wssl_size_t)send_size;

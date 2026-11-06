@@ -9,6 +9,7 @@ wssl_ssize_t wssl_client_processing_recv_find_word_until_space
 {
   wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
+  {
     switch(data[size])
     {
       case ' ':
@@ -20,6 +21,7 @@ wssl_ssize_t wssl_client_processing_recv_find_word_until_space
         return -1;
         break;
     }
+  }
   return data_size;
 }
 
@@ -32,6 +34,7 @@ wssl_size_t wssl_client_processing_recv_find_word_until_crlf
 {
   wssl_size_t size;
   for(size = 0; size < data_size; size++)
+  {
     switch(data[size])
     {
       case '\r':
@@ -39,6 +42,7 @@ wssl_size_t wssl_client_processing_recv_find_word_until_crlf
         return size;
         break;
     }
+  }
   return data_size;
 }
 
@@ -51,6 +55,7 @@ wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
 {
   wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
+  {
     switch(data[size])
     {
       case ':':
@@ -63,6 +68,7 @@ wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
         return -1;
         break;
     }
+  }
   return data_size;
 }
 
@@ -75,6 +81,7 @@ wssl_ssize_t wssl_client_processing_recv_eat_spaces
 {
   wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
+  {
     switch(data[size])
     {
       case ' ':
@@ -88,6 +95,7 @@ wssl_ssize_t wssl_client_processing_recv_eat_spaces
         return size;
         break;
     }
+  }
   return data_size;
 }
 
@@ -100,6 +108,7 @@ wssl_size_t wssl_client_processing_recv_count_spaces
 {
   wssl_size_t size;
   for(size = 0; size < data_size; size++)
+  {
     switch(data[size])
     {
       case ' ':
@@ -109,6 +118,7 @@ wssl_size_t wssl_client_processing_recv_count_spaces
         return size;
         break;
     }
+  }
   return data_size;
 }
 
@@ -121,6 +131,7 @@ wssl_ssize_t wssl_client_processing_recv_eat_crlf
 {
   wssl_ssize_t size;
   for(size = 0; size < data_size; size++)
+  {
     switch(data[size])
     {
       case '\r':
@@ -132,6 +143,7 @@ wssl_ssize_t wssl_client_processing_recv_eat_crlf
         return -1;
         break;
     }
+  }
   return 0;
 }
 
@@ -153,7 +165,9 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_METHOD:
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size <= 0)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_METHOD);
+      }
       if(size < data_size)
       {
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_method(&client->header, (char*)data, size));
@@ -164,7 +178,9 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
       if(size <= 0)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
+      }
       if(size < data_size)
       {
         client->state = WSSL_CLIENT_STATE_WAIT_URI;
@@ -174,7 +190,9 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_URI:
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size <= 0)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_URI);
+      }
       if(size < data_size)
       {
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_uri(&client->header, (char*)data, size));
@@ -185,7 +203,9 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR:
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
       if(size <= 0)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_VERSION);
+      }
       if(size < data_size)
       {
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION;
@@ -204,7 +224,9 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_CRLF:
       size = wssl_client_processing_recv_eat_crlf((char*)data, data_size);
       if(size < 0)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_CRLF);
+      }
       client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
       *processed = (wssl_size_t)size;
       break;
@@ -221,11 +243,15 @@ wssl_result_t wssl_client_processing_recv
       {
         size = wssl_client_processing_recv_find_word_until_colon((char*)data, data_size);
         if(size <= 0)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_MISSING_FIELD_KEY);
+        }
         if(size < data_size)
         {
           if(client->header.number_of_fields >= client->wssl->max_number_of_header_fields)
+          {
             MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
+          }
           TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_add_field(&client->header, (char*)data, size));
           client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
           *processed = (wssl_size_t)size;
@@ -252,15 +278,23 @@ wssl_result_t wssl_client_processing_recv
     case WSSL_CLIENT_STATE_WAIT_FRAME:
       size = wssl_frame_get(&client->frame, data, data_size);
       if(size == 0 && client->frame.payload_size > (wssl_frame_size_t)client->wssl->buffer_size_in_octets)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
+      }
       if(size > 0)
       {
         if((data[0]&0x70) != 0)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        }
         if(client->frame.opcode == FRAME_OPCODE_CONTINUE)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        }
         if(!client->frame.masked)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
+        }
         if
         (
           (
@@ -273,7 +307,9 @@ wssl_result_t wssl_client_processing_recv
             client->frame.payload_size > FRAME_PAYLOAD_SIZE_SHORT
           )
         )
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        }
 
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_allocate(&client->frame));
         if(client->frame.fin)
@@ -283,7 +319,9 @@ wssl_result_t wssl_client_processing_recv
           wssl_frame_free(&client->frame);
         }
         else
+        {
           client->state = WSSL_CLIENT_STATE_WAIT_FIN_FRAME;
+        }
         *processed = (wssl_size_t)size;
       }
       break;
@@ -293,17 +331,27 @@ wssl_result_t wssl_client_processing_recv
       wssl_frame_init(&frame);
       size = wssl_frame_get(&frame, data, data_size);
       if(size == 0 && frame.payload_size > (wssl_frame_size_t)client->wssl->buffer_size_in_octets)
+      {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL);
+      }
       if(size > 0)
       {
         if((data[0]&0x70) != 0)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        }
         if(frame.opcode != FRAME_OPCODE_CONTINUE)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
+        }
         if(!frame.masked)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
+        }
         if(client->number_of_received_multi_frames >= client->wssl->max_number_of_received_multi_frames)
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
+        }
 
         TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_reallocate(&client->frame, &frame));
         if(frame.fin)

@@ -4,7 +4,9 @@ _LIBRARY_FUNCTION_
 wssl_result_t wssl_loop_init_signals(void)
 {
   if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+  {
     FAIL_ERRNO("signal", errno);
+  }
 
   PASS;
 }
@@ -19,11 +21,15 @@ wssl_result_t wssl_loop_init
 
   wssl->epoll_descriptor = epoll_create1(0);
   if(wssl->epoll_descriptor < 0)
+  {
     FAIL_ERRNO("epoll_create1", errno);
+  }
 
   wssl_server_chain_t* server_link;
   CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+  {
     TRY_CALL(wssl_server_start(wssl_server_chain_get_entry_from_wssl_chain_link(server_link)));
+  }
 
   PASS;
 }
@@ -36,10 +42,14 @@ wssl_result_t wssl_loop_clean
 {
   wssl_server_chain_t* server_link;
   CHAIN_FOR_EACH_LINK_FORWARD(server_link, &wssl->servers)
+  {
     TRY_CALL(wssl_server_stop(wssl_server_chain_get_entry_from_wssl_chain_link(server_link)));
+  }
 
   if(close(wssl->epoll_descriptor) < 0)
+  {
     FAIL_ERRNO("close", errno);
+  }
   wssl->epoll_descriptor = WSSL_NO_DESCRIPTOR;
 
   PASS;
@@ -55,7 +65,9 @@ wssl_result_t wssl_loop_accept_clients
   {
     wssl_result_t client_add_result = wssl_client_add(server);
     if(wssl_result_is_ok(client_add_result))
+    {
       continue;
+    }
     if
     (
       client_add_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
@@ -67,7 +79,9 @@ wssl_result_t wssl_loop_accept_clients
         client_add_result.system_errno == ENOMEM
       )
     )
+    {
       break;
+    }
     if
     (
       client_add_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
@@ -77,7 +91,9 @@ wssl_result_t wssl_loop_accept_clients
         client_add_result.system_errno == EPROTO
       )
     )
+    {
       continue;
+    }
     return client_add_result;
   }
 
@@ -109,6 +125,7 @@ wssl_result_t wssl_loop
       (int)wssl->sleep_in_mseconds
     );
     if(events_number < 0)
+    {
       switch(errno)
       {
         case EINTR:
@@ -117,7 +134,9 @@ wssl_result_t wssl_loop
           FAIL_ERRNO("epoll_wait", errno);
           break;
       }
+    }
     else
+    {
       for(event_index = 0; event_index < events_number; event_index++)
       {
         epoll_data = (wssl_epoll_data_t*)events[event_index].data.ptr;
@@ -128,22 +147,31 @@ wssl_result_t wssl_loop
             break;
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
             if((events[event_index].events&(EPOLLIN|EPOLLERR|EPOLLHUP|EPOLLRDHUP)) != 0)
+            {
               TRY_CALL(wssl_client_do_recv(epoll_data->client));
+            }
             if((events[event_index].events&(EPOLLOUT|EPOLLERR|EPOLLHUP)) != 0)
+            {
               TRY_CALL(wssl_client_do_send(epoll_data->client));
+            }
             break;
         }
       }
+    }
 
     if
     (
       wssl->on_tick_callback != WSSL_CALLBACK_NONE &&
       !(*wssl->on_tick_callback)(wssl)
     )
+    {
       break;
+    }
 
     CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_marked_for_disconnecting)
+    {
       TRY_CALL(wssl_client_delete(wssl_client_chain_get_entry_from_wssl_chain_link(client_link)));
+    }
   }
 
   TRY_CALL(wssl_loop_clean(wssl));

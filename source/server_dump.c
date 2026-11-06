@@ -31,9 +31,13 @@ void wssl_server_dump
     INDENT(indent_level+1)
   );
   if(server->socket_descriptor != WSSL_NO_DESCRIPTOR)
+  {
     fprintf(file, "%d", server->socket_descriptor);
+  }
   else
+  {
     fprintf(file, "none");
+  }
   fprintf
   (
     file,
@@ -48,8 +52,12 @@ void wssl_server_dump
     fprintf(file, "\n");
     wssl_client_chain_t* client_link;
     CHAIN_FOR_EACH_LINK_FORWARD(client_link, &server->clients)
+    {
       wssl_client_dump(wssl_client_chain_get_entry_from_server_chain_link(client_link), file, indent_level+2);
+    }
   }
   else
+  {
     fprintf(file, " none\n");
+  }
 }

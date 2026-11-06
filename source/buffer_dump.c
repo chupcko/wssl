@@ -25,13 +25,17 @@ void wssl_buffer_dump
     for(data_index = buffer->begin; data_index < buffer->end; data_index++)
     {
       if(data_index != 0)
+      {
         fprintf(file, " ");
+      }
       fprintf(file, "%" WSSL_PRINT_OCTET, buffer->data[data_index]);
     }
     fprintf(file, "\"");
   }
   else
+  {
     fprintf(file, "none");
+  }
   fprintf
   (
     file,

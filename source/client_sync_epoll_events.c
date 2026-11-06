@@ -8,10 +8,16 @@ wssl_result_t wssl_client_sync_epoll_events
 {
   uint32_t events;
   if(client->ssl != NULL && client->ssl_handshake_done == false)
+  {
     if(client->ssl_want == SSL_ERROR_WANT_WRITE)
+    {
       events = EPOLLOUT;
+    }
     else
+    {
       events = EPOLLIN;
+    }
+  }
   else
   {
     events = EPOLLIN;
@@ -20,9 +26,13 @@ wssl_result_t wssl_client_sync_epoll_events
       wssl_chunk_chain_is_not_empty(&client->output_chunks) &&
       (client->ssl_want != SSL_ERROR_WANT_READ || client->ssl_read_blocked)
     )
+    {
       events |= EPOLLOUT;
+    }
     if(client->ssl_read_blocked && client->ssl_want == SSL_ERROR_WANT_WRITE)
+    {
       events |= EPOLLOUT;
+    }
   }
 
   events |= (uint32_t)EPOLLRDHUP;
@@ -31,7 +41,9 @@ wssl_result_t wssl_client_sync_epoll_events
   {
     client->epoll_event.events = events;
     if(epoll_ctl(client->wssl->epoll_descriptor, EPOLL_CTL_MOD, client->socket_descriptor, &client->epoll_event) < 0)
+    {
       FAIL_ERRNO("epoll_ctl", errno);
+    }
   }
 
   PASS;

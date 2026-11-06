@@ -57,7 +57,9 @@ const char* wssl_get_bool_name
 )
 {
   if(value)
+  {
     return "true";
+  }
   return "false";
 }
 
@@ -73,11 +75,17 @@ bool wssl_str_case_starts_with
     char left = *text;
     char right = *prefix;
     if(left >= 'A' && left <= 'Z')
+    {
       left = (char)(left-('A'-'a'));
+    }
     if(right >= 'A' && right <= 'Z')
+    {
       right = (char)(right-('A'-'a'));
+    }
     if(left != right)
+    {
       return false;
+    }
     text++;
     prefix++;
   }
@@ -93,11 +101,15 @@ bool wssl_str_case_contains
 {
   wssl_size_t word_length = strlen(word);
   if(word_length == 0)
+  {
     return true;
+  }
   while(*text != '\0')
   {
     if(wssl_str_case_starts_with(text, word))
+    {
       return true;
+    }
     text++;
   }
   return false;
@@ -162,7 +174,9 @@ do                                                                              
 {                                                                                      \
   wssl_result_t _result_ = (__VA_ARGS__);                                              \
   if(wssl_result_is_not_ok(_result_))                                                  \
+  {                                                                                    \
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, what_disconnect_reason);      \
+  }                                                                                    \
 }                                                                                      \
 while(false)                                                                           \
 
@@ -170,9 +184,13 @@ while(false)                                                                    
 do                                                                                                      \
 {                                                                                                       \
   if((what_callback_result) == WSSL_CALLBACK_RESULT_DISCONNECT)                                         \
+  {                                                                                                     \
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);      \
+  }                                                                                                     \
   if((what_callback_result) == WSSL_CALLBACK_RESULT_ERROR)                                              \
+  {                                                                                                     \
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+  }                                                                                                     \
 }                                                                                                       \
 while(false)                                                                                            \
 
@@ -180,9 +198,13 @@ while(false)                                                                    
 do                                                                                                 \
 {                                                                                                  \
   if((what_callback_result) == WSSL_CALLBACK_RESULT_DISCONNECT)                                    \
+  {                                                                                                \
     wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);      \
+  }                                                                                                \
   else if((what_callback_result) == WSSL_CALLBACK_RESULT_ERROR)                                    \
+  {                                                                                                \
     wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+  }                                                                                                \
 }                                                                                                  \
 while(false)                                                                                       \
 

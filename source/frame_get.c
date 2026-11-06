@@ -2,8 +2,12 @@
 
 #define FRAME_GET_CHECK(what_size)        \
 do                                        \
+{                                         \
   if(data_length+(what_size) > data_size) \
+  {                                       \
     return 0;                             \
+  }                                       \
+}                                         \
 while(false)                              \
 
 _FUNCTION_
@@ -58,7 +62,9 @@ wssl_size_t wssl_frame_get
   {
     FRAME_GET_CHECK(WSSL_FRAME_MASKING_KEY_SIZE);
     for(i = 0; i < WSSL_FRAME_MASKING_KEY_SIZE; i++)
+    {
       frame->masking_key[i] = data[data_length+i];
+    }
     data_length += WSSL_FRAME_MASKING_KEY_SIZE;
   }
 
@@ -67,7 +73,9 @@ wssl_size_t wssl_frame_get
     data_length > data_size ||
     frame->payload_size > (wssl_frame_size_t)(data_size-data_length)
   )
+  {
     return 0;
+  }
   frame->payload = &data[data_length];
   frame->payload_owned = false;
   data_length += (wssl_size_t)frame->payload_size;

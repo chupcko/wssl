@@ -20,7 +20,11 @@ const char* wssl_result_get_code_name
 {
   wssl_size_t i;
   for(i = 0; Wssl_result_code_table[i].name != WSSL_NULL; i++)
+  {
     if(Wssl_result_code_table[i].code == result.code)
+    {
       return Wssl_result_code_table[i].name;
+    }
+  }
   return "Unknown";
 }

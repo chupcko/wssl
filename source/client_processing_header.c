@@ -8,14 +8,18 @@ bool wssl_key_is_base64
 )
 {
   if(data_length == 0 || data_length%4 != 0)
+  {
     return false;
+  }
   wssl_size_t i;
   wssl_size_t padding_length = 0;
   for(i = 0; i < data_length; i++)
   {
     char c = data[i];
     if(c == '=')
+    {
       padding_length++;
+    }
     else
     {
       bool alphabet =
@@ -24,11 +28,15 @@ bool wssl_key_is_base64
         (c >= '0' && c <= '9') ||
         c == '+' || c == '/';
       if(!alphabet || padding_length != 0)
+      {
         return false;
+      }
     }
   }
   if(padding_length > 2)
+  {
     return false;
+  }
   return data_length/4*3-padding_length == 16;
 }
 
@@ -45,7 +53,9 @@ bool wssl_client_processing_header_check
     strcmp(client->header.method.data, "GET") != 0 ||
     wssl_header_get_field_value(&client->header, "Host") == WSSL_NULL
   )
+  {
     return false;
+  }
 
   wssl_string_t* connection = wssl_header_get_field_value(&client->header, "Connection");
   if
@@ -54,7 +64,9 @@ bool wssl_client_processing_header_check
     wssl_string_is_not_allocated(connection) ||
     !wssl_str_case_contains(connection->data, "upgrade")
   )
+  {
     return false;
+  }
 
   wssl_string_t* upgrade = wssl_header_get_field_value(&client->header, "Upgrade");
   if
@@ -63,7 +75,9 @@ bool wssl_client_processing_header_check
     wssl_string_is_not_allocated(upgrade) ||
     !wssl_str_case_contains(upgrade->data, "websocket")
   )
+  {
     return false;
+  }
 
   wssl_string_t* version = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Version");
   if
@@ -72,7 +86,9 @@ bool wssl_client_processing_header_check
     wssl_string_is_not_allocated(version) ||
     strcmp(version->data, "13") != 0
   )
+  {
     return false;
+  }
 
   *sec_websocket_key = wssl_header_get_field_value(&client->header, "Sec-WebSocket-Key");
   if
@@ -82,7 +98,9 @@ bool wssl_client_processing_header_check
     (*sec_websocket_key)->data_length != 24 ||
     !wssl_key_is_base64((*sec_websocket_key)->data, (*sec_websocket_key)->data_length)
   )
+  {
     return false;
+  }
 
   return true;
 }
@@ -103,7 +121,9 @@ wssl_result_t wssl_client_processing_header
   wssl_string_t* sec_websocket_key;
   bool pass;
   if(header_callback_result == WSSL_CALLBACK_RESULT_OK)
+  {
     pass = wssl_client_processing_header_check(client, &sec_websocket_key);
+  }
 
   wssl_chunk_t* chunk;
   TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
@@ -142,6 +162,7 @@ wssl_result_t wssl_client_processing_header
     );
   }
   else
+  {
     wssl_buffer_printf
     (
       &chunk->buffer,
@@ -153,6 +174,7 @@ wssl_result_t wssl_client_processing_header
       ),
       client->wssl->server_name
     );
+  }
 
   TRY_CALL(wssl_client_do_send(client));
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
@@ -160,9 +182,13 @@ wssl_result_t wssl_client_processing_header
   if(!pass)
   {
     if(header_callback_result == WSSL_CALLBACK_RESULT_DISCONNECT)
+    {
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
+    }
     if(header_callback_result == WSSL_CALLBACK_RESULT_ERROR)
+    {
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR);
+    }
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
   }
 

@@ -2,8 +2,12 @@
 
 #define BASE64_ENCODE_CHECK(what_size)                     \
 do                                                         \
+{                                                          \
   if(*output_length+(what_size) > output_size)             \
+  {                                                        \
     FAIL_ERROR("base64", WSSL_RESULT_CODE_ERROR_NO_SPACE); \
+  }                                                        \
+}                                                          \
 while(false)                                               \
 
 #define BASE64_ENCODE_PUT(what_data)    \
