@@ -79,9 +79,6 @@ wssl_result_t wssl_client_do_send
           switch(errno)
           {
             case EAGAIN:
-#if defined(EWOULDBLOCK) && EWOULDBLOCK != EAGAIN
-            case EWOULDBLOCK:
-#endif
               PASS;
               break;
             case ECONNRESET:

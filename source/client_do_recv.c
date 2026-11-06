@@ -17,7 +17,7 @@ wssl_result_t wssl_client_do_recv
   if
   (
     client->ssl != WSSL_NULL &&
-    !client->ssl_read_blocked &&
+    client->ssl_read_blocked == false &&
     client->ssl_want == SSL_ERROR_WANT_READ &&
     wssl_chunk_chain_is_not_empty(&client->output_chunks)
   )
@@ -82,9 +82,6 @@ wssl_result_t wssl_client_do_recv
       switch(errno)
       {
         case EAGAIN:
-#if defined(EWOULDBLOCK) && EWOULDBLOCK != EAGAIN
-        case EWOULDBLOCK:
-#endif
           PASS;
           break;
         case ECONNRESET:

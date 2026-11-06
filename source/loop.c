@@ -36,6 +36,45 @@ wssl_result_t wssl_loop_clean
   PASS;
 }
 
+static inline
+wssl_result_t wssl_loop_accept_clients
+(
+  _WSSL_MODIFY_ wssl_server_t* server
+)
+{
+  LOOP
+  {
+    wssl_result_t client_add_result = wssl_client_add(server);
+    if(wssl_result_is_ok(client_add_result))
+      continue;
+    if
+    (
+      client_add_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
+      (
+        client_add_result.system_errno == EAGAIN ||
+        client_add_result.system_errno == EWOULDBLOCK ||
+        client_add_result.system_errno == EMFILE ||
+        client_add_result.system_errno == ENFILE ||
+        client_add_result.system_errno == ENOMEM
+      )
+    )
+      break;
+    if
+    (
+      client_add_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
+      (
+        client_add_result.system_errno == EINTR ||
+        client_add_result.system_errno == ECONNABORTED ||
+        client_add_result.system_errno == EPROTO
+      )
+    )
+      continue;
+    return client_add_result;
+  }
+
+  PASS;
+}
+
 _LIBRARY_FUNCTION_
 wssl_result_t wssl_loop
 (
@@ -76,35 +115,7 @@ wssl_result_t wssl_loop
         switch(epoll_data->type)
         {
           case WSSL_EPOLL_DATA_TYPE_SERVER:
-            LOOP
-            {
-              wssl_result_t accept_result = wssl_client_add(epoll_data->server);
-              if(wssl_result_is_ok(accept_result))
-                continue;
-              if
-              (
-                accept_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
-                (
-                  accept_result.system_errno == EAGAIN ||
-                  accept_result.system_errno == EWOULDBLOCK ||
-                  accept_result.system_errno == EMFILE ||
-                  accept_result.system_errno == ENFILE ||
-                  accept_result.system_errno == ENOMEM
-                )
-              )
-                break;
-              if
-              (
-                accept_result.code == WSSL_RESULT_CODE_ERROR_ERRNO &&
-                (
-                  accept_result.system_errno == EINTR ||
-                  accept_result.system_errno == ECONNABORTED ||
-                  accept_result.system_errno == EPROTO
-                )
-              )
-                continue;
-              return accept_result;
-            }
+            TRY_CALL(wssl_loop_accept_clients(epoll_data->server));
             break;
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
             if((events[event_index].events&EPOLLIN) != 0)

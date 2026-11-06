@@ -16,6 +16,7 @@ typedef struct wssl_client_t
   struct ssl_st*                  ssl;
   bool                            ssl_handshake_done;
   int                             ssl_want;
+  bool                            ssl_read_blocked;
   wssl_epoll_data_t               epoll_data;
   struct epoll_event              epoll_event;
   void*                           connection_extra_data;
@@ -27,7 +28,6 @@ typedef struct wssl_client_t
   wssl_header_t                   header;
   wssl_frame_t                    frame;
   wssl_size_t                     number_of_received_multi_frames;
-  bool                          ssl_read_blocked;
 } wssl_client_t;
 
 static inline
