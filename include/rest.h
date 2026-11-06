@@ -172,8 +172,8 @@ while(false)                                                                    
 #define TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(what_client, what_disconnect_reason, ...) \
 do                                                                                     \
 {                                                                                      \
-  wssl_result_t _result_ = (__VA_ARGS__);                                              \
-  if(wssl_result_is_not_ok(_result_))                                                  \
+  wssl_result_t result = (__VA_ARGS__);                                                \
+  if(wssl_result_is_not_ok(result))                                                    \
   {                                                                                    \
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, what_disconnect_reason);      \
   }                                                                                    \
@@ -183,13 +183,19 @@ while(false)                                                                    
 #define HONOR_CALLBACK_RESULT_THEN_PASS(what_client, what_callback_result)                              \
 do                                                                                                      \
 {                                                                                                       \
-  if((what_callback_result) == WSSL_CALLBACK_RESULT_DISCONNECT)                                         \
+  wssl_callback_result_e callback_result = (what_callback_result);                                      \
+  switch(callback_result)                                                                               \
   {                                                                                                     \
-    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);      \
-  }                                                                                                     \
-  if((what_callback_result) == WSSL_CALLBACK_RESULT_ERROR)                                              \
-  {                                                                                                     \
-    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+    case WSSL_CALLBACK_RESULT_DISCONNECT:                                                               \
+    {                                                                                                   \
+      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);    \
+      break;                                                                                            \
+    }                                                                                                   \
+    case WSSL_CALLBACK_RESULT_ERROR:                                                                    \
+    {                                                                                                   \
+      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+      break;                                                                                            \
+    }                                                                                                   \
   }                                                                                                     \
 }                                                                                                       \
 while(false)                                                                                            \
@@ -197,13 +203,19 @@ while(false)                                                                    
 #define HONOR_CALLBACK_RESULT(what_client, what_callback_result)                                   \
 do                                                                                                 \
 {                                                                                                  \
-  if((what_callback_result) == WSSL_CALLBACK_RESULT_DISCONNECT)                                    \
+  wssl_callback_result_e callback_result = (what_callback_result);                                 \
+  switch(callback_result)                                                                          \
   {                                                                                                \
-    wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);      \
-  }                                                                                                \
-  else if((what_callback_result) == WSSL_CALLBACK_RESULT_ERROR)                                    \
-  {                                                                                                \
-    wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+    case WSSL_CALLBACK_RESULT_DISCONNECT:                                                          \
+    {                                                                                              \
+      wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);    \
+      break;                                                                                       \
+    }                                                                                              \
+    case WSSL_CALLBACK_RESULT_ERROR:                                                               \
+    {                                                                                              \
+      wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+      break;                                                                                       \
+    }                                                                                              \
   }                                                                                                \
 }                                                                                                  \
 while(false)                                                                                       \
