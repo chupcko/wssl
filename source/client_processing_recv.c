@@ -14,12 +14,16 @@ wssl_ssize_t wssl_client_processing_recv_find_word_until_space
     {
       case ' ':
       case '\t':
+      {
         return size;
         break;
+      }
       case '\r':
       case '\n':
+      {
         return -1;
         break;
+      }
     }
   }
   return data_size;
@@ -39,8 +43,10 @@ wssl_size_t wssl_client_processing_recv_find_word_until_crlf
     {
       case '\r':
       case '\n':
+      {
         return size;
         break;
+      }
     }
   }
   return data_size;
@@ -59,14 +65,18 @@ wssl_ssize_t wssl_client_processing_recv_find_word_until_colon
     switch(data[size])
     {
       case ':':
+      {
         return size;
         break;
+      }
       case ' ':
       case '\t':
       case '\r':
       case '\n':
+      {
         return -1;
         break;
+      }
     }
   }
   return data_size;
@@ -86,14 +96,20 @@ wssl_ssize_t wssl_client_processing_recv_eat_spaces
     {
       case ' ':
       case '\t':
+      {
         break;
+      }
       case '\r':
       case '\n':
+      {
         return -1;
         break;
+      }
       default:
+      {
         return size;
         break;
+      }
     }
   }
   return data_size;
@@ -113,10 +129,14 @@ wssl_size_t wssl_client_processing_recv_count_spaces
     {
       case ' ':
       case '\t':
+      {
         break;
+      }
       default:
+      {
         return size;
         break;
+      }
     }
   }
   return data_size;
@@ -135,13 +155,19 @@ wssl_ssize_t wssl_client_processing_recv_eat_crlf
     switch(data[size])
     {
       case '\r':
+      {
         break;
+      }
       case '\n':
+      {
         return size+1;
         break;
+      }
       default:
+      {
         return -1;
         break;
+      }
     }
   }
   return 0;
@@ -163,6 +189,7 @@ wssl_result_t wssl_client_processing_recv
   switch(client->state)
   {
     case WSSL_CLIENT_STATE_WAIT_METHOD:
+    {
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size <= 0)
       {
@@ -175,7 +202,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR:
+    {
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
       if(size <= 0)
       {
@@ -187,7 +216,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_URI:
+    {
       size = wssl_client_processing_recv_find_word_until_space((char*)data, data_size);
       if(size <= 0)
       {
@@ -200,7 +231,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR:
+    {
       size = wssl_client_processing_recv_eat_spaces((char*)data, data_size);
       if(size <= 0)
       {
@@ -212,7 +245,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_VERSION:
+    {
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size > 0 && size < data_size)
       {
@@ -221,7 +256,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_CRLF:
+    {
       size = wssl_client_processing_recv_eat_crlf((char*)data, data_size);
       if(size < 0)
       {
@@ -230,7 +267,9 @@ wssl_result_t wssl_client_processing_recv
       client->state = WSSL_CLIENT_STATE_WAIT_FIELD_KEY;
       *processed = (wssl_size_t)size;
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_FIELD_KEY:
+    {
       size = wssl_client_processing_recv_eat_crlf((char*)data, data_size);
       if(size > 0)
       {
@@ -258,7 +297,9 @@ wssl_result_t wssl_client_processing_recv
         }
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR:
+    {
       size = wssl_client_processing_recv_count_spaces((char*)&data[1], data_size-1);
       if(size >= 0 && size < data_size-1)
       {
@@ -266,7 +307,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size+1;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_FIELD_VALUE:
+    {
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size >= 0 && size < data_size)
       {
@@ -275,7 +318,9 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_FRAME:
+    {
       size = wssl_frame_get(&client->frame, data, data_size);
       if(size == 0 && client->frame.payload_size > (wssl_frame_size_t)client->wssl->buffer_size_in_octets)
       {
@@ -291,7 +336,7 @@ wssl_result_t wssl_client_processing_recv
         {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         }
-        if(!client->frame.masked)
+        if(client->frame.masked != true)
         {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
         }
@@ -303,7 +348,7 @@ wssl_result_t wssl_client_processing_recv
             client->frame.opcode == FRAME_OPCODE_PONG
           ) &&
           (
-            !client->frame.fin ||
+            client->frame.fin != true ||
             client->frame.payload_size > FRAME_PAYLOAD_SIZE_SHORT
           )
         )
@@ -325,6 +370,7 @@ wssl_result_t wssl_client_processing_recv
         *processed = (wssl_size_t)size;
       }
       break;
+    }
     case WSSL_CLIENT_STATE_WAIT_FIN_FRAME:
     {
       wssl_frame_t frame;
@@ -344,7 +390,7 @@ wssl_result_t wssl_client_processing_recv
         {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         }
-        if(!frame.masked)
+        if(frame.masked != true)
         {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED);
         }

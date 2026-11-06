@@ -44,7 +44,7 @@ wssl_result_t wssl_server_start
   int return_value;
   if(server->configuration.ipv6 == true)
   {
-    if(server->configuration.ipv6_dual_stack == false)
+    if(server->configuration.ipv6_dual_stack != true)
     {
       int ipv6_only = 1;
       if(setsockopt(server->socket_descriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6_only, sizeof ipv6_only) < 0)

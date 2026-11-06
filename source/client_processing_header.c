@@ -27,7 +27,7 @@ bool wssl_key_is_base64
         (c >= 'a' && c <= 'z') ||
         (c >= '0' && c <= '9') ||
         c == '+' || c == '/';
-      if(!alphabet || padding_length != 0)
+      if(alphabet != true || padding_length != 0)
       {
         return false;
       }
@@ -62,7 +62,7 @@ bool wssl_client_processing_header_check
   (
     connection == WSSL_NULL ||
     wssl_string_is_not_allocated(connection) ||
-    !wssl_str_case_contains(connection->data, "upgrade")
+    wssl_str_case_contains(connection->data, "upgrade") != true
   )
   {
     return false;
@@ -73,7 +73,7 @@ bool wssl_client_processing_header_check
   (
     upgrade == WSSL_NULL ||
     wssl_string_is_not_allocated(upgrade) ||
-    !wssl_str_case_contains(upgrade->data, "websocket")
+    wssl_str_case_contains(upgrade->data, "websocket") != true
   )
   {
     return false;
@@ -96,7 +96,7 @@ bool wssl_client_processing_header_check
     *sec_websocket_key == WSSL_NULL ||
     wssl_string_is_not_allocated(*sec_websocket_key) ||
     (*sec_websocket_key)->data_length != 24 ||
-    !wssl_key_is_base64((*sec_websocket_key)->data, (*sec_websocket_key)->data_length)
+    wssl_key_is_base64((*sec_websocket_key)->data, (*sec_websocket_key)->data_length) != true
   )
   {
     return false;
@@ -179,7 +179,7 @@ wssl_result_t wssl_client_processing_header
   TRY_CALL(wssl_client_do_send(client));
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
-  if(!pass)
+  if(pass != true)
   {
     if(header_callback_result == WSSL_CALLBACK_RESULT_DISCONNECT)
     {

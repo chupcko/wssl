@@ -7,7 +7,7 @@ wssl_result_t wssl_client_sync_epoll_events
 )
 {
   uint32_t events;
-  if(client->ssl != NULL && client->ssl_handshake_done == false)
+  if(client->ssl != NULL && client->ssl_handshake_done != true)
   {
     if(client->ssl_want == SSL_ERROR_WANT_WRITE)
     {

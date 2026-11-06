@@ -49,20 +49,24 @@ wssl_result_t wssl_base64_encode
   }
   switch(input_size-i)
   {
-    case 2:
-      BASE64_ENCODE_CHECK(4);
-      BASE64_ENCODE_PUT(table[(input[i]>>2)&0x3f]);
-      BASE64_ENCODE_PUT(table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]);
-      BASE64_ENCODE_PUT(table[(input[i+1]&0xf)<<2]);
-      BASE64_ENCODE_PUT('=');
-      break;
     case 1:
+    {
       BASE64_ENCODE_CHECK(4);
       BASE64_ENCODE_PUT(table[(input[i]>>2)&0x3f]);
       BASE64_ENCODE_PUT(table[(input[i]&0x3)<<4]);
       BASE64_ENCODE_PUT('=');
       BASE64_ENCODE_PUT('=');
       break;
+    }
+    case 2:
+    {
+      BASE64_ENCODE_CHECK(4);
+      BASE64_ENCODE_PUT(table[(input[i]>>2)&0x3f]);
+      BASE64_ENCODE_PUT(table[((input[i]&0x3)<<4) | ((input[i+1]>>4)&0xf)]);
+      BASE64_ENCODE_PUT(table[(input[i+1]&0xf)<<2]);
+      BASE64_ENCODE_PUT('=');
+      break;
+    }
   }
 
   BASE64_ENCODE_CHECK(1);
