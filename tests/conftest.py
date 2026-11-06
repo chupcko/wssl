@@ -37,7 +37,7 @@ def stop_server(proc) :
 @pytest.fixture(scope='module')
 def echo_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'examples', 'echo.e')],
+    [os.path.join(REPO_ROOT, 'examples', 'wssl_echo.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -75,7 +75,7 @@ def echo_ssl_server(tmp_path_factory) :
   )
   proc = subprocess.Popen(
     [
-      os.path.join(REPO_ROOT, 'examples', 'echo.e'),
+      os.path.join(REPO_ROOT, 'examples', 'wssl_echo.e'),
       str(cert_dir / 'server.crt'),
       str(cert_dir / 'server.key'),
     ],

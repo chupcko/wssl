@@ -6,7 +6,7 @@ Wants=network-online.target
 Type=simple
 WorkingDirectory=/opt/wssl
 EnvironmentFile=/etc/default/wssl-examples
-ExecStart=/opt/wssl/examples/chat.e ${WSSL_CERT} ${WSSL_KEY}
+ExecStart=/opt/wssl/examples/wssl_chat.e ${WSSL_CERT} ${WSSL_KEY}
 Restart=always
 RestartSec=5
 [Install]
