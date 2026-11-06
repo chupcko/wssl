@@ -55,6 +55,7 @@ int main(int arguments_count, char* arguments_value[])
     WSSL_TRY_CALL(wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]));
   }
   WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
+  WSSL_TRY_CALL(wssl_loop_init_signals());
   WSSL_TRY_CALL(wssl_loop(&wssl));
   WSSL_TRY_CALL(wssl_clean(&wssl));
 

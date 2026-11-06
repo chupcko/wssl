@@ -10,10 +10,7 @@ void wssl_client_purge
   client->socket_descriptor = WSSL_NO_DESCRIPTOR;
 
   if(client->ssl != WSSL_NULL)
-  {
     SSL_free(client->ssl);
-    client->ssl = WSSL_NULL;
-  }
 
   if(wssl_buffer_is_allocated(&client->input_buffer))
     wssl_buffer_free(&client->input_buffer);
