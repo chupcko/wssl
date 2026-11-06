@@ -7,7 +7,7 @@ import pytest
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLAIN_PORT = 5001
-SSL_PORT = 5011
+SSL_PORT = 5001
 
 
 def wait_for_port(host, port, timeout=15) :
@@ -34,7 +34,7 @@ def stop_server(proc) :
 #$
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def echo_server() :
   proc = subprocess.Popen(
     [os.path.join(REPO_ROOT, 'examples', 'echo.e')],
@@ -64,7 +64,7 @@ def kick_server() :
   #$
 #$
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def echo_ssl_server(tmp_path_factory) :
   cert_dir = tmp_path_factory.mktemp('cert')
   subprocess.run(
@@ -75,7 +75,7 @@ def echo_ssl_server(tmp_path_factory) :
   )
   proc = subprocess.Popen(
     [
-      os.path.join(REPO_ROOT, 'examples', 'echo_ssl.e'),
+      os.path.join(REPO_ROOT, 'examples', 'echo.e'),
       str(cert_dir / 'server.crt'),
       str(cert_dir / 'server.key'),
     ],
