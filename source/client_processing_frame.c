@@ -12,20 +12,25 @@ wssl_result_t wssl_client_processing_frame
   switch(client->frame.opcode)
   {
     case FRAME_OPCODE_TEXT:
+    {
       if(client->wssl->on_receive_text_frame_callback != WSSL_CALLBACK_NONE)
       {
         HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_text_frame_callback)(client, (char*)client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
+    }
     case FRAME_OPCODE_BINARY:
+    {
       if(client->wssl->on_receive_binary_frame_callback != WSSL_CALLBACK_NONE)
       {
         HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_binary_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
+    }
     case FRAME_OPCODE_CLOSE:
+    {
       if(client->wssl->on_receive_close_frame_callback != WSSL_CALLBACK_NONE)
       {
         HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_close_frame_callback)(client));
@@ -36,7 +41,9 @@ wssl_result_t wssl_client_processing_frame
       PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
       break;
+    }
     case FRAME_OPCODE_PING:
+    {
       if(client->wssl->on_receive_ping_frame_callback != WSSL_CALLBACK_NONE)
       {
         HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_ping_frame_callback)(client, client->frame.payload, client->frame.payload_size));
@@ -46,16 +53,21 @@ wssl_result_t wssl_client_processing_frame
       TRY_CALL(wssl_client_send_frame(client, &frame));
       PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       break;
+    }
     case FRAME_OPCODE_PONG:
+    {
       if(client->wssl->on_receive_pong_frame_callback != WSSL_CALLBACK_NONE)
       {
         HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
+    }
     default:
+    {
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
       break;
+    }
   }
 
   PASS;

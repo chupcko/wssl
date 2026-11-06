@@ -11,8 +11,11 @@ void wssl_result_print
   switch(result.code)
   {
     case WSSL_RESULT_CODE_OK:
+    {
       break;
+    }
     case WSSL_RESULT_CODE_ERROR_ERRNO:
+    {
       fprintf
       (
         file,
@@ -22,8 +25,11 @@ void wssl_result_print
         strerror(result.system_errno)
       );
       break;
+    }
     default:
+    {
       fprintf(file, " on \"%s\"", result.where);
       break;
+    }
   }
 }

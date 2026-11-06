@@ -27,14 +27,19 @@ wssl_result_t wssl_client_do_ssl_handshake
   {
     case SSL_ERROR_WANT_READ:
     case SSL_ERROR_WANT_WRITE:
+    {
       client->ssl_want = ssl_error;
       TRY_CALL(wssl_client_sync_epoll_events(client));
       PASS;
       break;
+    }
     case SSL_ERROR_ZERO_RETURN:
+    {
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
       break;
+    }
     case SSL_ERROR_SYSCALL:
+    {
       if(accept_result == 0)
       {
         MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
@@ -42,9 +47,12 @@ wssl_result_t wssl_client_do_ssl_handshake
       ERR_clear_error();
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
       break;
+    }
     default:
+    {
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
       break;
+    }
   }
 
   PASS;

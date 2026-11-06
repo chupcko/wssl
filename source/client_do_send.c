@@ -8,7 +8,7 @@ wssl_result_t wssl_client_do_send
 {
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
-  if(client->ssl != NULL && client->ssl_handshake_done == false)
+  if(client->ssl != NULL && client->ssl_handshake_done != true)
   {
     TRY_CALL(wssl_client_do_ssl_handshake(client));
     PASS;
@@ -44,15 +44,20 @@ wssl_result_t wssl_client_do_send
           {
             case SSL_ERROR_WANT_READ:
             case SSL_ERROR_WANT_WRITE:
+            {
               client->ssl_want = ssl_error;
               client->ssl_read_blocked = false;
               TRY_CALL(wssl_client_sync_epoll_events(client));
               PASS;
               break;
+            }
             case SSL_ERROR_ZERO_RETURN:
+            {
               MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
               break;
+            }
             case SSL_ERROR_SYSCALL:
+            {
               if(write_result == 0)
               {
                 MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
@@ -60,9 +65,12 @@ wssl_result_t wssl_client_do_send
               ERR_clear_error();
               MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
               break;
+            }
             default:
+            {
               MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
               break;
+            }
           }
         }
         client->ssl_want = 0;
@@ -82,15 +90,21 @@ wssl_result_t wssl_client_do_send
           switch(errno)
           {
             case EAGAIN:
+            {
               PASS;
               break;
+            }
             case ECONNRESET:
             case EPIPE:
+            {
               MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
               break;
+            }
             default:
+            {
               FAIL_ERRNO("send", errno);
               break;
+            }
           }
         }
         if(send_size == 0)

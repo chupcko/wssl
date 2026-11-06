@@ -43,6 +43,7 @@ wssl_result_t wssl_frame_put
   switch(frame->length)
   {
     case FRAME_LENGTH_LONG_CODE:
+    {
       FRAME_PUT_CHECK(FRAME_LENGTH_LONG_LENGTH);
       payload_size = frame->payload_size;
       for(i = 0; i < FRAME_LENGTH_LONG_LENGTH; i++)
@@ -52,7 +53,9 @@ wssl_result_t wssl_frame_put
       }
       *data_length += FRAME_LENGTH_LONG_LENGTH;
       break;
+    }
     case FRAME_LENGTH_MEDIUM_CODE:
+    {
       FRAME_PUT_CHECK(FRAME_LENGTH_MEDIUM_LENGTH);
       payload_size = frame->payload_size;
       for(i = 0; i < FRAME_LENGTH_MEDIUM_LENGTH; i++)
@@ -62,6 +65,7 @@ wssl_result_t wssl_frame_put
       }
       *data_length += FRAME_LENGTH_MEDIUM_LENGTH;
       break;
+    }
   }
 
   if(frame->masked)

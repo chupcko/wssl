@@ -8,7 +8,7 @@ wssl_result_t wssl_client_do_recv
 {
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
-  if(client->ssl != NULL && client->ssl_handshake_done == false)
+  if(client->ssl != NULL && client->ssl_handshake_done != true)
   {
     TRY_CALL(wssl_client_do_ssl_handshake(client));
     PASS;
@@ -17,7 +17,7 @@ wssl_result_t wssl_client_do_recv
   if
   (
     client->ssl != WSSL_NULL &&
-    client->ssl_read_blocked == false &&
+    client->ssl_read_blocked != true &&
     client->ssl_want == SSL_ERROR_WANT_READ &&
     wssl_chunk_chain_is_not_empty(&client->output_chunks)
   )
@@ -47,15 +47,20 @@ wssl_result_t wssl_client_do_recv
       {
         case SSL_ERROR_WANT_READ:
         case SSL_ERROR_WANT_WRITE:
+        {
           client->ssl_want = ssl_error;
           client->ssl_read_blocked = true;
           TRY_CALL(wssl_client_sync_epoll_events(client));
           PASS;
           break;
+        }
         case SSL_ERROR_ZERO_RETURN:
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
           break;
+        }
         case SSL_ERROR_SYSCALL:
+        {
           if(read_result == 0)
           {
             MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CLOSED);
@@ -63,9 +68,12 @@ wssl_result_t wssl_client_do_recv
           ERR_clear_error();
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
           break;
+        }
         default:
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
           break;
+        }
       }
     }
     client->ssl_want = 0;
@@ -87,15 +95,21 @@ wssl_result_t wssl_client_do_recv
       switch(errno)
       {
         case EAGAIN:
+        {
           PASS;
           break;
+        }
         case ECONNRESET:
         case EPIPE:
+        {
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED);
           break;
+        }
         default:
+        {
           FAIL_ERRNO("recv", errno);
           break;
+        }
       }
     }
     if(recv_size == 0)

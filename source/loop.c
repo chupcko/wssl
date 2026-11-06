@@ -126,13 +126,9 @@ wssl_result_t wssl_loop
     );
     if(events_number < 0)
     {
-      switch(errno)
+      if(errno != EINTR)
       {
-        case EINTR:
-          break;
-        default:
-          FAIL_ERRNO("epoll_wait", errno);
-          break;
+        FAIL_ERRNO("epoll_wait", errno);
       }
     }
     else
@@ -143,9 +139,12 @@ wssl_result_t wssl_loop
         switch(epoll_data->type)
         {
           case WSSL_EPOLL_DATA_TYPE_SERVER:
+          {
             TRY_CALL(wssl_loop_accept_clients(epoll_data->server));
             break;
+          }
           case WSSL_EPOLL_DATA_TYPE_CLIENT:
+          {
             if((events[event_index].events&(EPOLLIN|EPOLLERR|EPOLLHUP|EPOLLRDHUP)) != 0)
             {
               TRY_CALL(wssl_client_do_recv(epoll_data->client));
@@ -155,6 +154,7 @@ wssl_result_t wssl_loop
               TRY_CALL(wssl_client_do_send(epoll_data->client));
             }
             break;
+          }
         }
       }
     }
@@ -162,7 +162,7 @@ wssl_result_t wssl_loop
     if
     (
       wssl->on_tick_callback != WSSL_CALLBACK_NONE &&
-      !(*wssl->on_tick_callback)(wssl)
+      (*wssl->on_tick_callback)(wssl) != true
     )
     {
       break;
