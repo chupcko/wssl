@@ -7,24 +7,29 @@ bool wssl_key_is_base64
   _WSSL_IN_ const wssl_size_t data_length
 )
 {
+  if(data_length == 0 || data_length%4 != 0)
+    return false;
   wssl_size_t i;
+  wssl_size_t padding_length = 0;
   for(i = 0; i < data_length; i++)
   {
     char c = data[i];
-    bool alphabet =
-      (c >= 'A' && c <= 'Z') ||
-      (c >= 'a' && c <= 'z') ||
-      (c >= '0' && c <= '9') ||
-      c == '+' || c == '/';
-    if(i < data_length-2)
+    if(c == '=')
+      padding_length++;
+    else
     {
-      if(!alphabet)
+      bool alphabet =
+        (c >= 'A' && c <= 'Z') ||
+        (c >= 'a' && c <= 'z') ||
+        (c >= '0' && c <= '9') ||
+        c == '+' || c == '/';
+      if(!alphabet || padding_length != 0)
         return false;
     }
-    else if(c != '=')
-      return false;
   }
-  return true;
+  if(padding_length > 2)
+    return false;
+  return data_length/4*3-padding_length == 16;
 }
 
 static inline
