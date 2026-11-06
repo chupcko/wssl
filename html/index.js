@@ -1,4 +1,4 @@
-var version = '20261023';
+var version = '20261106';
 
 var serverScheme = 'ws://';
 var serverIPV4Name = '127.0.0.1';
