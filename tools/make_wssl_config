@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# Generate wssl example server configurations.
+#
+# Usage: make_wssl_config [output_dir]
+#
+# Writes echo.w, time.w and chat.w, each with one plain and
+# one SSL dual-stack listener. The SSL lines use fullchain.pem and
+# privkey.pem of the first certificate found under the live
+# directory. Adjust the generated files by hand for special cases.
+#
+# WSSL_LETSENCRYPT_LIVE_DIR overrides /etc/letsencrypt/live.
+
+OUT_DIR=${1:-/etc/wssl}
+LIVE_DIR=${WSSL_LETSENCRYPT_LIVE_DIR:-/etc/letsencrypt/live}
+
+DOMAIN=""
+for entry in "${LIVE_DIR}"/*
+do
+  if [ -d "${entry}" ]
+  then
+    DOMAIN=$(basename "${entry}")
+    break
+  fi
+done
+
+if [ -z "${DOMAIN}" ]
+then
+  echo "make_wssl_config: no certificate found in ${LIVE_DIR}" >&2
+  exit 1
+fi
+
+CERTIFICATE_FILE="${LIVE_DIR}/${DOMAIN}/fullchain.pem"
+PRIVATE_KEY_FILE="${LIVE_DIR}/${DOMAIN}/privkey.pem"
+if [ ! -r "${CERTIFICATE_FILE}" ] || [ ! -r "${PRIVATE_KEY_FILE}" ]
+then
+  echo "make_wssl_config: ${DOMAIN} has no readable fullchain.pem and privkey.pem" >&2
+  exit 1
+fi
+
+mkdir -p "${OUT_DIR}" || exit 1
+
+write_config()
+{
+  name=${1}
+  plain_port=${2}
+  ssl_port=${3}
+  {
+    echo "ipv6-dual-stack :: ${plain_port}"
+    echo "ipv6-dual-stack :: ${ssl_port} ssl ${CERTIFICATE_FILE} ${PRIVATE_KEY_FILE}"
+  } > "${OUT_DIR}/${name}.w"
+}
+
+write_config echo 5001 5011
+write_config time 5002 5012
+write_config chat 5003 5013

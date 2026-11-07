@@ -5,8 +5,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/wssl
-EnvironmentFile=/etc/default/wssl-examples
-ExecStart=/opt/wssl/examples/wssl_time.e ${WSSL_CERT} ${WSSL_KEY}
+ExecStart=/opt/wssl/examples/wssl_time.e /etc/wssl/time.w
 Restart=always
 RestartSec=5
 [Install]
