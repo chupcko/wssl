@@ -4,7 +4,6 @@ After=network-online.target
 Wants=network-online.target
 [Service]
 Type=simple
-WorkingDirectory=/opt/wssl
 ExecStart=/opt/wssl/examples/wssl_chat.e /etc/wssl/chat.w
 Restart=always
 RestartSec=5

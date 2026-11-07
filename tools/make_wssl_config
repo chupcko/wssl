@@ -4,10 +4,12 @@
 #
 # Usage: make_wssl_config [output_dir]
 #
-# Writes echo.w, time.w and chat.w, each with one plain and
-# one SSL dual-stack listener. The SSL lines use fullchain.pem and
-# privkey.pem of the first certificate found under the live
-# directory. Adjust the generated files by hand for special cases.
+# Writes echo.w, time.w and chat.w, each with one plain dual-stack
+# listener and two SSL listeners, one per stack, so that a different
+# certificate can be substituted per protocol. Both SSL lines
+# initially use fullchain.pem and privkey.pem of the first
+# certificate found under the live directory. Adjust the generated
+# files by hand for special cases.
 #
 # WSSL_LETSENCRYPT_LIVE_DIR overrides /etc/letsencrypt/live.
 
@@ -46,8 +48,9 @@ write_config()
   plain_port=${2}
   ssl_port=${3}
   {
-    echo "ipv6-dual-stack :: ${plain_port}"
-    echo "ipv6-dual-stack :: ${ssl_port} ssl ${CERTIFICATE_FILE} ${PRIVATE_KEY_FILE}"
+    echo "ipv6-dual-stack ::      ${plain_port}"
+    echo "ipv4            0.0.0.0 ${ssl_port} ssl ${CERTIFICATE_FILE} ${PRIVATE_KEY_FILE}"
+    echo "ipv6            ::      ${ssl_port} ssl ${CERTIFICATE_FILE} ${PRIVATE_KEY_FILE}"
   } > "${OUT_DIR}/${name}.w"
 }
 
