@@ -18,7 +18,7 @@ wssl_result_t wssl_client_add
   if(server->configuration.ipv6 == true)
   {
     struct sockaddr_in6 client_address;
-    socklen_t client_address_length = (socklen_t)sizeof client_address;
+    socklen_t client_address_length = (socklen_t)sizeof(client_address);
     client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
     if(client->socket_descriptor  < 0)
     {
@@ -33,7 +33,7 @@ wssl_result_t wssl_client_add
   else
   {
     struct sockaddr_in client_address;
-    socklen_t client_address_length = (socklen_t)sizeof client_address;
+    socklen_t client_address_length = (socklen_t)sizeof(client_address);
     client->socket_descriptor = accept(server->socket_descriptor, (struct sockaddr*)&client_address, &client_address_length);
     if(client->socket_descriptor  < 0)
     {

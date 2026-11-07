@@ -1,5 +1,3 @@
-IPV6 ?= 1
-
 WSSL_DIR := ../out
 
 WSSL_INCLUDE = $(WSSL_DIR)/wssl.h
@@ -8,10 +6,10 @@ WSSL_LIBRARY = $(WSSL_DIR)/libwssl.a
 SOURCES := $(wildcard *.c)
 INCLUDES := $(wildcard *.h)
 OBJECTS = $(SOURCES:.c=.o)
-TARGETS = $(SOURCES:.c=.e)
+TARGETS = $(SOURCES:%.c=wssl_%.e)
 
 COMPILER := gcc
-COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(WSSL_DIR) -DWSSL_EXAMPLE_IPV6=$(IPV6)
+COMPILER_FLAGS = -std=c99 -O3 -Werror -I. -I$(WSSL_DIR)
 LINKER := gcc
 LINKER_FLAGS =
 LIBRARIES := $(or $(shell pkg-config --libs openssl 2>/dev/null),-lssl -lcrypto)
@@ -35,5 +33,5 @@ clean:
 %.o: %.c $(WSSL_INCLUDE) $(INCLUDES)
 	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
 
-%.e: %.o $(WSSL_LIBRARY)
+wssl_%.e: %.o $(WSSL_LIBRARY)
 	$(LINKER) $(LINKER_FLAGS) -o $@ $< $(WSSL_LIBRARY) $(LIBRARIES)

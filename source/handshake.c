@@ -12,7 +12,7 @@ wssl_result_t wssl_handshake
 {
   *output_length = 0;
 
-  wssl_size_t data_size = input_size+sizeof HANDSHAKE_MAGIC;
+  wssl_size_t data_size = input_size+sizeof(HANDSHAKE_MAGIC);
   char* data = (char*)malloc((size_t)data_size);
   if(data == NULL)
   {

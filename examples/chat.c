@@ -1,7 +1,10 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "wssl.h"
+#include "servers.h"
 
 wssl_callback_result_e for_client(wssl_client_t* client, void* local_extra_data)
 {
@@ -39,32 +42,42 @@ void on_disconnect(wssl_client_t* client, wssl_client_disconnect_reason_e discon
 
 int main(int arguments_count, char* arguments_value[])
 {
-  if(arguments_count != 1 && arguments_count != 3)
-  {
-    fprintf(stderr, "usage: %s [certificate_file private_key_file]\n", arguments_value[0]);
-    return EXIT_FAILURE;
-  }
-
   WSSL_DECLARE(wssl);
 
   wssl_set_on_start_receiving_frames_callback(&wssl, &on_start_receiving_frames);
   wssl_set_on_receive_text_frame_callback(&wssl, &on_receive_text_frame);
   wssl_set_on_disconnect_callback(&wssl, &on_disconnect);
 
-#if WSSL_EXAMPLE_IPV6
-  wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
-#else
-  wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV4;
-#endif
-
-  WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5003));
-  WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
-
-  if(arguments_count == 3)
+  switch(arguments_count)
   {
-    WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5013));
-    WSSL_TRY_CALL(wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]));
-    WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
+    case 1:
+    {
+      wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
+      WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5003));
+      WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
+      break;
+    }
+    case 2:
+    {
+      wssl_server_configuration_t servers[SERVERS_MAX_COUNT];
+      int server_count = servers_read_configurations(arguments_value[1], servers);
+      if(server_count < 0)
+      {
+        return EXIT_FAILURE;
+      }
+      int server_index;
+      for(server_index = 0; server_index < server_count; server_index++)
+      {
+        WSSL_TRY_CALL(wssl_server_add(&wssl, &servers[server_index]));
+      }
+      break;
+    }
+    default:
+    {
+      fprintf(stderr, "usage: %s [configuration_file]\n", arguments_value[0]);
+      return EXIT_FAILURE;
+      break;
+    }
   }
 
   WSSL_TRY_CALL(wssl_loop_init_signals());

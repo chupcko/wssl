@@ -33,7 +33,7 @@ wssl_result_t wssl_server_start
   }
 
   int socket_reusable = 1;
-  if(setsockopt(server->socket_descriptor, SOL_SOCKET, SO_REUSEADDR, &socket_reusable, sizeof socket_reusable) < 0)
+  if(setsockopt(server->socket_descriptor, SOL_SOCKET, SO_REUSEADDR, &socket_reusable, sizeof(socket_reusable)) < 0)
   {
     int system_errno = errno;
     close(server->socket_descriptor);
@@ -47,7 +47,7 @@ wssl_result_t wssl_server_start
     if(server->configuration.ipv6_dual_stack != true)
     {
       int ipv6_only = 1;
-      if(setsockopt(server->socket_descriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6_only, sizeof ipv6_only) < 0)
+      if(setsockopt(server->socket_descriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6_only, sizeof(ipv6_only)) < 0)
       {
         FAIL_ERRNO("setsockopt", errno);
       }
@@ -96,7 +96,7 @@ wssl_result_t wssl_server_start
       server_address.sin6_scope_id = 0;
     }
 
-    if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof server_address) < 0)
+    if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof(server_address)) < 0)
     {
       int system_errno = errno;
       close(server->socket_descriptor);
@@ -124,7 +124,7 @@ wssl_result_t wssl_server_start
       FAIL_ERROR("server_ip", WSSL_RESULT_CODE_ERROR_BAD_SYNTAX);
     }
 
-    if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof server_address) < 0)
+    if(bind(server->socket_descriptor, (struct sockaddr*)&server_address, sizeof(server_address)) < 0)
     {
       int system_errno = errno;
       close(server->socket_descriptor);

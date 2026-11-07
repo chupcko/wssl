@@ -57,8 +57,8 @@ def kick_server() :
     stderr=subprocess.DEVNULL,
   )
   try :
-    wait_for_port('127.0.0.1', 5004)
-    yield ('127.0.0.1', 5004)
+    wait_for_port('127.0.0.1', 6004)
+    yield ('127.0.0.1', 6004)
   finally :
     stop_server(proc)
   #$
@@ -73,11 +73,14 @@ def echo_ssl_server(tmp_path_factory) :
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
+  config = tmp_path_factory.mktemp('config') / 'servers.conf'
+  config.write_text(
+    'ipv6-dual-stack :: %d ssl %s %s\n' % (
+      SSL_PORT, cert_dir / 'server.crt', cert_dir / 'server.key'))
   proc = subprocess.Popen(
     [
       os.path.join(REPO_ROOT, 'examples', 'wssl_echo.e'),
-      str(cert_dir / 'server.crt'),
-      str(cert_dir / 'server.key'),
+      str(config),
     ],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,

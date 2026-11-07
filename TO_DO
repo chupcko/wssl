@@ -9,3 +9,4 @@
 -odluci sta sa test i dump u htmlu
 -odluci da li greske na klijentu prekidaju loop
 -resi vrtenje accept petlje kad ponestane resursa (EMFILE/ENFILE/ENOMEM)
+-napravi i .so biblioteku pored .a
