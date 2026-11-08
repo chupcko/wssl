@@ -10,3 +10,5 @@
 -odluci da li greske na klijentu prekidaju loop
 -resi vrtenje accept petlje kad ponestane resursa (EMFILE/ENFILE/ENOMEM)
 -napravi i .so biblioteku pored .a
+-napisi dokumentaciju
+-sredi js i prebaci logiku na pravo mesto (svi js moduli sa import)

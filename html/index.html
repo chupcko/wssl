@@ -1,55 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WSSL</title>
     <link rel="stylesheet" type="text/css" href="index.css"/>
-    <style type="text/css">
-/*<![CDATA[*/
-/*]]>*/
-    </style>
-    <script src="index.js"></script>
-    <script type="text/javascript">
-/*<![CDATA[*/
-
-function init()
-{
-  document.getElementById('version').innerHTML = version;
-}
-
-/*]]>*/
-    </script>
+    <script type="module" src="index.js"></script>
+    <script src="configuration.js"></script>
+    <script src="console.js"></script>
   </head>
   <body onload="init();">
-    <h1>WSSL - WebSocket Server Library</h1>
-    <h2>by Goran "<a href="http://www.chupcko.org/" target="_blank" class="link">CHUPCKO</a>" Lazi&#x0107;</h2>
-    <h3>Version: <span id="version"></span></h3>
-    <p/>
-    <a href="https://github.com/chupcko/wssl" target="_blank" class="link">https://github.com/chupcko/wssl</a>
-    <p/>
-    Examples:
-    <table>
-      <tr>
-        <td>echo</td>
-        <td><a href="echo_ipv4.html" class="link">IPV4</a></td>
-        <td><a href="echo_ipv6.html" class="link">IPV6</a></td>
-        <td><a href="echo_ipv4_ssl.html" class="link">IPV4+SSL</a></td>
-        <td><a href="echo_ipv6_ssl.html" class="link">IPV6+SSL</a></td>
-      </tr>
-      <tr>
-        <td>time</td>
-        <td><a href="time_ipv4.html" class="link">IPV4</a></td>
-        <td><a href="time_ipv6.html" class="link">IPV6</a></td>
-        <td><a href="time_ipv4_ssl.html" class="link">IPV4+SSL</a></td>
-        <td><a href="time_ipv6_ssl.html" class="link">IPV6+SSL</a></td>
-      </tr>
-      <tr>
-        <td>chat</td>
-        <td><a href="chat_ipv4.html" class="link">IPV4</a></td>
-        <td><a href="chat_ipv6.html" class="link">IPV6</a></td>
-        <td><a href="chat_ipv4_ssl.html" class="link">IPV4+SSL</a></td>
-        <td><a href="chat_ipv6_ssl.html" class="link">IPV6+SSL</a></td>
-      </tr>
-    </table>
+    <div class="page">
+      <header>
+        <h2>WSSL - WebSocket Server Library</h2>
+        <p>Version: <span id="version"></span><br>by Goran "<a href="https://chupcko.org/" target="_blank">CHUPCKO</a>" Lazi&#x107;<br><a href="https://github.com/chupcko/wssl" target="_blank">https://github.com/chupcko/wssl</a></p>
+        <p>Example echo, time and chat servers. Pick a combination to test it here.</p>
+      </header>
+      <p>
+        <span class="group">Service:
+        <label class="pick"><input type="radio" name="service" value="echo" checked onchange="choose();">Echo</label>
+        <label class="pick"><input type="radio" name="service" value="time" onchange="choose();">Time</label>
+        <label class="pick"><input type="radio" name="service" value="chat" onchange="choose();">Chat</label></span>
+        <span class="group">Stack:
+        <label class="pick"><input type="radio" name="family" value="ipv4" checked onchange="choose();">IPv4</label>
+        <label class="pick"><input type="radio" name="family" value="ipv6" onchange="choose();">IPv6</label></span>
+        <span class="group">Security:
+        <label class="pick"><input type="radio" name="security" value="wss" checked onchange="choose();">wss</label>
+        <label class="pick"><input type="radio" name="security" value="ws" onchange="choose();">ws</label></span>
+      </p>
+      <p id="choice"></p>
+      <p><code id="server" class="mono"></code><span id="warn" class="warn" style="display: none;"> — Warning: ws is blocked from an https page and will not work. Open the http page instead: <a id="httplink" href=""></a></span></p>
+      <div>
+        <button class="button" onclick="clean();">Clean</button>
+        <span class="group" id="nickbox"><input class="input" id="nickname" type="text" placeholder="Nickname" onkeydown="connectKey(event);">
+        <button class="button" id="connect" onclick="connect();">Connect</button></span>
+        <button class="button" id="connectPlain" onclick="connect();" style="display: none;">Connect</button>
+        <span class="group" id="msgbox"><input class="input" id="message" type="text" placeholder="Message" onkeydown="sendKey(event);">
+        <button class="button" id="send" onclick="send();">Send</button></span>
+        <button class="button" id="disconnect" onclick="disconnect();">Disconnect</button>
+      </div>
+    </div>
+    <div id="output" class="log"></div>
   </body>
 </html>
