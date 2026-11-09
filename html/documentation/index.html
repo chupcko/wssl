@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WSSL - Library Documentation</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="version.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body onload="initDocumentation()">
+    <header class="topbar">
+      <h1>WSSL - WebSocket Server Library</h1>
+      <p>
+        Documentation for version <span id="doc-version"></span><br>
+        by Goran "<a href="https://chupcko.org/" target="_blank">CHUPCKO</a>" Lazi&#x107;<br>
+        <a href="https://github.com/chupcko/wssl" target="_blank">https://github.com/chupcko/wssl</a>
+      </p>
+    </header>
+    <button class="menu-button" id="menu-toggle" type="button">Contents</button>
+    <div class="layout">
+      <nav class="sidebar" id="sidebar" aria-label="Documentation contents">
+        <input class="search" id="search" type="search" placeholder="Filter..." aria-label="Filter contents">
+        <div class="nav-group">
+          <h2>Guides</h2>
+          <ul>
+            <li><a href="#g-overview">Overview</a></li>
+            <li><a href="#g-build">Build and link</a></li>
+            <li><a href="#g-quickstart">Quick start (echo)</a></li>
+            <li><a href="#g-lifecycle">Event loop and callbacks</a></li>
+            <li><a href="#g-servers">Servers and TLS</a></li>
+            <li><a href="#g-sending">Sending data</a></li>
+            <li><a href="#g-examples">Bundled examples</a></li>
+          </ul>
+        </div>
+        <div class="nav-group">
+          <h2>Examples</h2>
+          <ul>
+            <li><a href="#ex-echo"><code>echo</code></a></li>
+            <li><a href="#ex-time"><code>time</code></a></li>
+            <li><a href="#ex-chat"><code>chat</code></a></li>
+            <li><a href="#ex-dump"><code>dump</code></a></li>
+            <li><a href="#ex-test"><code>test</code></a></li>
+          </ul>
+        </div>
+        <div class="nav-group">
+          <h2>Structs and enums</h2>
+          <ul>
+            <li><a href="#s-wssl-t"><code>wssl_t</code></a></li>
+            <li><a href="#s-defaults"><code>default values</code></a></li>
+            <li><a href="#s-server-config"><code>wssl_server_configuration_t</code></a></li>
+            <li><a href="#s-server-t"><code>wssl_server_t</code></a></li>
+            <li><a href="#s-client-t"><code>wssl_client_t</code></a></li>
+            <li><a href="#s-header"><code>wssl_header_t</code></a></li>
+            <li><a href="#s-frame"><code>wssl_frame_t</code></a></li>
+            <li><a href="#s-buffer"><code>wssl_buffer_t</code></a></li>
+            <li><a href="#s-string"><code>wssl_string_t</code></a></li>
+            <li><a href="#s-id"><code>wssl_id_t</code></a></li>
+            <li><a href="#s-result"><code>wssl_result_t</code></a></li>
+            <li><a href="#s-result-code"><code>wssl_result_code_e</code></a></li>
+            <li><a href="#s-client-state"><code>wssl_client_state_e</code></a></li>
+            <li><a href="#s-disconnect-reason"><code>wssl_client_disconnect_reason_e</code></a></li>
+            <li><a href="#s-callback-result"><code>wssl_callback_result_e</code></a></li>
+          </ul>
+        </div>
+        <div class="nav-group">
+          <h2>Callbacks</h2>
+          <ul>
+            <li><a href="#s-callbacks"><code>callbacks</code></a></li>
+            <li><a href="#cb-connect"><code>on_connect</code></a></li>
+            <li><a href="#cb-disconnect"><code>on_disconnect</code></a></li>
+            <li><a href="#cb-header"><code>on_receive_header</code></a></li>
+            <li><a href="#cb-start-frames"><code>on_start_receiving_frames</code></a></li>
+            <li><a href="#cb-text"><code>on_receive_text_frame</code></a></li>
+            <li><a href="#cb-binary"><code>on_receive_binary_frame</code></a></li>
+            <li><a href="#cb-close"><code>on_receive_close_frame</code></a></li>
+            <li><a href="#cb-ping"><code>on_receive_ping_frame</code></a></li>
+            <li><a href="#cb-pong"><code>on_receive_pong_frame</code></a></li>
+            <li><a href="#cb-tick"><code>on_tick</code></a></li>
+            <li><a href="#cb-foreach"><code>for_each callback</code></a></li>
+          </ul>
+        </div>
+        <div class="nav-group">
+          <h2>Functions</h2>
+          <ul>
+            <li><a href="#f-declare"><code>WSSL_DECLARE</code></a></li>
+            <li><a href="#f-init"><code>wssl_init</code></a></li>
+            <li><a href="#f-setters"><code>wssl_set_*</code></a></li>
+            <li><a href="#f-loop"><code>wssl_loop</code></a></li>
+            <li><a href="#f-loop-init-signals"><code>wssl_loop_init_signals</code></a></li>
+            <li><a href="#f-clean"><code>wssl_clean</code></a></li>
+            <li><a href="#f-purge"><code>wssl_purge</code></a></li>
+            <li><a href="#f-dump"><code>wssl_dump</code></a></li>
+            <li><a href="#f-try-call"><code>WSSL_TRY_CALL</code></a></li>
+            <li><a href="#f-server-add"><code>wssl_server_add</code></a></li>
+            <li><a href="#f-server-delete"><code>wssl_server_delete</code></a></li>
+            <li><a href="#f-server-config-set"><code>wssl_server_configuration_set_*</code></a></li>
+            <li><a href="#f-server-enable-ssl"><code>wssl_server_enable_ssl</code></a></li>
+            <li><a href="#f-server-dump"><code>wssl_server_dump</code></a></li>
+            <li><a href="#f-client-send-text"><code>wssl_client_send_text</code></a></li>
+            <li><a href="#f-client-send-string"><code>wssl_client_send_string</code></a></li>
+            <li><a href="#f-client-send-binary"><code>wssl_client_send_binary</code></a></li>
+            <li><a href="#f-for-each"><code>wssl_for_each_client_in_frame_processing_call</code></a></li>
+            <li><a href="#f-mark-disconnect"><code>wssl_client_mark_for_disconnecting</code></a></li>
+            <li><a href="#f-header-value"><code>wssl_header_get_field_value</code></a></li>
+            <li><a href="#m-macros"><code>useful macros</code></a></li>
+          </ul>
+        </div>
+        <div class="nav-group">
+          <h2>Helpers</h2>
+          <ul>
+            <li><a href="#f-client-extra"><code>client extra data</code></a></li>
+            <li><a href="#f-client-state"><code>client state helpers</code></a></li>
+            <li><a href="#f-client-names"><code>client name helpers</code></a></li>
+            <li><a href="#f-dumps"><code>dump helpers</code></a></li>
+            <li><a href="#f-result"><code>result helpers</code></a></li>
+            <li><a href="#f-id-helpers"><code>id helpers</code></a></li>
+            <li><a href="#f-chain"><code>chain helpers</code></a></li>
+          </ul>
+        </div>
+      </nav>
+      <main class="content">
+        <section id="g-overview">
+          <h2>Overview</h2>
+          <p>WSSL is a WebSocket server library written in C. The build produces two artifacts in <code>out/</code>: the static library <code>libwssl.a</code> and the single public header <code>wssl.h</code>. Applications in <code>examples/</code> link against those two files.</p>
+          <ul>
+            <li>Single-threaded, <code>epoll</code> based event loop.</li>
+            <li>Plain TCP and TLS servers in the same process (OpenSSL).</li>
+            <li>Callback driven: connect, header, text, binary, ping, pong, close, tick, disconnect.</li>
+            <li>Per-connection extra pointer plus one global extra pointer for application state.</li>
+          </ul>
+          <p>Public header is self-contained: one include of <code>wssl.h</code> is enough. Link with <code>-lssl -lcrypto</code>.</p>
+        </section>
+        <section id="g-build">
+          <h2>Build and link</h2>
+          <div class="sig">make            # builds out/libwssl.a, out/wssl.h and examples
+make clean      # removes out/, objects and example binaries</div>
+          <p>Every example links the same way:</p>
+          <div class="sig">cc -std=c99 -O3 -Werror -Iout -o app.e app.c out/libwssl.a -lssl -lcrypto</div>
+          <p>Include path must point at <code>out/</code> so that <code>#include "wssl.h"</code> resolves to the generated single header, not to <code>include/</code> internals.</p>
+        </section>
+        <section id="g-quickstart">
+          <h2>Quick start (echo)</h2>
+          <p>Minimal echo server, same shape as <code>examples/echo.c</code>:</p>
+          <div class="sig">#include "wssl.h"
+
+<a href="#s-callback-result">wssl_callback_result_e</a> on_receive_text_frame(<a href="#s-client-t">wssl_client_t</a>* client, char* data, <a href="#m-macros">wssl_size_t</a> data_size)
+{
+  <a href="#f-client-send-string">wssl_client_send_string</a>(client, &amp;<a href="#m-macros">WSSL_MAKE_STRING</a>(data, data_size));
+  return <a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a>;
+}
+
+int main(void)
+{
+  <a href="#f-declare">WSSL_DECLARE</a>(wssl);
+  <a href="#f-setters">wssl_set_on_receive_text_frame_callback</a>(&amp;wssl, &amp;on_receive_text_frame);
+  <a href="#s-server-config">wssl_server_configuration_t</a> config = <a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK</a>;
+  <a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-server-config-set">wssl_server_configuration_set_port</a>(&amp;config, 5001));
+  <a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-server-add">wssl_server_add</a>(&amp;wssl, &amp;config));
+  <a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-loop-init-signals">wssl_loop_init_signals</a>());
+  <a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-loop">wssl_loop</a>(&amp;wssl));
+  <a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-clean">wssl_clean</a>(&amp;wssl));
+  return 0;
+}</div>
+          <p>Steps: declare the <code><a href="#s-wssl-t">wssl_t</a></code> instance, register callbacks, add at least one server, install signal handling, run the loop, clean up.</p>
+        </section>
+        <section id="g-lifecycle">
+          <h2>Event loop and callbacks</h2>
+          <p><code><a href="#f-loop">wssl_loop</a>()</code> runs until a signal stops it. The core concept is one loop around one <code>epoll</code> instance, single-threaded: every socket the library owns, listen sockets and client connections alike, is nonblocking (<code>O_NONBLOCK</code>), so the loop never stalls on any single client. Each pass blocks in <code>epoll_wait</code> up to <code>sleep_in_mseconds</code>, dispatches readable sockets to receive and writable ones to send, then runs <code>on_tick</code> and deletes the clients marked for disconnecting. Callbacks never run in parallel with each other, so no locking is needed in application code.</p>
+          <p>For each connection the library calls, in order:</p>
+          <ol>
+          <li><code>on_connect_callback</code> - new TCP/TLS connection accepted.</li>
+          <li><code>on_receive_header_callback</code> - HTTP upgrade header parsed; inspect <code>client-&gt;header</code> here (URI, fields).</li>
+          <li><code>on_start_receiving_frames_callback</code> - handshake done, WebSocket frames follow.</li>
+          <li><code>on_receive_text_frame_callback</code> / <code>on_receive_binary_frame_callback</code> / <code>on_receive_ping_frame_callback</code> / <code>on_receive_pong_frame_callback</code> / <code>on_receive_close_frame_callback</code> - one per frame.</li>
+          <li><code>on_disconnect_callback</code> - connection is going away, with a <code><a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a></code>.</li>
+          </ol>
+          <p>In parallel, <code>on_tick_callback</code> fires every <code>sleep_in_mseconds</code> when the loop is idle. Return <code>true</code> to keep looping, <code>false</code> to stop. Any frame callback returns <code><a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a></code> to continue, <code><a href="#s-callback-result">WSSL_CALLBACK_RESULT_DISCONNECT</a></code> for a clean disconnect, or <code><a href="#s-callback-result">WSSL_CALLBACK_RESULT_ERROR</a></code> for an error disconnect.</p>
+        </section>
+        <section id="g-servers">
+          <h2>Servers and TLS</h2>
+          <p>Start from one of the ready-made configuration values, then override fields:</p>
+          <div class="sig"><a href="#s-server-config">WSSL_SERVER_CONFIGURATION_DEFAULT</a>
+<a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV4</a>
+<a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6</a>
+<a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK</a>
+<a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV4_SSL</a>
+<a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_SSL</a>
+<a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK_SSL</a></div>
+          <p>Set address and port with <code><a href="#f-server-config-set">wssl_server_configuration_set_ip</a>()</code> / <code><a href="#f-server-config-set">wssl_server_configuration_set_port</a>()</code>, then attach with <code><a href="#f-server-add">wssl_server_add</a>()</code>. One <code><a href="#s-wssl-t">wssl_t</a></code> can host several servers (for example plain + TLS side by side).</p>
+          <p>For TLS either start from an <code>*_SSL</code> preset and call <code><a href="#f-server-config-set">wssl_server_configuration_set_certificate_files</a>()</code>, or call <code><a href="#f-server-config-set">wssl_server_configuration_enable_ssl</a>()</code> with certificate and private key paths. <code><a href="#f-server-enable-ssl">wssl_server_enable_ssl</a>()</code> applies TLS to an already added server.</p>
+        </section>
+        <section id="g-sending">
+          <h2>Sending data</h2>
+          <p>Three send functions cover the common cases. All queue a frame on the client output queue; use them from inside callbacks or from <code>on_tick</code> / <code>for_each</code> iterations:</p>
+          <div class="sig"><a href="#f-client-send-text">wssl_client_send_text</a>(client, "hello");                         // NUL-terminated C string
+<a href="#f-client-send-string">wssl_client_send_string</a>(client, &amp;<a href="#m-macros">WSSL_MAKE_STRING</a>(data, len));  // pointer + length, may be binary-safe
+<a href="#f-client-send-binary">wssl_client_send_binary</a>(client, octets, octet_count);           // raw octets</div>
+          <p>To reach every connected WebSocket client, iterate with <code><a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>()</code> (see <code>examples/chat.c</code> and <code>examples/time.c</code>). To drop a client, call <code><a href="#f-mark-disconnect">wssl_client_mark_for_disconnecting</a>()</code> instead of closing the socket yourself.</p>
+        </section>
+        <section id="g-examples">
+          <h2>Bundled examples</h2>
+          <table class="field-table">
+            <tr><th>Program</th><th>Port</th><th>What it shows</th></tr>
+            <tr><td><a href="#ex-echo"><code>examples/echo.c</code></a></td><td><code>5001</code></td><td>Echo server: <code>on_receive_text_frame</code> + <code><a href="#f-client-send-string">wssl_client_send_string</a></code>.</td></tr>
+            <tr><td><a href="#ex-time"><code>examples/time.c</code></a></td><td><code>5002</code></td><td>Periodic push: <code>sleep_in_mseconds</code> + <code>on_tick</code> + <code>for_each</code> broadcast.</td></tr>
+            <tr><td><a href="#ex-chat"><code>examples/chat.c</code></a></td><td><code>5003</code></td><td>Broadcast chat: join/leave/message fan-out, per-connection URI as room name.</td></tr>
+            <tr><td><a href="#ex-dump"><code>examples/dump.c</code></a></td><td><code>6001</code> / <code>6011</code> (TLS)</td><td>Lifecycle logger: every callback prints, plus <code><a href="#f-dump">wssl_dump</a>()</code>.</td></tr>
+            <tr><td><a href="#ex-test"><code>examples/test.c</code></a></td><td><code>6001</code> / <code>6011</code> (TLS)</td><td>Minimal loop with no callbacks registered at all.</td></tr>
+          </table>
+          <p><code>echo</code>, <code>time</code> and <code>chat</code> accept an optional configuration file (parsed by <code>examples/servers.h</code>, up to <code>SERVERS_MAX_COUNT</code> = 16 entries) so one binary can serve several addresses at once. <code>dump</code> and <code>test</code> instead accept an optional certificate plus private key pair to switch to TLS. Interactive browser clients live in <code>html/</code>; open <code>html/index.html</code> while an example server runs.</p>
+        </section>
+        <section id="ex-echo">
+          <h2>Example: echo <span class="tag">examples/echo.c</span></h2>
+          <p>Sends every text frame straight back to its sender. Default port <code>5001</code>.</p>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_text_frame(<a href="#s-client-t">wssl_client_t</a>* client, char* data, <a href="#m-macros">wssl_size_t</a> data_size)
+{
+  <a href="#f-client-send-string">wssl_client_send_string</a>(client, &amp;<a href="#m-macros">WSSL_MAKE_STRING</a>(data, data_size));
+  return <a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a>;
+}</div>
+          <p>The callback wraps the received payload in <code><a href="#m-macros">WSSL_MAKE_STRING</a></code> (pointer plus length, no copy, no NUL terminator assumed) and queues it back on the same client. Returning <code>OK</code> keeps the connection open; the send result is left unchecked in this minimal example.</p>
+          <div class="sig"><a href="#f-declare">WSSL_DECLARE</a>(wssl);
+<a href="#f-setters">wssl_set_on_receive_text_frame_callback</a>(&amp;wssl, &amp;on_receive_text_frame);</div>
+          <p>Only one callback is registered, so every other event uses the default (do nothing, stay connected).</p>
+          <div class="sig">switch (arguments_count)
+{
+  case 1:   // <a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK</a>, port 5001, <a href="#f-server-add">wssl_server_add</a>
+  case 2:   // servers_read_configurations(argv[1], servers) + <a href="#f-server-add">wssl_server_add</a> per entry
+  default:  // usage error
+}</div>
+          <p>With no arguments it serves the dual-stack wildcard address on port <code>5001</code>. With a file argument it serves every address listed in that file instead. Then the standard tail: <code><a href="#f-loop-init-signals">wssl_loop_init_signals</a>()</code>, <code><a href="#f-loop">wssl_loop</a>()</code>, <code><a href="#f-clean">wssl_clean</a>()</code>.</p>
+        </section>
+        <section id="ex-time">
+          <h2>Example: time <span class="tag">examples/time.c</span></h2>
+          <p>Pushes the current epoch time to all connected clients twice per second. Default port <code>5002</code>.</p>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> for_client(<a href="#s-client-t">wssl_client_t</a>* client, void* local_extra_data)
+{
+  char output[OUTPUT_SIZE];  // OUTPUT_SIZE = 64
+  snprintf(output, OUTPUT_SIZE, "t=%ld", (long)time(NULL));
+  <a href="#f-client-send-text">wssl_client_send_text</a>(client, output);
+  return <a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a>;
+}
+
+bool on_tick(<a href="#s-wssl-t">wssl_t</a>* wssl)
+{
+  <a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>(wssl, &amp;for_client, NULL);
+  return true;
+}</div>
+          <p>Each tick formats one <code>t=&lt;seconds&gt;</code> line per client and sends it as a text frame. <code>for_each</code> visits only clients that finished the handshake. Returning <code>true</code> from <code>on_tick</code> keeps the loop running.</p>
+          <div class="sig"><a href="#f-setters">wssl_set_sleep_in_mseconds</a>(&amp;wssl, 500);
+<a href="#f-setters">wssl_set_on_tick_callback</a>(&amp;wssl, &amp;on_tick);</div>
+          <p>No frame callbacks are registered: the server never reacts to inbound messages, it only pushes on the 500 ms tick. Server setup and shutdown are the same shape as <code>echo</code>.</p>
+        </section>
+        <section id="ex-chat">
+          <h2>Example: chat <span class="tag">examples/chat.c</span></h2>
+          <p>Broadcast where the raw request URI is used as the room label and the numeric connection id stands in for a nickname. There are no nicknames in this protocol: what you see as <code>room:suffix</code> is literally the URI the client connected with plus its auto-incremented <code>id.suffix</code>. Default port <code>5003</code>. Three callbacks are registered: start-of-frames, text frame, disconnect.</p>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> for_client(<a href="#s-client-t">wssl_client_t</a>* client, void* local_extra_data)
+{
+  <a href="#f-client-send-text">wssl_client_send_text</a>(client, (char*)local_extra_data);
+  return <a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a>;
+}</div>
+          <p>Shared fan-out helper: sends the same preformatted line to one client. Every broadcast builds the line once, then <code>for_each</code> delivers it to all clients in frame processing.</p>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_start_receiving_frames(<a href="#s-client-t">wssl_client_t</a>* client)
+{
+  snprintf(output, OUTPUT_SIZE, "%s:%" <a href="#m-macros">WSSL_PRINT_ID_SUFFIX</a> " = JOIN",
+    client-&gt;header.uri.data, client-&gt;id.suffix);
+  <a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>(
+    <a href="#f-client-extra">wssl_client_get_wssl</a>(client), &amp;for_client, (void*)output);
+  return <a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a>;
+}</div>
+          <p>When the handshake completes, the newcomer is announced as <code>room:suffix = JOIN</code>, using the raw <code>header.uri.data</code> string (path and query as received, unparsed) and the auto-incremented <code>id.suffix</code> assigned at accept time. Note <code><a href="#f-client-extra">wssl_client_get_wssl</a>(client)</code> reaching the root instance from inside a client callback.</p>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_text_frame(<a href="#s-client-t">wssl_client_t</a>* client, char* data, <a href="#m-macros">wssl_size_t</a> data_size)
+{
+  snprintf(output, OUTPUT_SIZE, "%s:%" <a href="#m-macros">WSSL_PRINT_ID_SUFFIX</a> " - %s", ...);
+  // same for_each broadcast
+}</div>
+          <p>Every message is rebroadcast as <code>room:suffix - text</code> to everyone, sender included, with the same raw URI and numeric suffix; the payload is pasted in as received. There is no per-room filtering: all connected clients get everything, whatever URI each of them used.</p>
+          <div class="sig">void on_disconnect(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason)
+{
+  if (<a href="#f-client-names">wssl_client_disconnect_reason_is_not_error</a>(disconnect_reason))
+  {
+  // broadcast "room:suffix = LEAVE"
+  }
+}</div>
+          <p><code>LEAVE</code> goes out only on clean exits (<code>is_not_error</code> covers <code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPED</code>); error drops stay silent. <code>on_disconnect</code> returns <code>void</code>, unlike the frame callbacks.</p>
+        </section>
+        <section id="ex-dump">
+          <h2>Example: dump <span class="tag">examples/dump.c</span></h2>
+          <p>Lifecycle observer: registers all ten callbacks and prints every event with <code><a href="#f-client-names">wssl_client_print</a>()</code>. Plain port <code>6001</code>, or TLS port <code>6011</code> when started with certificate and key arguments.</p>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_header(<a href="#s-client-t">wssl_client_t</a>* client)
+{
+  printf("Receive header ");
+  <a href="#f-client-names">wssl_client_print</a>(client, stdout);
+  printf("\n");
+  return <a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a>;
+}
+  // same shape for on_connect, on_start_receiving_frames,
+  // on_receive_text/binary/close/ping/pong_frame, and on_disconnect
+  // (which also prints <a href="#f-client-names">wssl_client_get_disconnect_reason_name</a>(reason))</div>
+          <p>Each callback logs its own name plus the short client id, so a single connection produces a readable trace: connect, header, start, frames, disconnect with reason.</p>
+          <div class="sig">bool on_tick(<a href="#s-wssl-t">wssl_t</a>* wssl)
+{
+  printf("Tick\n");
+#ifdef WSSL_DEBUG
+  <a href="#f-dump">wssl_dump</a>(wssl, stdout, 0);
+#endif
+  return Work;
+}
+void on_end(int signal) { Work = false; }</div>
+          <p><code>SIGTERM</code>/<code>SIGINT</code> flip the <code>Work</code> flag via plain <code>signal()</code> handlers, and the next tick returns <code>false</code>, which stops <code><a href="#f-loop">wssl_loop</a>()</code>. In <code><a href="#ex-dump">WSSL_DEBUG</a></code> builds each tick also dumps the whole instance.</p>
+          <div class="sig"><a href="#s-server-config">wssl_server_configuration_t</a> server_configuration = <a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK</a>;
+if (arguments_count == 3)  // port 6011 + <a href="#f-server-config-set">wssl_server_configuration_enable_ssl</a>(cert, key)
+else                       // port 6001 plain</div>
+          <p>Unlike the first three examples there is no config-file mode here: one server only, TLS selected by passing the two file paths. After the loop a final <code><a href="#f-dump">wssl_dump</a>()</code> runs in debug builds.</p>
+        </section>
+        <section id="ex-test">
+          <h2>Example: test <span class="tag">examples/test.c</span></h2>
+          <p>Smallest possible running server: no callbacks at all. Same ports as <code>dump</code> (<code>6001</code> plain, <code>6011</code> with certificate and key).</p>
+          <div class="sig"><a href="#f-declare">WSSL_DECLARE</a>(wssl);
+<a href="#s-server-config">wssl_server_configuration_t</a> server_configuration = <a href="#s-server-config">WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK</a>;
+  // port 6001, or 6011 + enable_ssl when two file arguments are given
+<a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-server-add">wssl_server_add</a>(&amp;wssl, &amp;server_configuration));
+<a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-loop-init-signals">wssl_loop_init_signals</a>());
+<a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-loop">wssl_loop</a>(&amp;wssl));
+<a href="#f-try-call">WSSL_TRY_CALL</a>(<a href="#f-clean">wssl_clean</a>(&amp;wssl));</div>
+          <p>With every callback left at <code><a href="#m-macros">WSSL_CALLBACK_NONE</a></code> the server still accepts connections and completes handshakes, then silently drops inbound frames. Useful as a loop and TLS smoke test: if this runs, the library core works.</p>
+        </section>
+        <section id="s-wssl-t">
+          <h2>wssl_t</h2>
+          <p>Root library instance. Usually created with <code><a href="#f-declare">WSSL_DECLARE</a>(name)</code> on the stack. Holds global tuning, registered callbacks, the <code>epoll</code> descriptor and the server/client lists.</p>
+          <div class="sig">typedef struct wssl_t
+{
+  char* server_name;
+  <a href="#m-macros">wssl_size_t</a> buffer_size_in_octets;
+  <a href="#m-macros">wssl_ssize_t</a> sleep_in_mseconds;
+  <a href="#m-macros">wssl_size_t</a> max_number_of_output_chunks;
+  <a href="#m-macros">wssl_size_t</a> max_number_of_received_multi_frames;
+  <a href="#m-macros">wssl_size_t</a> max_number_of_header_fields;
+  int epoll_descriptor;
+  void* global_extra_data;
+  <a href="#s-callbacks">wssl_on_connect_callback_f</a>* on_connect_callback;
+  /* ... one pointer per callback ... */
+  <a href="#s-callbacks">wssl_on_tick_callback_f</a>* on_tick_callback;
+  /* ... server and client chains ... */
+} wssl_t;</div>
+          <table class="field-table">
+            <tr><th>Field</th><th>Default</th><th>Meaning</th></tr>
+            <tr><td><code>server_name</code></td><td><a href="#d-server-name"><code>"<span class="doc-server-name"></span>"</code></a></td><td>Value sent as <code>Server</code> header in the handshake.</td></tr>
+            <tr><td><code>buffer_size_in_octets</code></td><td><a href="#d-buffer-size"><code>4096</code></a></td><td>Per-client input buffer size.</td></tr>
+            <tr><td><code>sleep_in_mseconds</code></td><td><a href="#d-sleep"><code>1000</code></a></td><td>Idle sleep between loop iterations; also the <code>on_tick</code> period.</td></tr>
+            <tr><td><code>max_number_of_output_chunks</code></td><td><a href="#d-output-chunks"><code>16</code></a></td><td>Queue limit per client; over it the client is dropped.</td></tr>
+            <tr><td><code>max_number_of_received_multi_frames</code></td><td><a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message limit before the client is dropped.</td></tr>
+            <tr><td><code>max_number_of_header_fields</code></td><td><a href="#d-header-fields"><code>64</code></a></td><td>Cap on HTTP header fields per connection.</td></tr>
+            <tr><td><code>global_extra_data</code></td><td><code>NULL</code></td><td>Application pointer visible from every client.</td></tr>
+          </table>
+          <p>Defaults are applied by <code><a href="#f-declare">WSSL_DECLARE</a></code> / <code><a href="#f-declare">WSSL_INIT_VALUE</a></code> / <code><a href="#f-init">wssl_init</a>()</code>. Click a value for its macro and current expansion.</p>
+        </section>
+        <section id="s-defaults">
+          <h2>Default configuration values</h2>
+          <p>Macros from <code>out/wssl.h</code> with their current expansion. Only <code><a href="#s-defaults">WSSL_DEFAULT_SERVER_NAME</a></code> is composed (it follows <code><a href="#s-defaults">WSSL_VERSION</a></code>, so it changes with every release); the rest are fixed numbers.</p>
+          <table class="field-table">
+            <tr><th>Macro</th><th>Expands to</th><th>Used for</th></tr>
+            <tr id="d-version"><td><code><a href="#s-defaults">WSSL_VERSION</a></code></td><td><code>"<span class="doc-version"></span>"</code></td><td>Library version; base of the default server name.</td></tr>
+            <tr id="d-server-name"><td><code><a href="#s-defaults">WSSL_DEFAULT_SERVER_NAME</a></code></td><td><code>("WSSL-" <a href="#s-defaults">WSSL_VERSION</a>)</code> = <code>"<span class="doc-server-name"></span>"</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.server_name</code>.</td></tr>
+            <tr id="d-buffer-size"><td><code><a href="#s-defaults">WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS</a></code></td><td><code>4096</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.buffer_size_in_octets</code>.</td></tr>
+            <tr id="d-sleep"><td><code><a href="#s-defaults">WSSL_DEFAULT_SLEEP_IN_MSECONDS</a></code></td><td><code>1000</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.sleep_in_mseconds</code>.</td></tr>
+            <tr id="d-output-chunks"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS</a></code></td><td><code>16</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_output_chunks</code>.</td></tr>
+            <tr id="d-multi-frames"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES</a></code></td><td><code>8</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_received_multi_frames</code>.</td></tr>
+            <tr id="d-header-fields"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS</a></code></td><td><code>64</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_header_fields</code>.</td></tr>
+          </table>
+        </section>
+        <section id="s-server-config">
+          <h2>wssl_server_configuration_t</h2>
+          <div class="sig">typedef struct wssl_server_configuration_t
+{
+  char ip[<a href="#m-macros">WSSL_IP_SIZE_IN_CHAR</a>];                       // 64
+  int port;
+  bool ipv6;
+  bool ipv6_dual_stack;
+  bool ssl;
+  char certificate_file[<a href="#m-macros">WSSL_FILE_PATH_SIZE_IN_CHAR</a>];  // 4096
+  char private_key_file[<a href="#m-macros">WSSL_FILE_PATH_SIZE_IN_CHAR</a>];  // 4096
+} wssl_server_configuration_t;</div>
+          <p>Prefer the presets below, then override what you need with the <code><a href="#f-server-config-set">wssl_server_configuration_set_*</a></code> functions. Set <code>ipv6_dual_stack</code> to accept IPv4 on an IPv6 socket.</p>
+          <table class="field-table">
+            <tr><th>Preset</th><th><code>ip</code></th><th><code>ipv6</code></th><th><code>dual stack</code></th><th><code>ssl</code></th></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_DEFAULT</code></td><td><code>""</code></td><td><code>false</code></td><td><code>false</code></td><td><code>false</code></td></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_IPV4</code></td><td><code>"0.0.0.0"</code></td><td><code>false</code></td><td><code>false</code></td><td><code>false</code></td></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_IPV6</code></td><td><code>"::"</code></td><td><code>true</code></td><td><code>false</code></td><td><code>false</code></td></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK</code></td><td><code>"::"</code></td><td><code>true</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_IPV4_SSL</code></td><td><code>"0.0.0.0"</code></td><td><code>false</code></td><td><code>false</code></td><td><code>true</code></td></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_IPV6_SSL</code></td><td><code>"::"</code></td><td><code>true</code></td><td><code>false</code></td><td><code>true</code></td></tr>
+            <tr><td><code>WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK_SSL</code></td><td><code>"::"</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+          </table>
+          <p>Every preset uses <code>port</code> 0 and empty certificate paths: always set the port, and for the <code>*_SSL</code> presets add the files via <code><a href="#f-server-config-set">wssl_server_configuration_set_certificate_files</a>()</code> or <code><a href="#f-server-config-set">wssl_server_configuration_enable_ssl</a>()</code>.</p>
+        </section>
+        <section id="s-server-t">
+          <h2>wssl_server_t</h2>
+          <div class="sig">typedef struct wssl_server_t
+{
+  <a href="#s-server-config">wssl_server_configuration_t</a> configuration;  // effective config
+  int socket_descriptor;
+  struct ssl_ctx_st* ssl_ctx;                 // NULL for plain servers
+  wssl_client_chain_t clients;                // clients accepted here
+  /* ... internal links ... */
+} wssl_server_t;</div>
+          <p>Created by <code><a href="#f-server-add">wssl_server_add</a>()</code>, removed by <code><a href="#f-server-delete">wssl_server_delete</a>()</code>. The struct stays owned by the library; keep the returned pointer only to delete or dump it.</p>
+        </section>
+        <section id="s-client-t">
+          <h2>wssl_client_t</h2>
+          <div class="sig">typedef struct wssl_client_t
+{
+  <a href="#s-server-t">wssl_server_t</a>* server;
+  struct <a href="#s-wssl-t">wssl_t</a>* wssl;
+  <a href="#s-id">wssl_id_t</a> id;
+  int socket_descriptor;
+  char ip[<a href="#m-macros">WSSL_IP_SIZE_IN_CHAR</a>];
+  int port;
+  void* connection_extra_data;
+  <a href="#s-buffer">wssl_buffer_t</a> input_buffer;
+  <a href="#s-header">wssl_header_t</a> header;  // valid after header callbacks
+  <a href="#s-frame">wssl_frame_t</a> frame;    // current frame while receiving
+  <a href="#s-client-state">wssl_client_state_e</a> state;
+  <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason;
+  /* ... output queue, ssl state ... */
+} wssl_client_t;</div>
+          <p>The callback argument. Read <code>header</code>, <code>ip</code>, <code>port</code>, <code>id</code> freely; never close <code>socket_descriptor</code> or free the struct yourself. Use <code><a href="#f-mark-disconnect">wssl_client_mark_for_disconnecting</a>()</code> to drop the connection and <code>connection_extra_data</code> for per-connection state.</p>
+        </section>
+        <section id="s-header">
+          <h2>wssl_header_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_header_t
+{
+  <a href="#s-string">wssl_string_t</a> method;   // e.g. "GET"
+  <a href="#s-string">wssl_string_t</a> uri;      // request path, usable as room/channel name
+  <a href="#s-string">wssl_string_t</a> version;  // e.g. "HTTP/1.1"
+  /* field list + count */
+  <a href="#m-macros">wssl_size_t</a> number_of_fields;
+} wssl_header_t;
+
+typedef struct wssl_header_field_t
+{
+  <a href="#s-string">wssl_string_t</a> key;
+  <a href="#s-string">wssl_string_t</a> value;
+  /* ... internal link ... */
+} wssl_header_field_t;</div>
+          <p>Filled during the handshake. Look up fields with <code><a href="#f-header-value">wssl_header_get_field_value</a>(header, "Sec-WebSocket-Key")</code>; key match is by exact name. Dump with <code><a href="#f-dumps">wssl_header_dump</a>()</code> / <code><a href="#f-dumps">wssl_header_field_dump</a>()</code>.</p>
+        </section>
+        <section id="s-frame">
+          <h2>wssl_frame_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_frame_t
+{
+  bool fin;
+  <a href="#m-macros">wssl_octet_t</a> opcode;
+  bool masked;
+  <a href="#m-macros">wssl_octet_t</a> length;
+  <a href="#m-macros">wssl_octet_t</a> masking_key[4];
+  <a href="#m-macros">wssl_octet_t</a>* payload;
+  <a href="#m-macros">wssl_frame_size_t</a> payload_size;
+  bool payload_owned;
+} wssl_frame_t;</div>
+          <p>Current inbound frame on <code>client-&gt;frame</code>. Opcodes follow RFC 6455 (1 = text, 2 = binary, 8 = close, 9 = ping, 10 = pong). Client frames must be masked; the library enforces it. Inspect with <code><a href="#f-dumps">wssl_frame_dump</a>()</code>.</p>
+        </section>
+        <section id="s-buffer">
+          <h2>wssl_buffer_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_buffer_t
+{
+  <a href="#m-macros">wssl_octet_t</a>* data;
+  <a href="#m-macros">wssl_size_t</a> size;      // capacity
+  <a href="#m-macros">wssl_size_t</a> begin;     // first unread octet
+  <a href="#m-macros">wssl_size_t</a> end;       // one past last received octet
+} wssl_buffer_t;
+
+typedef struct wssl_chunk_t
+{
+  wssl_buffer_t buffer;  // one queued outbound frame
+  /* ... internal links ... */
+} wssl_chunk_t;</div>
+          <p><code><a href="#s-buffer">wssl_buffer_t</a></code> is the raw byte window (input side and inside each output chunk). Size it via <code>buffer_size_in_octets</code>. Dump with <code><a href="#f-dumps">wssl_buffer_dump</a>()</code>.</p>
+        </section>
+        <section id="s-string">
+          <h2>wssl_string_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_string_t
+{
+  char* data;  // not necessarily NUL-terminated
+  <a href="#m-macros">wssl_size_t</a> data_length;
+} wssl_string_t;
+
+#define <a href="#m-macros">WSSL_MAKE_STRING</a>(what_data, what_data_length) \
+  ((wssl_string_t){ .data = (what_data), .data_length = (what_data_length) })</div>
+          <p>Length-counted string used for header fields and <code><a href="#f-client-send-string">wssl_client_send_string</a>()</code>. Always use <code>data_length</code>, never assume a terminator.</p>
+        </section>
+        <section id="s-id">
+          <h2>wssl_id_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_id_t
+{
+  wssl_id_prefix_t prefix;  // set once via <a href="#f-setters">wssl_set_id_prefix</a>()
+  wssl_id_suffix_t suffix;  // auto-incremented per connection
+} wssl_id_t;
+
+typedef uint32_t wssl_id_prefix_t;
+typedef uint32_t wssl_id_suffix_t;</div>
+          <p>Both halves are plain <code>uint32_t</code> (printed with <code><a href="#m-macros">WSSL_PRINT_ID_PREFIX</a></code> / <code><a href="#m-macros">WSSL_PRINT_ID_SUFFIX</a></code>). Unique connection id. Prefix lets multi-process setups partition the id space; the chat example prints <code>id.suffix</code> as the short user number. Compare with <code><a href="#f-id-helpers">wssl_id_is_equal</a>()</code>, print with <code><a href="#f-id-helpers">wssl_id_print</a>()</code>.</p>
+        </section>
+        <section id="s-result">
+          <h2>wssl_result_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_result_t
+{
+  <a href="#s-result-code">wssl_result_code_e</a> code;
+  char* where;  // failing function name
+  union { int system_errno; int callback_error; };
+} wssl_result_t;</div>
+          <p>Every fallible library call returns this. Test with <code><a href="#f-result">wssl_result_is_ok</a>()</code>, abort with context via <code><a href="#f-try-call">WSSL_TRY_CALL</a>(...)</code>, describe with <code><a href="#f-result">wssl_result_get_code_name</a>()</code> / <code><a href="#f-result">wssl_result_print</a>()</code>.</p>
+        </section>
+        <section id="s-result-code">
+          <h2>wssl_result_code_e <span class="tag">enum</span></h2>
+          <div class="sig">WSSL_RESULT_CODE_OK = 0
+WSSL_RESULT_CODE_ERROR_ERRNO = -101  // check system_errno
+WSSL_RESULT_CODE_ERROR_NO_MEMORY = -102
+WSSL_RESULT_CODE_ERROR_NO_SPACE = -103
+WSSL_RESULT_CODE_ERROR_SSL = -104
+WSSL_RESULT_CODE_ERROR_BAD_SYNTAX = -105</div>
+        </section>
+        <section id="s-client-state">
+          <h2>wssl_client_state_e <span class="tag">enum</span></h2>
+          <div class="sig">WSSL_CLIENT_STATE_WAIT_METHOD ... WSSL_CLIENT_STATE_WAIT_FIELD_VALUE
+WSSL_CLIENT_STATE_PROCESSING_HEADER
+WSSL_CLIENT_STATE_WAIT_FRAME
+WSSL_CLIENT_STATE_WAIT_FIN_FRAME
+WSSL_CLIENT_STATE_MARKED_FOR_DISCONNECTING</div>
+          <p>Handshake states, then frame states. Helpers: <code><a href="#f-client-state">wssl_client_is_in_wait_header</a>()</code>, <code><a href="#f-client-state">wssl_client_is_in_frame_processing</a>()</code>, <code><a href="#f-client-state">wssl_client_is_marked_for_disconnecting</a>()</code> (plus <code>_not_</code> negations). Name via <code><a href="#f-client-names">wssl_client_get_state_name</a>()</code>.</p>
+        </section>
+        <section id="s-disconnect-reason">
+          <h2>wssl_client_disconnect_reason_e <span class="tag">enum</span></h2>
+          <div class="sig">WSSL_CLIENT_DISCONNECT_REASON_NONE
+WSSL_CLIENT_DISCONNECT_REASON_INPUT_BUFFER_IS_FULL
+WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED
+WSSL_CLIENT_DISCONNECT_REASON_CLOSED
+WSSL_CLIENT_DISCONNECT_REASON_MISSING_METHOD / _URI / _VERSION / _CRLF / _FIELD_KEY
+WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER / _BAD_FRAME_OPCODE
+WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY
+WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR
+WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED
+WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_OUTPUT_CHUNKS
+WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES
+WSSL_CLIENT_DISCONNECT_REASON_REQUESTED
+WSSL_CLIENT_DISCONNECT_REASON_STOPED</div>
+          <p>Passed to <code>on_disconnect</code>. <code><a href="#f-client-names">wssl_client_disconnect_reason_is_error</a>()</code> is false for clean shutdowns (<code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPED</code>). Name via <code><a href="#f-client-names">wssl_client_get_disconnect_reason_name</a>()</code>.</p>
+        </section>
+        <section id="s-callback-result">
+          <h2>wssl_callback_result_e <span class="tag">enum</span></h2>
+          <div class="sig">WSSL_CALLBACK_RESULT_OK          // continue
+WSSL_CALLBACK_RESULT_DISCONNECT  // clean disconnect of this client
+WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
+          <p>Return type of every frame callback. <code>on_disconnect</code> returns <code>void</code>; <code>on_tick</code> returns <code>bool</code> (<code>true</code> = keep running).</p>
+        </section>
+        <section id="s-callbacks">
+          <h2>Callbacks</h2>
+          <p>Register each callback with its matching <code>wssl_set_on_*_callback()</code>. Unset callbacks equal <code><a href="#m-macros">WSSL_CALLBACK_NONE</a></code> and are skipped. They fire in lifecycle order: connect, header, start-of-frames, then one per frame, plus disconnect at the end and tick once per loop pass.</p>
+          <h3>Return values</h3>
+          <p>Every client callback returns <code><a href="#s-callback-result">wssl_callback_result_e</a></code>: <code>OK</code> continues normally, <code>DISCONNECT</code> schedules a clean drop (<code>REQUESTED</code>), <code>ERROR</code> schedules an error drop (<code>CALLBACK_ERROR</code>). Two callbacks differ: <code>on_disconnect</code> returns <code>void</code>, <code>on_tick</code> returns <code>bool</code> (<code>true</code> keeps the loop running, <code>false</code> stops it).</p>
+          <h3>Payload lifetime</h3>
+          <p>Frame payload pointers (<code>data</code>) point into the client's input buffer and are valid only while your callback runs; copy them if you need them later. Sending is safe without copying: the send functions serialize the payload into the output queue immediately, so replying with the received pointer in the same call (as <code>echo</code> does) is correct. Text payloads are <code>char*</code> plus length with no NUL terminator assumed; binary, ping and pong payloads are <code><a href="#m-macros">wssl_octet_t</a>*</code> plus length.</p>
+          <h3 id="cb-connect">on_connect</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_connect(<a href="#s-client-t">wssl_client_t</a>* client);</div>
+          <p>Receives the freshly accepted client: <code>id</code>, <code>ip</code> and <code>port</code> are set, but the HTTP header has not been parsed yet. Use it to attach <code>connection_extra_data</code> or reject early: <code>DISCONNECT</code> / <code>ERROR</code> drop the connection before the handshake is processed.</p>
+          <h3 id="cb-disconnect">on_disconnect</h3>
+          <div class="sig">void on_disconnect(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason);</div>
+          <p>Receives the dying client and why it goes away; returns nothing. Use it for cleanup, logging and optional farewell broadcasts like the chat <code>LEAVE</code> message, which is sent only for clean reasons via <code>disconnect_reason_is_not_error</code>.</p>
+          <h3 id="cb-header">on_receive_header</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_header(<a href="#s-client-t">wssl_client_t</a>* client);</div>
+          <p>Receives the client with the parsed upgrade header ready in <code><a href="#s-header">client-&gt;header</a></code> (method, uri, fields). Return <code>OK</code> to let the handshake proceed to the 101 reply; <code>DISCONNECT</code> drops the client as <code>REQUESTED</code>, <code>ERROR</code> as <code>CALLBACK_ERROR</code>, and a malformed header drops it as <code>BAD_HEADER</code>. This is the place to route by <code>uri</code> or check <code>Origin</code> and protocol headers.</p>
+          <h3 id="cb-start-frames">on_start_receiving_frames</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_start_receiving_frames(<a href="#s-client-t">wssl_client_t</a>* client);</div>
+          <p>Receives the client right after the 101 handshake reply is queued: from here on the connection speaks WebSocket frames. <code>OK</code> starts frame processing; <code>DISCONNECT</code> / <code>ERROR</code> drop the client. The chat example announces <code>JOIN</code> here.</p>
+          <h3 id="cb-text">on_receive_text_frame</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_text_frame(<a href="#s-client-t">wssl_client_t</a>* client, char* data, <a href="#m-macros">wssl_size_t</a> data_size);</div>
+          <p>Receives one complete text frame: pointer plus length, no NUL terminator. <code>OK</code> keeps the connection, <code>DISCONNECT</code> / <code>ERROR</code> drop it. The echo example sends the payload straight back with <code><a href="#m-macros">WSSL_MAKE_STRING</a>(data, data_size)</code>.</p>
+          <h3 id="cb-binary">on_receive_binary_frame</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_binary_frame(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#m-macros">wssl_octet_t</a>* data, <a href="#m-macros">wssl_size_t</a> data_size);</div>
+          <p>Same contract as the text callback, for binary frames (raw octets plus length). Pair it with <code><a href="#f-client-send-binary">wssl_client_send_binary</a></code> for binary echo or relay.</p>
+          <h3 id="cb-close">on_receive_close_frame</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_close_frame(<a href="#s-client-t">wssl_client_t</a>* client);</div>
+          <p>Receives the client whose peer asked to close. On <code>OK</code> the library sends the close reply itself and drops the client as <code>REQUESTED</code>; <code>DISCONNECT</code> drops as <code>REQUESTED</code> without the reply, <code>ERROR</code> as <code>CALLBACK_ERROR</code>. Use it for logging and cleanup.</p>
+          <h3 id="cb-ping">on_receive_ping_frame</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_ping_frame(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#m-macros">wssl_octet_t</a>* data, <a href="#m-macros">wssl_size_t</a> data_size);</div>
+          <p>Receives one ping with its payload. The library answers with a pong carrying the same payload right after your callback returns (unless the callback scheduled a drop), so you only need this for observation (latency logging, activity tracking).</p>
+          <h3 id="cb-pong">on_receive_pong_frame</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_pong_frame(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#m-macros">wssl_octet_t</a>* data, <a href="#m-macros">wssl_size_t</a> data_size);</div>
+          <p>Receives one pong with its payload. Nothing happens automatically; use it to measure round-trip time or confirm the peer is alive.</p>
+          <h3 id="cb-tick">on_tick</h3>
+          <div class="sig">bool on_tick(struct <a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Receives the library instance once per loop pass, with no client context (reach state via <code>global_extra_data</code> and clients via <code>for_each</code>). Return <code>true</code> to keep looping, <code>false</code> to stop the loop after this pass. While the loop is idle each pass blocks up to <code>sleep_in_mseconds</code> in <code>epoll_wait</code>, so that value sets the idle tick period; the time example uses 500 ms.</p>
+          <h3 id="cb-foreach">for_each callback</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> for_client(<a href="#s-client-t">wssl_client_t</a>* client, void* local_extra_data);</div>
+          <p>Not registered on the instance: you pass it to <code><a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>()</code>, which invokes it once per connected client with your <code>local_extra_data</code> pointer. The same three-way return applies per client (<code>OK</code> continues, <code>DISCONNECT</code> / <code>ERROR</code> schedule that client's drop), and the iteration always visits the remaining clients.</p>
+        </section>
+        <section id="f-declare">
+          <h2>WSSL_DECLARE <span class="tag">macro</span></h2>
+          <div class="sig">#define WSSL_DECLARE(what_name) <a href="#s-wssl-t">wssl_t</a> what_name = WSSL_INIT_VALUE(what_name)</div>
+          <p>Declares and initializes a <code><a href="#s-wssl-t">wssl_t</a></code> with defaults in one line. Equivalent to declaring the variable and calling <code><a href="#f-init">wssl_init</a>()</code>. Used by all bundled examples.</p>
+        </section>
+        <section id="f-init">
+          <h2>wssl_init</h2>
+          <div class="sig">void wssl_init(<a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Initializes an existing <code><a href="#s-wssl-t">wssl_t</a></code> to defaults (same values as <code><a href="#f-declare">WSSL_INIT_VALUE</a></code>). Call once before any <code>wssl_set_*</code> or <code><a href="#f-server-add">wssl_server_add</a>()</code>.</p>
+        </section>
+        <section id="f-setters">
+          <h2>wssl_set_* <span class="tag">inline setters</span></h2>
+          <p>Plain field assignments on <code><a href="#s-wssl-t">wssl_t</a></code>: each setter writes one field and nothing else. Call them after init and before <code><a href="#f-loop">wssl_loop</a>()</code>; every default they override is listed under <code><a href="#s-defaults">default values</a></code>.</p>
+          <h3>Tuning: buffers, timing, limits</h3>
+          <table class="field-table">
+            <tr><th>Setter</th><th>Changes</th><th>Where the library reads it</th></tr>
+            <tr><td><code>wssl_set_server_name(<a href="#s-wssl-t">wssl_t</a>*, char*)</code></td><td>Field <code>server_name</code>, default <a href="#d-server-name"><code>"<span class="doc-server-name"></span>"</code></a></td><td>Handshake reply: <code>Server:</code> header on success (101) and on 400 Bad Request.</td></tr>
+            <tr><td><code>wssl_set_buffer_size_in_octets(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>buffer_size_in_octets</code>, default <a href="#d-buffer-size"><code>4096</code></a></td><td>Input buffer allocation on first receive; handshake reply chunk size; a frame larger than this drops the client (<code><a href="#s-disconnect-reason">INPUT_BUFFER_IS_FULL</a></code>).</td></tr>
+            <tr><td><code>wssl_set_sleep_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_ssize_t</a>)</code></td><td>Field <code>sleep_in_mseconds</code>, default <a href="#d-sleep"><code>1000</code></a></td><td><code>epoll_wait</code> timeout inside <code><a href="#f-loop">wssl_loop</a></code>; <code>on_tick</code> runs once per loop pass, so about one tick per interval while idle.</td></tr>
+            <tr><td><code>wssl_set_max_number_of_output_chunks(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_output_chunks</code>, default <a href="#d-output-chunks"><code>16</code></a></td><td>Queue check on every send: a client over the limit is dropped (<code><a href="#s-disconnect-reason">TOO_MUCH_OUTPUT_CHUNKS</a></code>).</td></tr>
+            <tr><td><code>wssl_set_max_number_of_received_multi_frames(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_received_multi_frames</code>, default <a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message check: too many continuation frames drop the client (<code><a href="#s-disconnect-reason">TOO_MUCH_RECEIVED_MULTI_FRAMES</a></code>).</td></tr>
+            <tr><td><code>wssl_set_max_number_of_header_fields(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_header_fields</code>, default <a href="#d-header-fields"><code>64</code></a></td><td>Header parsing: one field too many drops the client (<code><a href="#s-disconnect-reason">BAD_HEADER</a></code>).</td></tr>
+          </table>
+          <h3>Callbacks</h3>
+          <table class="field-table">
+            <tr><th>Setter</th><th>Registered callback fires when</th></tr>
+            <tr><td><code>wssl_set_on_connect_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_connect_callback_f</a>*)</code></td><td>A new TCP/TLS connection is accepted.</td></tr>
+            <tr><td><code>wssl_set_on_disconnect_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_disconnect_callback_f</a>*)</code></td><td>A connection goes away, with its <code><a href="#s-disconnect-reason">disconnect reason</a></code>.</td></tr>
+            <tr><td><code>wssl_set_on_receive_header_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_receive_header_callback_f</a>*)</code></td><td>The upgrade header is parsed; <code><a href="#s-header">client-&gt;header</a></code> is ready to inspect.</td></tr>
+            <tr><td><code>wssl_set_on_start_receiving_frames_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_start_receiving_frames_callback_f</a>*)</code></td><td>The handshake is done, WebSocket frames follow.</td></tr>
+            <tr><td><code>wssl_set_on_receive_text_frame_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_receive_text_frame_callback_f</a>*)</code></td><td>One text frame arrives (pointer plus length, no NUL assumed).</td></tr>
+            <tr><td><code>wssl_set_on_receive_binary_frame_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_receive_binary_frame_callback_f</a>*)</code></td><td>One binary frame arrives (octets plus length).</td></tr>
+            <tr><td><code>wssl_set_on_receive_close_frame_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_receive_close_frame_callback_f</a>*)</code></td><td>A close frame arrives.</td></tr>
+            <tr><td><code>wssl_set_on_receive_ping_frame_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_receive_ping_frame_callback_f</a>*)</code></td><td>A ping frame arrives (payload plus length).</td></tr>
+            <tr><td><code>wssl_set_on_receive_pong_frame_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_receive_pong_frame_callback_f</a>*)</code></td><td>A pong frame arrives (payload plus length).</td></tr>
+            <tr><td><code>wssl_set_on_tick_callback(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-callbacks">wssl_on_tick_callback_f</a>*)</code></td><td>Once per loop pass; returning <code>false</code> stops <code><a href="#f-loop">wssl_loop</a></code>.</td></tr>
+          </table>
+          <h3>State and identity</h3>
+          <table class="field-table">
+            <tr><th>Setter</th><th>Changes</th><th>Where it is used</th></tr>
+            <tr><td><code><a href="#f-client-extra">wssl_set_global_extra_data</a>(<a href="#s-wssl-t">wssl_t</a>*, void*)</code></td><td>Field <code>global_extra_data</code>, default <code>NULL</code></td><td>Your application pointer; read back with <code><a href="#f-client-extra">wssl_get_global_extra_data</a>()</code>, or from any client via <code><a href="#f-client-extra">wssl_client_get_global_extra_data</a>()</code>.</td></tr>
+            <tr><td><code>wssl_set_id_prefix(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-id">wssl_id_prefix_t</a>)</code></td><td>Prefix of the next assigned <code><a href="#s-id">client id</a></code></td><td rowspan="2">Each accepted client takes the current id and the counter auto-increments, so ids stay unique; the prefix partitions the id space between processes.</td></tr>
+            <tr><td><code>wssl_set_id_suffix(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-id">wssl_id_suffix_t</a>)</code></td><td>Suffix (counter start) of the next assigned <code><a href="#s-id">client id</a></code></td></tr>
+          </table>
+        </section>
+        <section id="f-loop">
+          <h2>wssl_loop</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_loop(<a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Runs the epoll event loop until a signal or <code>on_tick</code> returning <code>false</code> stops it. Returns a <code><a href="#s-result">wssl_result_t</a></code>; check with <code><a href="#f-try-call">WSSL_TRY_CALL</a></code>.</p>
+        </section>
+        <section id="f-loop-init-signals">
+          <h2>wssl_loop_init_signals</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_loop_init_signals(void);</div>
+          <p>Installs the signal handlers the loop relies on for clean shutdown. Call once before <code><a href="#f-loop">wssl_loop</a>()</code>, as every example does.</p>
+        </section>
+        <section id="f-clean">
+          <h2>wssl_clean</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_clean(<a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Releases servers, clients and the epoll descriptor. Call after <code><a href="#f-loop">wssl_loop</a>()</code> returns, even on error paths.</p>
+        </section>
+        <section id="f-purge">
+          <h2>wssl_purge</h2>
+          <div class="sig">void wssl_purge(<a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Frees disconnected clients without tearing down servers. The loop calls this internally; direct use is rarely needed.</p>
+        </section>
+        <section id="f-dump">
+          <h2>wssl_dump</h2>
+          <div class="sig">void wssl_dump(const <a href="#s-wssl-t">wssl_t</a>* wssl, FILE* file, <a href="#m-macros">wssl_size_t</a> indent_level);</div>
+          <p>Prints the whole instance (servers plus client lists) for debugging, e.g. <code><a href="#f-dump">wssl_dump</a>(&amp;wssl, stdout, 0)</code>.</p>
+        </section>
+        <section id="f-try-call">
+          <h2>WSSL_TRY_CALL <span class="tag">macro</span></h2>
+          <div class="sig">#define WSSL_TRY_CALL(...) wssl_try_call_test((__VA_ARGS__), __FILE__, __LINE__, __func__)</div>
+          <p>Checks a <code><a href="#s-result">wssl_result_t</a></code>; on failure prints file, line, function and the result, then aborts. Standard error handling in the examples. Inside the library the sibling <code>TRY_CALL</code> macro returns the error instead.</p>
+          <div class="sig">void wssl_try_call_test(<a href="#s-result">wssl_result_t</a> result, const char* file_name, const unsigned int line_number, const char* function_name);</div>
+          <p>The function behind the macro: prints the result with its call context and aborts. Never call it directly; the macro fills <code>file_name</code>, <code>line_number</code> and <code>function_name</code> from the call site.</p>
+        </section>
+        <section id="f-server-add">
+          <h2>wssl_server_add</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_server_add(<a href="#s-wssl-t">wssl_t</a>* wssl, const <a href="#s-server-config">wssl_server_configuration_t</a>* configuration);</div>
+          <p>Opens, binds and listens on one address from a filled configuration struct. Copy semantics: the struct can be a stack temporary. Call once per listen address.</p>
+        </section>
+        <section id="f-server-delete">
+          <h2>wssl_server_delete</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_server_delete(<a href="#s-server-t">wssl_server_t</a>* server);</div>
+          <p>Stops and removes a server previously added. Clients on it are disconnected.</p>
+        </section>
+        <section id="f-server-config-set">
+          <h2>wssl_server_configuration_set_*</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_server_configuration_set_ip(<a href="#s-server-config">wssl_server_configuration_t</a>*, const char*);
+<a href="#s-result">wssl_result_t</a> wssl_server_configuration_set_port(<a href="#s-server-config">wssl_server_configuration_t</a>*, int);
+<a href="#s-result">wssl_result_t</a> wssl_server_configuration_set_ipv6(<a href="#s-server-config">wssl_server_configuration_t</a>*, bool);
+<a href="#s-result">wssl_result_t</a> wssl_server_configuration_set_ipv6_dual_stack(<a href="#s-server-config">wssl_server_configuration_t</a>*, bool);
+<a href="#s-result">wssl_result_t</a> wssl_server_configuration_set_ssl(<a href="#s-server-config">wssl_server_configuration_t</a>*, bool);
+<a href="#s-result">wssl_result_t</a> wssl_server_configuration_enable_ssl(<a href="#s-server-config">wssl_server_configuration_t</a>*,
+    const char* certificate_file, const char* private_key_file);
+<a href="#s-result">wssl_result_t</a> wssl_server_configuration_set_certificate_files(<a href="#s-server-config">wssl_server_configuration_t</a>*,
+    const char* certificate_file, const char* private_key_file);</div>
+          <p>Field setters with validation. <code>enable_ssl</code> flips <code>ssl</code> on and stores both file paths; <code>set_certificate_files</code> stores the paths. Missing files surface later as <code><a href="#s-result-code">WSSL_RESULT_CODE_ERROR_SSL</a></code>.</p>
+        </section>
+        <section id="f-server-enable-ssl">
+          <h2>wssl_server_enable_ssl</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_server_enable_ssl(<a href="#s-server-t">wssl_server_t</a>* server);</div>
+          <p>Loads the certificate and key from <code>server-&gt;configuration</code> into the live server. Use when the configuration was changed after <code><a href="#f-server-add">wssl_server_add</a>()</code>.</p>
+        </section>
+        <section id="f-server-dump">
+          <h2>wssl_server_dump</h2>
+          <div class="sig">void wssl_server_dump(const <a href="#s-server-t">wssl_server_t</a>* server, FILE* file, <a href="#m-macros">wssl_size_t</a> indent_level);</div>
+          <p>Prints one server and its client list. Useful next to <code><a href="#f-client-names">wssl_client_dump</a>()</code> when tracing connection issues.</p>
+        </section>
+        <section id="f-client-send-text">
+          <h2>wssl_client_send_text</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_client_send_text(<a href="#s-client-t">wssl_client_t</a>* client, const char* text);</div>
+          <p>Sends a text frame from a NUL-terminated C string. Returns <code><a href="#s-result-code">WSSL_RESULT_CODE_ERROR_NO_SPACE</a></code> when the per-client output queue is full.</p>
+        </section>
+        <section id="f-client-send-string">
+          <h2>wssl_client_send_string</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_client_send_string(<a href="#s-client-t">wssl_client_t</a>* client, const <a href="#s-string">wssl_string_t</a>* string);</div>
+          <p>Sends a text frame from a length-counted string. The echo example forwards the received payload with <code><a href="#m-macros">WSSL_MAKE_STRING</a>(data, data_size)</code> without assuming termination.</p>
+        </section>
+        <section id="f-client-send-binary">
+          <h2>wssl_client_send_binary</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_client_send_binary(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#m-macros">wssl_octet_t</a>* data, <a href="#m-macros">wssl_size_t</a> data_size);</div>
+          <p>Sends a binary frame from raw octets. Pair with <code>on_receive_binary_frame_callback</code> on the receiving side.</p>
+        </section>
+        <section id="f-for-each">
+          <h2>wssl_for_each_client_in_frame_processing_call</h2>
+          <div class="sig">void wssl_for_each_client_in_frame_processing_call(<a href="#s-wssl-t">wssl_t</a>* wssl,
+    <a href="#s-callbacks">wssl_for_each_client_callback_f</a>* callback, void* local_extra_data);</div>
+          <p>Calls <code>callback(client, local_extra_data)</code> for every client that finished the handshake. The chat and time examples broadcast this way. Returning <code><a href="#s-callback-result">WSSL_CALLBACK_RESULT_OK</a></code> from the callback continues the iteration.</p>
+        </section>
+        <section id="f-mark-disconnect">
+          <h2>wssl_client_mark_for_disconnecting</h2>
+          <div class="sig">void wssl_client_mark_for_disconnecting(<a href="#s-client-t">wssl_client_t</a>* client,
+    <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason);</div>
+          <p>Schedules a disconnect; the loop performs it after the current callback returns. Prefer this over closing the socket. Use <code><a href="#s-disconnect-reason">WSSL_CLIENT_DISCONNECT_REASON_REQUESTED</a></code> for application-initiated drops.</p>
+        </section>
+        <section id="f-header-value">
+          <h2>wssl_header_get_field_value</h2>
+          <div class="sig"><a href="#s-string">wssl_string_t</a>* wssl_header_get_field_value(const <a href="#s-header">wssl_header_t</a>* header, const char* key);</div>
+          <p>Returns the value of a header field, or <code>NULL</code> when absent. Returned pointer points into the header; do not free it. Useful for routing on <code>uri</code> or checking <code>Origin</code> / protocol headers in <code>on_receive_header</code>.</p>
+        </section>
+        <section id="m-macros">
+          <h2>Useful macros</h2>
+          <p>Shortcuts from <code>out/wssl.h</code> that remove boilerplate. Already covered elsewhere: <code><a href="#f-declare">WSSL_DECLARE</a></code>, <code><a href="#f-try-call">WSSL_TRY_CALL</a></code>, the <code>WSSL_DEFAULT_*</code> values and the <code>WSSL_SERVER_CONFIGURATION_*</code> presets.</p>
+          <h3>Direction annotations</h3>
+          <div class="sig">#define _WSSL_IN_
+#define _WSSL_OUT_
+#define _WSSL_MODIFY_</div>
+          <p>Empty markers in front of pointer parameters: <code><a href="#m-macros">_WSSL_IN_</a></code> is read-only input, <code><a href="#m-macros">_WSSL_OUT_</a></code> is written by the call, <code><a href="#m-macros">_WSSL_MODIFY_</a></code> is read and written. Use them in your own callback prototypes for consistency with the library style.</p>
+          <h3>Strings without copying</h3>
+          <div class="sig">#define WSSL_MAKE_STRING(what_data, what_data_length) \
+  ((<a href="#s-string">wssl_string_t</a>){ .data = (what_data), .data_length = (what_data_length) })</div>
+          <p>Builds a length-counted <code><a href="#s-string">wssl_string_t</a></code> on the spot, no allocation and no NUL terminator required. The echo example forwards the received frame this way: <code><a href="#f-client-send-string">wssl_client_send_string</a>(client, &amp;<a href="#m-macros">WSSL_MAKE_STRING</a>(data, data_size))</code>. The pointer must stay valid until the call returns.</p>
+          <h3>Sentinels and sizes</h3>
+          <div class="sig">#define WSSL_NULL                   NULL
+#define WSSL_NO_DESCRIPTOR          (-1)
+#define WSSL_CALLBACK_NONE          WSSL_NULL
+#define WSSL_IP_SIZE_IN_CHAR        64
+#define WSSL_FILE_PATH_SIZE_IN_CHAR 4096
+#define WSSL_FRAME_MASKING_KEY_SIZE 4</div>
+          <p><code><a href="#m-macros">WSSL_NULL</a></code> is the default for every unset callback (<code><a href="#m-macros">WSSL_CALLBACK_NONE</a></code>) and for extra-data pointers. <code><a href="#m-macros">WSSL_NO_DESCRIPTOR</a></code> is the initial <code>epoll_descriptor</code> value. The size macros are the array capacities inside <code><a href="#s-server-config">wssl_server_configuration_t</a></code> and <code><a href="#s-client-t">wssl_client_t</a></code>; size your own buffers with them instead of hardcoding <code>64</code> / <code>4096</code>.</p>
+          <h3>Printf format macros</h3>
+          <div class="sig">#define WSSL_PRINT_OCTET      "02" PRIx8  // wssl_octet_t -&gt; two hex digits
+#define WSSL_PRINT_SIZE       "zu"        // wssl_size_t
+#define WSSL_PRINT_SSIZE      "zd"        // wssl_ssize_t
+#define WSSL_PRINT_ID_PREFIX  PRIu32      // <a href="#s-id">wssl_id_prefix_t</a>
+#define WSSL_PRINT_ID_SUFFIX  PRIu32      // <a href="#s-id">wssl_id_suffix_t</a>
+#define WSSL_PRINT_FRAME_SIZE PRIu64      // wssl_frame_size_t</div>
+          <p>Concatenate with the <code>%</code> marker: <code>printf("%" <a href="#m-macros">WSSL_PRINT_SIZE</a>, size)</code>. The chat example prints ids as <code>"%" <a href="#m-macros">WSSL_PRINT_ID_SUFFIX</a></code>. Using these keeps format strings correct on every platform instead of guessing <code>%d</code> / <code>%lu</code>.</p>
+          <h3>Assertions and init values</h3>
+          <div class="sig">#define WSSL_ASSERT(what_expression)  // aborts with file:line in <a href="#ex-dump">WSSL_DEBUG</a> builds,
+                                      // compiles to ((void)0) otherwise
+void wssl_assert_fail(const char* expression, const char* file_name,
+                      const unsigned int line_number, const char* function_name);
+#define WSSL_ID_INIT_VALUE            // { .prefix = 0, .suffix = 0 }
+#define WSSL_CHAIN_ROOT_INIT_VALUE(what_name)
+#define WSSL_CHAIN_LINK_INIT_VALUE</div>
+          <p><code><a href="#m-macros">WSSL_ASSERT</a></code> guards invariants during development at zero cost in release builds. The init-value macros prefill <code><a href="#s-id">wssl_id_t</a></code> and internal list links; you rarely need them directly because <code><a href="#f-init">wssl_init</a>()</code> applies all of them, but they are there when a struct is built by hand.</p>
+        </section>
+        <section id="f-client-extra">
+          <h2>Client extra data</h2>
+          <div class="sig">void* wssl_get_global_extra_data(const <a href="#s-wssl-t">wssl_t</a>* wssl);
+void wssl_set_global_extra_data(<a href="#s-wssl-t">wssl_t</a>* wssl, void* global_extra_data);
+<a href="#s-wssl-t">wssl_t</a>* wssl_client_get_wssl(const <a href="#s-client-t">wssl_client_t</a>* client);
+void* wssl_client_get_global_extra_data(const <a href="#s-client-t">wssl_client_t</a>* client);
+void wssl_client_set_connection_extra_data(<a href="#s-client-t">wssl_client_t</a>* client, void* connection_extra_data);
+void* wssl_client_get_connection_extra_data(const <a href="#s-client-t">wssl_client_t</a>* client);</div>
+          <p>Two-level state: one global pointer per <code><a href="#s-wssl-t">wssl_t</a></code>, one pointer per connection. From a client callback, <code><a href="#f-client-extra">wssl_client_get_wssl</a>(client)</code> reaches the root, and <code><a href="#f-client-extra">wssl_client_get_global_extra_data</a>(client)</code> is the shortcut to the shared state. Returns: getters give back the stored pointer (<code>NULL</code> when never set); setters return nothing.</p>
+        </section>
+        <section id="f-client-state">
+          <h2>Client state helpers</h2>
+          <div class="sig">bool wssl_client_is_in_wait_header(const <a href="#s-client-t">wssl_client_t</a>*);
+bool wssl_client_is_not_in_wait_header(const <a href="#s-client-t">wssl_client_t</a>*);
+bool wssl_client_is_in_frame_processing(const <a href="#s-client-t">wssl_client_t</a>*);
+bool wssl_client_is_not_in_frame_processing(const <a href="#s-client-t">wssl_client_t</a>*);
+bool wssl_client_is_marked_for_disconnecting(const <a href="#s-client-t">wssl_client_t</a>*);
+bool wssl_client_is_not_marked_for_disconnecting(const <a href="#s-client-t">wssl_client_t</a>*);</div>
+          <p>Read-only state predicates for branching and assertions. Each returns <code>bool</code> (<code>true</code> when the client is in the named situation; every predicate has its <code>_not_</code> negation). Frame callbacks normally see <code>is_in_frame_processing == true</code>.</p>
+        </section>
+        <section id="f-client-names">
+          <h2>Client name helpers</h2>
+          <div class="sig">const char* wssl_client_get_state_name(<a href="#s-client-state">wssl_client_state_e</a> state);
+const char* wssl_client_get_disconnect_reason_name(<a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> reason);
+bool wssl_client_disconnect_reason_is_error(<a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> reason);
+bool wssl_client_disconnect_reason_is_not_error(<a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> reason);
+void wssl_client_print(const <a href="#s-client-t">wssl_client_t</a>* client, FILE* file);
+void wssl_client_dump(const <a href="#s-client-t">wssl_client_t</a>* client, FILE* file, <a href="#m-macros">wssl_size_t</a> indent_level);</div>
+          <p>Logging and disconnect handling. Returns: name getters give <code>const char*</code> labels, the <code>is_error</code> variants give <code>bool</code>, print and dump give nothing. The chat example uses <code>is_not_error</code> to broadcast <code>LEAVE</code> only on clean exits. <code><a href="#f-client-names">wssl_client_print</a>()</code> writes the short <code>{prefix,suffix} [ip]:port -&gt; [ip]:port</code> form.</p>
+        </section>
+        <section id="f-dumps">
+          <h2>Dump helpers</h2>
+          <div class="sig">void wssl_buffer_dump(const <a href="#s-buffer">wssl_buffer_t</a>*, FILE*, <a href="#m-macros">wssl_size_t</a> indent_level);
+void wssl_frame_dump(const <a href="#s-frame">wssl_frame_t</a>*, FILE*, <a href="#m-macros">wssl_size_t</a> indent_level);
+void wssl_header_dump(const <a href="#s-header">wssl_header_t</a>*, FILE*, <a href="#m-macros">wssl_size_t</a> indent_level);
+void wssl_header_field_dump(const <a href="#s-header">wssl_header_field_t</a>*, FILE*, <a href="#m-macros">wssl_size_t</a> indent_level);</div>
+          <p>Human-readable dumps for the offline <code>dump</code> example and live debugging. Pass <code>0</code> as indent for top-level output. All return nothing (<code>void</code>).</p>
+        </section>
+        <section id="f-result">
+          <h2>Result helpers</h2>
+          <div class="sig">bool wssl_result_is_ok(<a href="#s-result">wssl_result_t</a> result);
+bool wssl_result_is_not_ok(<a href="#s-result">wssl_result_t</a> result);
+const char* wssl_result_get_code_name(<a href="#s-result">wssl_result_t</a> result);
+void wssl_result_print(<a href="#s-result">wssl_result_t</a> result, FILE* file);</div>
+          <p>Every fallible call returns <code><a href="#s-result">wssl_result_t</a></code>. Returns: <code>is_ok</code> / <code>is_not_ok</code> give <code>bool</code>, <code>get_code_name</code> gives the <code>const char*</code> label, <code>print</code> gives nothing. Branch on <code>is_ok</code>, log with <code>result_print</code>, and let <code><a href="#f-try-call">WSSL_TRY_CALL</a></code> abort with context in examples and tools.</p>
+        </section>
+        <section id="f-id-helpers">
+          <h2>Id helpers</h2>
+          <div class="sig">void wssl_id_init(<a href="#s-id">wssl_id_t</a>* id);
+void wssl_id_set_prefix(<a href="#s-id">wssl_id_t</a>* id, const <a href="#s-id">wssl_id_prefix_t</a> prefix);
+void wssl_id_set_suffix(<a href="#s-id">wssl_id_t</a>* id, const <a href="#s-id">wssl_id_suffix_t</a> suffix);
+bool wssl_id_is_equal(const <a href="#s-id">wssl_id_t</a>* id_1, const <a href="#s-id">wssl_id_t</a>* id_2);
+bool wssl_id_is_not_equal(const <a href="#s-id">wssl_id_t</a>* id_1, const <a href="#s-id">wssl_id_t</a>* id_2);
+void wssl_id_print(const <a href="#s-id">wssl_id_t</a>* id, FILE* file);</div>
+          <p>Create, compare and print <code><a href="#s-id">wssl_id_t</a></code> values. <code>wssl_id_init</code> zeroes both halves; the setters seed the start value used for the next connection (same effect as <code>wssl_set_id_prefix</code> / <code>wssl_set_id_suffix</code> on the instance). <code>wssl_id_print</code> writes the <code>{prefix,suffix}</code> form. Returns: init, setters and print give nothing; the two comparisons give <code>bool</code>.</p>
+        </section>
+        <section id="f-chain">
+          <h2>Chain helpers</h2>
+          <div class="sig">void wssl_client_chain_root_init(wssl_client_chain_t* root);  // root points to itself
+void wssl_client_chain_link_init(wssl_client_chain_t* link);  // link detached (NULL, NULL)</div>
+          <p>The same pair exists for <code>wssl_server_chain_t</code>, <code>wssl_chunk_chain_t</code> and <code>wssl_header_field_chain_t</code>, with the list type swapped in place of <code>wssl_client_chain_t</code>.</p>
+          <p>List plumbing for the server, output-chunk, header-field and client lists. <code><a href="#f-init">wssl_init</a>()</code> initializes every root; links are managed by add/delete calls. Both return nothing (<code>void</code>); direct use is not needed in application code.</p>
+        </section>
+        <footer class="footer">
+          <p>WSSL library documentation v1. Source of truth is <code>out/wssl.h</code>; examples live in <code>examples/</code>. This page is static: open <code>html/documentation/index.html</code> directly, no server required.</p>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -13,7 +13,7 @@ export class WsslExampleClass extends HTMLElement {
     this.securityRadiosId = undefined;
     this.blurbId = undefined;
     this.serverId = undefined;
-    this.warnBoxId = undefined;
+    this.warnLineId = undefined;
     this.httpLinkId = undefined;
     this.nicknameBoxId = undefined;
     this.nicknameId = undefined;
@@ -144,26 +144,29 @@ export class WsslExampleClass extends HTMLElement {
 
     frameId.appendChild(formId);
 
-    this.blurbId = document.createElement('p');
-    frameId.appendChild(this.blurbId);
+    let infoId = document.createElement('p');
 
-    let serverLineId = document.createElement('p');
+    this.blurbId = document.createElement('span');
+    infoId.appendChild(this.blurbId);
+
+    infoId.appendChild(document.createTextNode(' '));
 
     this.serverId = document.createElement('code');
     this.serverId.className = 'mono';
-    serverLineId.appendChild(this.serverId);
+    infoId.appendChild(this.serverId);
 
-    this.warnBoxId = document.createElement('span');
-    this.warnBoxId.className = 'warn';
-    this.warnBoxId.style.display = 'none';
-    this.warnBoxId.textContent = ' - Warning: ws is blocked from an https page and will not work. Open the http page instead: ';
-    serverLineId.appendChild(this.warnBoxId);
+    frameId.appendChild(infoId);
+
+    this.warnLineId = document.createElement('p');
+    this.warnLineId.className = 'warn';
+    this.warnLineId.style.display = 'none';
+    this.warnLineId.textContent = 'Warning: ws is blocked from an https page and will not work. Open the http page instead: ';
 
     this.httpLinkId = document.createElement('a');
     this.httpLinkId.href = '';
-    this.warnBoxId.appendChild(this.httpLinkId);
+    this.warnLineId.appendChild(this.httpLinkId);
 
-    frameId.appendChild(serverLineId);
+    frameId.appendChild(this.warnLineId);
 
     let buttonsId = document.createElement('div');
 
@@ -293,9 +296,9 @@ export class WsslExampleClass extends HTMLElement {
     if((location.protocol === 'https:') && (security === 'ws')) {
       this.httpLinkId.href = `http://${ location.host }${ location.pathname }`;
       this.httpLinkId.textContent = `http://${ location.host }${ location.pathname }`;
-      this.warnBoxId.style.display = '';
+      this.warnLineId.style.display = '';
     } else {
-      this.warnBoxId.style.display = 'none';
+      this.warnLineId.style.display = 'none';
     }
 
     switch(this.service) {

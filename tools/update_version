@@ -4,11 +4,13 @@ BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
 INCLUDE_FILE="${BASE_DIR}/include/version.h"
 JAVASCRIPT_FILE="${BASE_DIR}/html/configuration.js"
+DOCUMENTATION_FILE="${BASE_DIR}/html/documentation/version.js"
 VERSION_FILE="${BASE_DIR}/VERSION"
 
 INCLUDE_FILE_TEMPLATE="${INCLUDE_FILE}.template"
 INCLUDE_FILE_NEW="${INCLUDE_FILE}.new"
 JAVASCRIPT_FILE_TEMPLATE="${JAVASCRIPT_FILE}.template"
+DOCUMENTATION_FILE_TEMPLATE="${DOCUMENTATION_FILE}.template"
 
 VERSION="$(date +%Y%m%d)"
 
@@ -31,5 +33,7 @@ else
 fi
 
 cat ${JAVASCRIPT_FILE_TEMPLATE} | filter > ${JAVASCRIPT_FILE}
+
+cat ${DOCUMENTATION_FILE_TEMPLATE} | filter > ${DOCUMENTATION_FILE}
 
 echo ${VERSION} > ${VERSION_FILE}

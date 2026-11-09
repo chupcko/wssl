@@ -1,0 +1,285 @@
+:root
+{
+  --font-text: Arial, sans-serif;
+  --font-mono: Consolas, "Courier New", monospace;
+  --color-text: #1a1a1a;
+  --color-back: #ffffff;
+  --color-link: #0b57d0;
+  --color-dim-text: #555555;
+  --color-dim-back: #f2f2f2;
+  --color-line: #d9d9d9;
+  --radius: 0.375em;
+}
+
+*
+{
+  box-sizing: border-box;
+}
+
+body
+{
+  font-family: var(--font-text);
+  font-size: 1em;
+  line-height: 1.55;
+  color: var(--color-text);
+  background: var(--color-back);
+  margin: 0;
+}
+
+a
+{
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+a:hover
+{
+  text-decoration: underline;
+}
+
+.topbar
+{
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.9em 1.5em;
+}
+
+.topbar h1
+{
+  font-size: 1.25em;
+  margin: 0;
+}
+
+.topbar p
+{
+  margin: 0.25em 0 0 0;
+  color: var(--color-dim-text);
+  font-size: 0.9em;
+}
+
+.topbar code
+{
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.layout
+{
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.sidebar
+{
+  width: 19em;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-line);
+  padding: 1em 1em 2em 1.5em;
+}
+
+.sidebar .search
+{
+  width: 100%;
+  font-size: 0.95em;
+  padding: 0.35em 0.6em;
+  margin-bottom: 0.9em;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.nav-group
+{
+  margin-bottom: 1.2em;
+}
+
+.nav-group h2
+{
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-dim-text);
+  margin: 0 0 0.4em 0;
+}
+
+.nav-group ul
+{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-group li
+{
+  margin: 0;
+  padding: 0;
+}
+
+.nav-group a
+{
+  display: block;
+  padding: 0.2em 0.5em;
+  border-radius: var(--radius);
+  font-size: 0.93em;
+}
+
+.nav-group a.active
+{
+  background: var(--color-dim-back);
+  color: var(--color-text);
+}
+
+.nav-group a code
+{
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: inherit;
+}
+
+.content
+{
+  flex: 1;
+  min-width: 0;
+  max-width: 62em;
+  padding: 1.5em 2em 4em 2em;
+}
+
+.content section
+{
+  margin-bottom: 2.5em;
+  scroll-margin-top: 1em;
+}
+
+.content h2
+{
+  font-size: 1.4em;
+  border-bottom: 1px solid var(--color-line);
+  padding-bottom: 0.25em;
+  margin-top: 0;
+}
+
+.content h3
+{
+  font-size: 1.1em;
+  margin-bottom: 0.4em;
+}
+
+.content p, .content li
+{
+  max-width: 62em;
+}
+
+.sig
+{
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--color-dim-back);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 0.7em 0.9em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.field-table
+{
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.93em;
+}
+
+.field-table th, .field-table td
+{
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid var(--color-line);
+  padding: 0.35em 0.6em;
+}
+
+.field-table th
+{
+  background: var(--color-dim-back);
+}
+
+.field-table td code, p code, li code
+{
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.tag
+{
+  display: inline-block;
+  font-size: 0.75em;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 0 0.45em;
+  margin-left: 0.5em;
+  color: var(--color-dim-text);
+  vertical-align: middle;
+}
+
+.menu-button
+{
+  display: none;
+}
+
+.footer
+{
+  color: var(--color-dim-text);
+  font-size: 0.85em;
+  border-top: 1px solid var(--color-line);
+  padding-top: 1em;
+}
+
+@media (max-width: 52em)
+{
+  .layout
+  {
+    display: block;
+  }
+
+  .sidebar
+  {
+    position: static;
+    width: auto;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--color-line);
+    display: none;
+  }
+
+  .sidebar.open
+  {
+    display: block;
+  }
+
+  .menu-button
+  {
+    display: inline-block;
+    font-size: 0.95em;
+    padding: 0.3em 0.8em;
+    margin: 0.8em 0 0 1.5em;
+    border: 1px solid var(--color-link);
+    background: var(--color-back);
+    color: var(--color-link);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  .content
+  {
+    padding: 1em 1.2em 3em 1.2em;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference)
+{
+  .nav-group a
+  {
+    transition: background 0.12s ease-in;
+  }
+}

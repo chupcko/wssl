@@ -3,10 +3,13 @@
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
 INCLUDE_NAME="wssl.h"
-LIBRARY_NAME="libwssl.a"
+LIBRARY_A_NAME="libwssl.a"
+LIBRARY_SO_NAME="libwssl.so"
 INCLUDE_FILE="${BASE_DIR}/out/${INCLUDE_NAME}"
-LIBRARY_FILE="${BASE_DIR}/out/${LIBRARY_NAME}"
-LIBRARY_ORGIN="${BASE_DIR}/source/${LIBRARY_NAME}"
+LIBRARY_A_FILE="${BASE_DIR}/out/${LIBRARY_A_NAME}"
+LIBRARY_A_ORGIN="${BASE_DIR}/source/${LIBRARY_A_NAME}"
+LIBRARY_SO_FILE="${BASE_DIR}/out/${LIBRARY_SO_NAME}"
+LIBRARY_SO_ORGIN="${BASE_DIR}/source/${LIBRARY_SO_NAME}"
 
 include_filter()
 {
@@ -61,7 +64,12 @@ cat          ${BASE_DIR}/include/rest.h           | include_filter >> ${INCLUDE_
 
 echo '#endif' >> ${INCLUDE_FILE}
 
-if [ -e ${LIBRARY_ORGIN} ]
+if [ -e ${LIBRARY_A_ORGIN} ]
 then
-  cp ${LIBRARY_ORGIN} ${LIBRARY_FILE}
+  cp ${LIBRARY_A_ORGIN} ${LIBRARY_A_FILE}
+fi
+
+if [ -e ${LIBRARY_SO_ORGIN} ]
+then
+  cp ${LIBRARY_SO_ORGIN} ${LIBRARY_SO_FILE}
 fi
