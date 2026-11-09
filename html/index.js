@@ -1,1 +1,3 @@
-let version = '20261108';
+import { ConfigurationClass } from './configuration.js';
+
+document.getElementById('version').textContent = (new ConfigurationClass()).version();

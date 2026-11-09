@@ -3,7 +3,6 @@
 -dodaj epoll strukturu za nove stvari globalno i po klijentima
 -proveri spisak nepotrebnih funkcija
 -proveri gramatiku imena
--sredi html
 -napravi deb pakete dobro
 -rasporedi sve oko testa lepo
 -odluci sta sa test i dump u htmlu

@@ -3,7 +3,7 @@
 BASE_DIR=$(dirname $(dirname $(readlink -f ${0})))
 
 INCLUDE_FILE="${BASE_DIR}/include/version.h"
-JAVASCRIPT_FILE="${BASE_DIR}/html/index.js"
+JAVASCRIPT_FILE="${BASE_DIR}/html/configuration.js"
 VERSION_FILE="${BASE_DIR}/VERSION"
 
 INCLUDE_FILE_TEMPLATE="${INCLUDE_FILE}.template"
