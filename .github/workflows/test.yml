@@ -36,5 +36,4 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v5
-      - run: git clean -fdx
       - run: make test
