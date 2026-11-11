@@ -19,6 +19,8 @@ all: $(WSSL_LIBRARY) $(TARGETS)
 $(WSSL_LIBRARY):
 	$(MAKE) -C ..
 
+$(WSSL_INCLUDE): $(WSSL_LIBRARY)
+
 PYTHON ?= python3
 
 .PHONY: test
