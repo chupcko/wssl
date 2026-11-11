@@ -1,5 +1,4 @@
--client last time
--da mogu da se registruju funkcije koje ce ici na sve konekcije po timeoutu
+-interni alarm za klijente
 -dodaj epoll strukturu za nove stvari globalno i po klijentima
 -proveri spisak nepotrebnih funkcija
 -proveri gramatiku imena

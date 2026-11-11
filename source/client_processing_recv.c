@@ -197,7 +197,7 @@ wssl_result_t wssl_client_processing_recv
       }
       if(size < data_size)
       {
-        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_method(&client->header, (char*)data, size));
+        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_method(&client->header, (char*)data, size));
         client->state = WSSL_CLIENT_STATE_WAIT_URI_SEPARATOR;
         *processed = (wssl_size_t)size;
       }
@@ -226,7 +226,7 @@ wssl_result_t wssl_client_processing_recv
       }
       if(size < data_size)
       {
-        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_uri(&client->header, (char*)data, size));
+        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_uri(&client->header, (char*)data, size));
         client->state = WSSL_CLIENT_STATE_WAIT_VERSION_SEPARATOR;
         *processed = (wssl_size_t)size;
       }
@@ -251,7 +251,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size > 0 && size < data_size)
       {
-        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_version(&client->header, (char*)data, size));
+        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_version(&client->header, (char*)data, size));
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
         *processed = size;
       }
@@ -291,7 +291,7 @@ wssl_result_t wssl_client_processing_recv
           {
             MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
           }
-          TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_add_field(&client->header, (char*)data, size));
+          TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_add_field(&client->header, (char*)data, size));
           client->state = WSSL_CLIENT_STATE_WAIT_FIELD_VALUE_SEPARATOR;
           *processed = (wssl_size_t)size;
         }
@@ -313,7 +313,7 @@ wssl_result_t wssl_client_processing_recv
       size = wssl_client_processing_recv_find_word_until_crlf((char*)data, data_size);
       if(size >= 0 && size < data_size)
       {
-        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_value_at_last_field(&client->header, (char*)data, size));
+        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_header_insert_value_at_last_field(&client->header, (char*)data, size));
         client->state = WSSL_CLIENT_STATE_WAIT_CRLF;
         *processed = (wssl_size_t)size;
       }
@@ -356,7 +356,7 @@ wssl_result_t wssl_client_processing_recv
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_FRAME_OPCODE);
         }
 
-        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_allocate(&client->frame));
+        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_allocate(&client->frame));
         if(client->frame.fin)
         {
           TRY_CALL(wssl_client_processing_frame(client));
@@ -399,7 +399,7 @@ wssl_result_t wssl_client_processing_recv
           MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES);
         }
 
-        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_reallocate(&client->frame, &frame));
+        TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_frame_reallocate(&client->frame, &frame));
         if(frame.fin)
         {
           TRY_CALL(wssl_client_processing_frame(client));

@@ -98,6 +98,54 @@ def reset_timeout_server() :
 
 
 @pytest.fixture(scope='session')
+def ping_server() :
+  proc = subprocess.Popen(
+    [os.path.join(REPO_ROOT, 'tests', 'ping_server.e')],
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+  )
+  try :
+    wait_for_port('127.0.0.1', 6008)
+    yield ('127.0.0.1', 6008)
+  finally :
+    stop_server(proc)
+  #$
+#$
+
+
+@pytest.fixture(scope='session')
+def ping_nocb_server() :
+  proc = subprocess.Popen(
+    [os.path.join(REPO_ROOT, 'tests', 'ping_nocb_server.e')],
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+  )
+  try :
+    wait_for_port('127.0.0.1', 6009)
+    yield ('127.0.0.1', 6009)
+  finally :
+    stop_server(proc)
+  #$
+#$
+
+
+@pytest.fixture(scope='session')
+def ping_manual_server() :
+  proc = subprocess.Popen(
+    [os.path.join(REPO_ROOT, 'tests', 'ping_manual_server.e')],
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+  )
+  try :
+    wait_for_port('127.0.0.1', 6010)
+    yield ('127.0.0.1', 6010)
+  finally :
+    stop_server(proc)
+  #$
+#$
+
+
+@pytest.fixture(scope='session')
 def timeout_nocb_server() :
   proc = subprocess.Popen(
     [os.path.join(REPO_ROOT, 'tests', 'timeout_nocb_server.e')],

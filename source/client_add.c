@@ -118,6 +118,7 @@ wssl_result_t wssl_client_add
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_NONE;
   client->last_receive_in_mseconds = wssl_now_in_mseconds();
+  client->last_ping_in_mseconds = wssl_now_in_mseconds();
 
   wssl_header_init(&client->header);
   wssl_frame_init(&client->frame);
@@ -128,7 +129,7 @@ wssl_result_t wssl_client_add
 
   if(client->wssl->on_connect_callback != WSSL_CALLBACK_NONE)
   {
-    HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_connect_callback)(client));
+    TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_connect_callback)(client));
   }
 
   PASS;

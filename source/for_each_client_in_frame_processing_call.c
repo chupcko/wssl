@@ -14,6 +14,6 @@ void wssl_for_each_client_in_frame_processing_call
   CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_in_frame_processing)
   {
     client = wssl_client_chain_get_entry_from_wssl_chain_link(client_link);
-    HONOR_CALLBACK_RESULT(client, (*callback)(client, local_extra_data));
+    TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING(client, (*callback)(client, local_extra_data));
   }
 }

@@ -15,7 +15,7 @@ wssl_result_t wssl_client_processing_frame
     {
       if(client->wssl->on_receive_text_frame_callback != WSSL_CALLBACK_NONE)
       {
-        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_text_frame_callback)(client, (char*)client->frame.payload, client->frame.payload_size));
+        TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_receive_text_frame_callback)(client, (char*)client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
@@ -24,7 +24,7 @@ wssl_result_t wssl_client_processing_frame
     {
       if(client->wssl->on_receive_binary_frame_callback != WSSL_CALLBACK_NONE)
       {
-        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_binary_frame_callback)(client, client->frame.payload, client->frame.payload_size));
+        TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_receive_binary_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;
@@ -33,7 +33,7 @@ wssl_result_t wssl_client_processing_frame
     {
       if(client->wssl->on_receive_close_frame_callback != WSSL_CALLBACK_NONE)
       {
-        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_close_frame_callback)(client));
+        TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_receive_close_frame_callback)(client));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_CLOSE, false, WSSL_NULL, 0);
@@ -46,7 +46,7 @@ wssl_result_t wssl_client_processing_frame
     {
       if(client->wssl->on_receive_ping_frame_callback != WSSL_CALLBACK_NONE)
       {
-        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_ping_frame_callback)(client, client->frame.payload, client->frame.payload_size));
+        TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_receive_ping_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       wssl_frame_fill(client->wssl, &frame, FRAME_OPCODE_PONG, false, client->frame.payload, client->frame.payload_size);
@@ -58,7 +58,7 @@ wssl_result_t wssl_client_processing_frame
     {
       if(client->wssl->on_receive_pong_frame_callback != WSSL_CALLBACK_NONE)
       {
-        HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size));
+        TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size));
         PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
       }
       break;

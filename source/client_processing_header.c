@@ -126,14 +126,14 @@ wssl_result_t wssl_client_processing_header
   }
 
   wssl_chunk_t* chunk;
-  TRY_CALL_ELSE_MARK_FOR_DISCONNECTING(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
+  TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   if(pass)
   {
     char handshake_result[HANDSHAKE_RESULT_SIZE];
     wssl_size_t handshake_result_length;
-    TRY_CALL_ELSE_MARK_FOR_DISCONNECTING
+    TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS
     (
       client,
       WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY,
@@ -197,8 +197,7 @@ wssl_result_t wssl_client_processing_header
   wssl_client_chain_add_link_backward(&client->wssl->clients_in_frame_processing, &client->wssl_chain_link);
   if(client->wssl->on_start_receiving_frames_callback != WSSL_CALLBACK_NONE)
   {
-    HONOR_CALLBACK_RESULT_THEN_PASS(client, (*client->wssl->on_start_receiving_frames_callback)(client));
-    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
+    TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_start_receiving_frames_callback)(client));
   }
 
   PASS;

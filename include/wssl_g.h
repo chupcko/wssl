@@ -18,6 +18,7 @@ MAKE_WSSL_SET(char*,                                      server_name           
 MAKE_WSSL_SET(wssl_size_t,                                buffer_size_in_octets              )
 MAKE_WSSL_SET(wssl_ssize_t,                               sleep_in_mseconds                  )
 MAKE_WSSL_SET(wssl_mseconds_t,                            timeout_in_mseconds                )
+MAKE_WSSL_SET(wssl_mseconds_t,                            ping_interval_in_mseconds          )
 MAKE_WSSL_SET(wssl_size_t,                                max_number_of_output_chunks        )
 MAKE_WSSL_SET(wssl_size_t,                                max_number_of_received_multi_frames)
 MAKE_WSSL_SET(wssl_size_t,                                max_number_of_header_fields        )
@@ -33,6 +34,7 @@ MAKE_WSSL_SET(wssl_on_receive_ping_frame_callback_f*,     on_receive_ping_frame_
 MAKE_WSSL_SET(wssl_on_receive_pong_frame_callback_f*,     on_receive_pong_frame_callback     )
 MAKE_WSSL_SET(wssl_on_tick_callback_f*,                   on_tick_callback                   )
 MAKE_WSSL_SET(wssl_on_timeout_callback_f*,                on_timeout_callback                )
+MAKE_WSSL_SET(wssl_on_send_ping_frame_callback_f*,        on_send_ping_frame_callback        )
 
 _INCLUDE_END_
 
