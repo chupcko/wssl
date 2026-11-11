@@ -19,7 +19,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      docker-id: 0
+      docker-id: 1
     steps:
       - run: true
 
