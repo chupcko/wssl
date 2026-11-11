@@ -48,8 +48,6 @@ void* wssl_client_get_global_extra_data
   return client->wssl->global_extra_data;
 }
 
-_INCLUDE_END_
-
 static inline
 wssl_mseconds_t wssl_now_in_mseconds(void)
 {
@@ -57,6 +55,17 @@ wssl_mseconds_t wssl_now_in_mseconds(void)
   clock_gettime(CLOCK_MONOTONIC, &now);
   return (wssl_mseconds_t)now.tv_sec*1000u + (wssl_mseconds_t)(now.tv_nsec/1000000);
 }
+
+static inline
+void wssl_client_reset_timeout
+(
+  _WSSL_MODIFY_ wssl_client_t* client
+)
+{
+  client->last_receive_in_mseconds = wssl_now_in_mseconds();
+}
+
+_INCLUDE_END_
 
 static inline
 const char* wssl_get_bool_name

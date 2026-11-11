@@ -19,7 +19,6 @@
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <time.h>
 #include <unistd.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -34,6 +33,7 @@ _INCLUDE_BEGIN_
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define _WSSL_IN_
 #define _WSSL_OUT_

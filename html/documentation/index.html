@@ -103,6 +103,7 @@
             <li><a href="#f-client-send-binary"><code>wssl_client_send_binary</code></a></li>
             <li><a href="#f-for-each"><code>wssl_for_each_client_in_frame_processing_call</code></a></li>
             <li><a href="#f-mark-disconnect"><code>wssl_client_mark_for_disconnecting</code></a></li>
+            <li><a href="#f-reset-timeout"><code>wssl_client_reset_timeout</code></a></li>
             <li><a href="#f-header-value"><code>wssl_header_get_field_value</code></a></li>
             <li><a href="#m-macros"><code>useful macros</code></a></li>
           </ul>
@@ -139,6 +140,7 @@ make clean      # removes out/, objects and example binaries</div>
           <p>Every example links the same way:</p>
           <div class="sig">cc -std=c99 -O3 -Werror -Iout -o app.e app.c out/libwssl.a -lssl -lcrypto</div>
           <p>Include path must point at <code>out/</code> so that <code>#include "wssl.h"</code> resolves to the generated single header, not to <code>include/</code> internals.</p>
+          <p>Whoever uses <code>wssl.h</code> must define <code>_POSIX_C_SOURCE</code> on their own, before any system header; recommended value is <code>200809L</code>, the one the library itself uses. Without it the monotonic clock the timeout machinery runs on is not visible.</p>
         </section>
         <section id="g-quickstart">
           <h2>Quick start (echo)</h2>
@@ -740,6 +742,11 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
           <div class="sig">void wssl_client_mark_for_disconnecting(<a href="#s-client-t">wssl_client_t</a>* client,
     <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason);</div>
           <p>Schedules a disconnect; the loop performs it after the current callback returns. Prefer this over closing the socket. Use <code><a href="#s-disconnect-reason">WSSL_CLIENT_DISCONNECT_REASON_REQUESTED</a></code> for application-initiated drops.</p>
+        </section>
+        <section id="f-reset-timeout">
+          <h2>wssl_client_reset_timeout</h2>
+          <div class="sig">void wssl_client_reset_timeout(<a href="#s-client-t">wssl_client_t</a>* client);</div>
+          <p>Restarts the client's silence clock from now, as if it had just sent data. Call from any client callback to keep a quiet but live connection past <code>timeout_in_mseconds</code>; returning <code>OK</code> from <code><a href="#cb-timeout">on_timeout</a></code> does the same without an explicit call. Compiling against <code>out/wssl.h</code> needs <code>_POSIX_C_SOURCE</code> defined, see <code><a href="#g-build">Build and link</a></code>.</p>
         </section>
         <section id="f-header-value">
           <h2>wssl_header_get_field_value</h2>

@@ -49,3 +49,15 @@ def test_no_callback_kills_idle_client(timeout_nocb_server) :
   _, sock = helpers.ws_handshake(host, port)
   assert_closed(sock)
 #$
+
+
+def test_reset_timeout_keeps_silent_client_alive(reset_timeout_server) :
+  host, port = reset_timeout_server
+  _, sock = helpers.ws_handshake(host, port)
+  # almost 3x the 400ms timeout of pure silence, while on_timeout
+  # never forgives: survival proves the explicit reset works
+  time.sleep(1.2)
+  assert_alive(sock)
+  # resets stop 2s after server start, the client must then time out
+  assert_closed(sock)
+#$
