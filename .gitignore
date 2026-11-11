@@ -1,6 +1,11 @@
-out
+source/prototype.h
+*.o
+*.a
+*.so
+*.e
 core
-tests/kick_server.e
+out/
+
 __pycache__/
 .pytest_cache/
 .venv/

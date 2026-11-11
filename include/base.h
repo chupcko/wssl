@@ -17,6 +17,9 @@ typedef size_t wssl_size_t;
 typedef ssize_t wssl_ssize_t;
 #define WSSL_PRINT_SSIZE "zd"
 
+typedef uint64_t wssl_mseconds_t;
+#define WSSL_PRINT_MSECONDS PRIu64
+
 typedef struct wssl_string_t
 {
   char*       data;

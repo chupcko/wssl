@@ -51,6 +51,14 @@ void* wssl_client_get_global_extra_data
 _INCLUDE_END_
 
 static inline
+wssl_mseconds_t wssl_now_in_mseconds(void)
+{
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return (wssl_mseconds_t)now.tv_sec*1000u + (wssl_mseconds_t)(now.tv_nsec/1000000);
+}
+
+static inline
 const char* wssl_get_bool_name
 (
   _WSSL_IN_ const bool value

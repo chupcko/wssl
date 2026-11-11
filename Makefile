@@ -10,7 +10,7 @@ deb: all
 debug: clean source-debug examples-debug
 
 .PHONY: clean
-clean: source-clean examples-clean
+clean: source-clean examples-clean tests-clean
 	rm -r -f out core
 
 define GENERATE_GOALS_CORE =
@@ -37,6 +37,9 @@ $(GOALS):
 	$(MAKE) -C $(call GET_DIR,$@) $(call GET_GOAL,$@)
 
 .PHONY: test
-test: all
-	$(CC) -std=c99 -O3 -Werror -Iout -o tests/kick_server.e tests/kick_server.c out/libwssl.a -lssl -lcrypto
-	python3 -m pytest tests -q
+test:
+	$(MAKE) -C tests test
+
+.PHONY: tests-clean
+tests-clean:
+	$(MAKE) -C tests clean

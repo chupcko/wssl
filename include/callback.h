@@ -69,6 +69,12 @@ typedef bool wssl_on_tick_callback_f
   _WSSL_MODIFY_ struct wssl_t*
 );
 
+typedef wssl_callback_result_e wssl_on_timeout_callback_f
+(
+  _WSSL_MODIFY_ wssl_client_t*,
+  _WSSL_IN_     wssl_client_state_e
+);
+
 typedef wssl_callback_result_e wssl_for_each_client_callback_f
 (
   _WSSL_MODIFY_ wssl_client_t*,

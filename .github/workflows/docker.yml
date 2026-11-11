@@ -1,0 +1,29 @@
+name: docker
+
+on:
+  push:
+    tags:
+      - 'docker-*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v5
+      - run: git clean -fdx
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          id="${GITHUB_REF_NAME#docker-}"
+          docker build -f tests/Dockerfile -t ghcr.io/${{ github.repository }}:"$id" .
+          docker push ghcr.io/${{ github.repository }}:"$id"
+      - if: always()
+        run: |
+          id="${GITHUB_REF_NAME#docker-}"
+          docker rmi ghcr.io/${{ github.repository }}:"$id" || true

@@ -64,6 +64,38 @@ def kick_server() :
   #$
 #$
 
+
+@pytest.fixture(scope='session')
+def timeout_server() :
+  proc = subprocess.Popen(
+    [os.path.join(REPO_ROOT, 'tests', 'timeout_server.e')],
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+  )
+  try :
+    wait_for_port('127.0.0.1', 6005)
+    yield ('127.0.0.1', 6005)
+  finally :
+    stop_server(proc)
+  #$
+#$
+
+
+@pytest.fixture(scope='session')
+def timeout_nocb_server() :
+  proc = subprocess.Popen(
+    [os.path.join(REPO_ROOT, 'tests', 'timeout_nocb_server.e')],
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+  )
+  try :
+    wait_for_port('127.0.0.1', 6006)
+    yield ('127.0.0.1', 6006)
+  finally :
+    stop_server(proc)
+  #$
+#$
+
 @pytest.fixture(scope='module')
 def echo_ssl_server(tmp_path_factory) :
   cert_dir = tmp_path_factory.mktemp('cert')

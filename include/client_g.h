@@ -35,6 +35,7 @@
   what_call(TOO_MUCH_RECEIVED_MULTI_FRAMES, "Too much received multi frames") \
   what_call(REQUESTED,                      "Requested"                     ) \
   what_call(STOPED,                         "Stopped"                       ) \
+  what_call(TIMEOUT,                        "Timeout"                       ) \
 
 _INCLUDE_BEGIN_
 

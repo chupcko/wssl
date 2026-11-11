@@ -1,0 +1,40 @@
+name: test
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - 'docker-*'
+  pull_request:
+
+jobs:
+  # docker-id pins the prebuilt test environment image. The image itself
+  # is built by the "docker" workflow (.github/workflows/docker.yml):
+  # push a tag named docker-<id> (e.g. docker-2) and it builds
+  # tests/Dockerfile and pushes ghcr.io/<owner>/<repo>:<id>. To move CI
+  # to a new environment, build the new image first and then only bump
+  # the number below. The test job reads it from here, so this is the
+  # single place to change.
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-id: 0
+    steps:
+      - run: true
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    container:
+      image: ghcr.io/${{ github.repository }}:${{ needs.setup.outputs.docker-id }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - run: git clean -fdx
+      - run: make test

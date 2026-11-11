@@ -120,6 +120,8 @@ wssl_result_t wssl_client_do_recv
 
   client->input_buffer.end += (wssl_size_t)recv_size;
 
+  client->last_receive_in_mseconds = wssl_now_in_mseconds();
+
   wssl_size_t processed;
   while(wssl_buffer_is_not_empty(&client->input_buffer))
   {

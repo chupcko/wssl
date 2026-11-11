@@ -37,6 +37,7 @@ void wssl_dump
       INDENT_FORMAT "server_name: \"%s\"\n"
       INDENT_FORMAT "buffer_size_in_octets: %" WSSL_PRINT_SIZE "\n"
       INDENT_FORMAT "sleep_in_mseconds: %" WSSL_PRINT_SSIZE "\n"
+      INDENT_FORMAT "timeout_in_mseconds: %" WSSL_PRINT_MSECONDS "\n"
       INDENT_FORMAT "max_number_of_output_chunks: %" WSSL_PRINT_SIZE "\n"
       INDENT_FORMAT "max_number_of_received_multi_frames: %" WSSL_PRINT_SIZE "\n"
       INDENT_FORMAT "epoll_descriptor: "
@@ -45,6 +46,7 @@ void wssl_dump
     INDENT(indent_level+1), wssl->server_name,
     INDENT(indent_level+1), wssl->buffer_size_in_octets,
     INDENT(indent_level+1), wssl->sleep_in_mseconds,
+    INDENT(indent_level+1), wssl->timeout_in_mseconds,
     INDENT(indent_level+1), wssl->max_number_of_output_chunks,
     INDENT(indent_level+1), wssl->max_number_of_received_multi_frames,
     INDENT(indent_level+1)
@@ -68,6 +70,7 @@ void wssl_dump
   DUMP_POINTER(on_receive_ping_frame_callback,     WSSL_CALLBACK_NONE)
   DUMP_POINTER(on_receive_pong_frame_callback,     WSSL_CALLBACK_NONE)
   DUMP_POINTER(on_tick_callback,                   WSSL_CALLBACK_NONE)
+  DUMP_POINTER(on_timeout_callback,                WSSL_CALLBACK_NONE)
   fprintf
   (
     file,

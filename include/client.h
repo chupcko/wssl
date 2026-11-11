@@ -28,6 +28,7 @@ typedef struct wssl_client_t
   wssl_header_t                   header;
   wssl_frame_t                    frame;
   wssl_size_t                     number_of_received_multi_frames;
+  wssl_mseconds_t                 last_receive_in_mseconds;
 } wssl_client_t;
 
 static inline

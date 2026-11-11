@@ -158,6 +158,8 @@ wssl_result_t wssl_loop
       }
     }
 
+    wssl_check_timeouts(wssl);
+
     if
     (
       wssl->on_tick_callback != WSSL_CALLBACK_NONE &&

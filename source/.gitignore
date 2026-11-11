@@ -1,5 +1,0 @@
-prototype.h
-*.o
-libwssl.a
-libwssl.so
-core

@@ -8,6 +8,7 @@ typedef struct wssl_t
   char*                                      server_name;
   wssl_size_t                                buffer_size_in_octets;
   wssl_ssize_t                               sleep_in_mseconds;
+  wssl_mseconds_t                            timeout_in_mseconds;
   wssl_size_t                                max_number_of_output_chunks;
   wssl_size_t                                max_number_of_received_multi_frames;
   wssl_size_t                                max_number_of_header_fields;
@@ -23,6 +24,7 @@ typedef struct wssl_t
   wssl_on_receive_ping_frame_callback_f*     on_receive_ping_frame_callback;
   wssl_on_receive_pong_frame_callback_f*     on_receive_pong_frame_callback;
   wssl_on_tick_callback_f*                   on_tick_callback;
+  wssl_on_timeout_callback_f*                on_timeout_callback;
   unsigned int                               random_seed;
   wssl_id_t                                  next_client_id;
   wssl_server_chain_t                        servers;
@@ -36,6 +38,7 @@ typedef struct wssl_t
   .server_name                         = WSSL_DEFAULT_SERVER_NAME,                                              \
   .buffer_size_in_octets               = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,                                    \
   .sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,                                        \
+  .timeout_in_mseconds                 = WSSL_DEFAULT_TIMEOUT_IN_MSECONDS,                                      \
   .max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,                              \
   .max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,                      \
   .max_number_of_header_fields         = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,                               \
@@ -51,6 +54,7 @@ typedef struct wssl_t
   .on_receive_ping_frame_callback      = WSSL_CALLBACK_NONE,                                                    \
   .on_receive_pong_frame_callback      = WSSL_CALLBACK_NONE,                                                    \
   .on_tick_callback                    = WSSL_CALLBACK_NONE,                                                    \
+  .on_timeout_callback                 = WSSL_CALLBACK_NONE,                                                    \
   .random_seed                         = 0,                                                                     \
   .next_client_id                      = WSSL_ID_INIT_VALUE,                                                    \
   .servers                             = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.servers),                         \
@@ -70,6 +74,7 @@ void wssl_init
   wssl->server_name                         = WSSL_DEFAULT_SERVER_NAME;
   wssl->buffer_size_in_octets               = WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS,
   wssl->sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
+  wssl->timeout_in_mseconds                 = WSSL_DEFAULT_TIMEOUT_IN_MSECONDS,
   wssl->max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,
   wssl->max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,
   wssl->max_number_of_header_fields         = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,
@@ -85,6 +90,7 @@ void wssl_init
   wssl->on_receive_ping_frame_callback      = WSSL_CALLBACK_NONE;
   wssl->on_receive_pong_frame_callback      = WSSL_CALLBACK_NONE;
   wssl->on_tick_callback                    = WSSL_CALLBACK_NONE;
+  wssl->on_timeout_callback                 = WSSL_CALLBACK_NONE;
   wssl->random_seed                         = 0;
   wssl_id_init(&wssl->next_client_id);
   wssl_server_chain_root_init(&wssl->servers);

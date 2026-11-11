@@ -23,12 +23,20 @@ bool on_tick(wssl_t* wssl)
   return true;
 }
 
+wssl_callback_result_e on_timeout(wssl_client_t* client, wssl_client_state_e state)
+{
+  return WSSL_CALLBACK_RESULT_DISCONNECT;
+}
+
 int main(int arguments_count, char* arguments_value[])
 {
   WSSL_DECLARE(wssl);
 
   wssl_set_sleep_in_mseconds(&wssl, 500);
   wssl_set_on_tick_callback(&wssl, &on_tick);
+
+  wssl_set_timeout_in_mseconds(&wssl, 10000);
+  wssl_set_on_timeout_callback(&wssl, &on_timeout);
 
   switch(arguments_count)
   {

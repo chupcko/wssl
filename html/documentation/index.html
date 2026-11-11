@@ -77,6 +77,7 @@
             <li><a href="#cb-ping"><code>on_receive_ping_frame</code></a></li>
             <li><a href="#cb-pong"><code>on_receive_pong_frame</code></a></li>
             <li><a href="#cb-tick"><code>on_tick</code></a></li>
+            <li><a href="#cb-timeout"><code>on_timeout</code></a></li>
             <li><a href="#cb-foreach"><code>for_each callback</code></a></li>
           </ul>
         </div>
@@ -166,7 +167,7 @@ int main(void)
         </section>
         <section id="g-lifecycle">
           <h2>Event loop and callbacks</h2>
-          <p><code><a href="#f-loop">wssl_loop</a>()</code> runs until a signal stops it. The core concept is one loop around one <code>epoll</code> instance, single-threaded: every socket the library owns, listen sockets and client connections alike, is nonblocking (<code>O_NONBLOCK</code>), so the loop never stalls on any single client. Each pass blocks in <code>epoll_wait</code> up to <code>sleep_in_mseconds</code>, dispatches readable sockets to receive and writable ones to send, then runs <code>on_tick</code> and deletes the clients marked for disconnecting. Callbacks never run in parallel with each other, so no locking is needed in application code.</p>
+          <p><code><a href="#f-loop">wssl_loop</a>()</code> runs until a signal stops it. The core concept is one loop around one <code>epoll</code> instance, single-threaded: every socket the library owns, listen sockets and client connections alike, is nonblocking (<code>O_NONBLOCK</code>), so the loop never stalls on any single client. Each pass blocks in <code>epoll_wait</code> up to <code>sleep_in_mseconds</code>, dispatches readable sockets to receive and writable ones to send, checks per-client timeouts, then runs <code>on_tick</code> and deletes the clients marked for disconnecting. Callbacks never run in parallel with each other, so no locking is needed in application code.</p>
           <p>For each connection the library calls, in order:</p>
           <ol>
           <li><code>on_connect_callback</code> - new TCP/TLS connection accepted.</li>
@@ -333,6 +334,7 @@ else                       // port 6001 plain</div>
   char* server_name;
   <a href="#m-macros">wssl_size_t</a> buffer_size_in_octets;
   <a href="#m-macros">wssl_ssize_t</a> sleep_in_mseconds;
+  <a href="#m-macros">wssl_mseconds_t</a> timeout_in_mseconds;
   <a href="#m-macros">wssl_size_t</a> max_number_of_output_chunks;
   <a href="#m-macros">wssl_size_t</a> max_number_of_received_multi_frames;
   <a href="#m-macros">wssl_size_t</a> max_number_of_header_fields;
@@ -348,6 +350,7 @@ else                       // port 6001 plain</div>
             <tr><td><code>server_name</code></td><td><a href="#d-server-name"><code>"<span class="doc-server-name"></span>"</code></a></td><td>Value sent as <code>Server</code> header in the handshake.</td></tr>
             <tr><td><code>buffer_size_in_octets</code></td><td><a href="#d-buffer-size"><code>4096</code></a></td><td>Per-client input buffer size.</td></tr>
             <tr><td><code>sleep_in_mseconds</code></td><td><a href="#d-sleep"><code>1000</code></a></td><td>Idle sleep between loop iterations; also the <code>on_tick</code> period.</td></tr>
+            <tr><td><code>timeout_in_mseconds</code></td><td><a href="#d-timeout"><code>0</code></a></td><td>Silence limit per client; <code>0</code> disables the check.</td></tr>
             <tr><td><code>max_number_of_output_chunks</code></td><td><a href="#d-output-chunks"><code>16</code></a></td><td>Queue limit per client; over it the client is dropped.</td></tr>
             <tr><td><code>max_number_of_received_multi_frames</code></td><td><a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message limit before the client is dropped.</td></tr>
             <tr><td><code>max_number_of_header_fields</code></td><td><a href="#d-header-fields"><code>64</code></a></td><td>Cap on HTTP header fields per connection.</td></tr>
@@ -364,6 +367,7 @@ else                       // port 6001 plain</div>
             <tr id="d-server-name"><td><code><a href="#s-defaults">WSSL_DEFAULT_SERVER_NAME</a></code></td><td><code>("WSSL-" <a href="#s-defaults">WSSL_VERSION</a>)</code> = <code>"<span class="doc-server-name"></span>"</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.server_name</code>.</td></tr>
             <tr id="d-buffer-size"><td><code><a href="#s-defaults">WSSL_DEFAULT_BUFFER_SIZE_IN_OCTETS</a></code></td><td><code>4096</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.buffer_size_in_octets</code>.</td></tr>
             <tr id="d-sleep"><td><code><a href="#s-defaults">WSSL_DEFAULT_SLEEP_IN_MSECONDS</a></code></td><td><code>1000</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.sleep_in_mseconds</code>.</td></tr>
+            <tr id="d-timeout"><td><code><a href="#s-defaults">WSSL_DEFAULT_TIMEOUT_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.timeout_in_mseconds</code>; <code>0</code> disables the check.</td></tr>
             <tr id="d-output-chunks"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS</a></code></td><td><code>16</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_output_chunks</code>.</td></tr>
             <tr id="d-multi-frames"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES</a></code></td><td><code>8</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_received_multi_frames</code>.</td></tr>
             <tr id="d-header-fields"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS</a></code></td><td><code>64</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_header_fields</code>.</td></tr>
@@ -422,6 +426,7 @@ else                       // port 6001 plain</div>
   <a href="#s-frame">wssl_frame_t</a> frame;    // current frame while receiving
   <a href="#s-client-state">wssl_client_state_e</a> state;
   <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason;
+  <a href="#m-macros">wssl_mseconds_t</a> last_receive_in_mseconds;  // monotonic clock of last received byte
   /* ... output queue, ssl state ... */
 } wssl_client_t;</div>
           <p>The callback argument. Read <code>header</code>, <code>ip</code>, <code>port</code>, <code>id</code> freely; never close <code>socket_descriptor</code> or free the struct yourself. Use <code><a href="#f-mark-disconnect">wssl_client_mark_for_disconnecting</a>()</code> to drop the connection and <code>connection_extra_data</code> for per-connection state.</p>
@@ -543,7 +548,8 @@ WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED
 WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_OUTPUT_CHUNKS
 WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES
 WSSL_CLIENT_DISCONNECT_REASON_REQUESTED
-WSSL_CLIENT_DISCONNECT_REASON_STOPED</div>
+WSSL_CLIENT_DISCONNECT_REASON_STOPED
+WSSL_CLIENT_DISCONNECT_REASON_TIMEOUT</div>
           <p>Passed to <code>on_disconnect</code>. <code><a href="#f-client-names">wssl_client_disconnect_reason_is_error</a>()</code> is false for clean shutdowns (<code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPED</code>). Name via <code><a href="#f-client-names">wssl_client_get_disconnect_reason_name</a>()</code>.</p>
         </section>
         <section id="s-callback-result">
@@ -590,6 +596,9 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
           <h3 id="cb-tick">on_tick</h3>
           <div class="sig">bool on_tick(struct <a href="#s-wssl-t">wssl_t</a>* wssl);</div>
           <p>Receives the library instance once per loop pass, with no client context (reach state via <code>global_extra_data</code> and clients via <code>for_each</code>). Return <code>true</code> to keep looping, <code>false</code> to stop the loop after this pass. While the loop is idle each pass blocks up to <code>sleep_in_mseconds</code> in <code>epoll_wait</code>, so that value sets the idle tick period; the time example uses 500 ms.</p>
+          <h3 id="cb-timeout">on_timeout</h3>
+          <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_timeout(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#s-client-state">wssl_client_state_e</a> state);</div>
+          <p>Receives a client that sent nothing for <code>timeout_in_mseconds</code>, plus the state it was stuck in. Return <code>OK</code> to forgive it and restart its clock, <code>DISCONNECT</code> / <code>ERROR</code> to drop it like any other callback. With no callback registered the library always drops the client as <code><a href="#s-disconnect-reason">TIMEOUT</a></code>. Disabled while the timeout is <code>0</code>.</p>
           <h3 id="cb-foreach">for_each callback</h3>
           <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> for_client(<a href="#s-client-t">wssl_client_t</a>* client, void* local_extra_data);</div>
           <p>Not registered on the instance: you pass it to <code><a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>()</code>, which invokes it once per connected client with your <code>local_extra_data</code> pointer. The same three-way return applies per client (<code>OK</code> continues, <code>DISCONNECT</code> / <code>ERROR</code> schedule that client's drop), and the iteration always visits the remaining clients.</p>
@@ -613,6 +622,7 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
             <tr><td><code>wssl_set_server_name(<a href="#s-wssl-t">wssl_t</a>*, char*)</code></td><td>Field <code>server_name</code>, default <a href="#d-server-name"><code>"<span class="doc-server-name"></span>"</code></a></td><td>Handshake reply: <code>Server:</code> header on success (101) and on 400 Bad Request.</td></tr>
             <tr><td><code>wssl_set_buffer_size_in_octets(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>buffer_size_in_octets</code>, default <a href="#d-buffer-size"><code>4096</code></a></td><td>Input buffer allocation on first receive; handshake reply chunk size; a frame larger than this drops the client (<code><a href="#s-disconnect-reason">INPUT_BUFFER_IS_FULL</a></code>).</td></tr>
             <tr><td><code>wssl_set_sleep_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_ssize_t</a>)</code></td><td>Field <code>sleep_in_mseconds</code>, default <a href="#d-sleep"><code>1000</code></a></td><td><code>epoll_wait</code> timeout inside <code><a href="#f-loop">wssl_loop</a></code>; <code>on_tick</code> runs once per loop pass, so about one tick per interval while idle.</td></tr>
+            <tr><td><code>wssl_set_timeout_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>timeout_in_mseconds</code>, default <a href="#d-timeout"><code>0</code></a></td><td>Silence limit per client in milliseconds; <code>0</code> disables the check. Expired clients go to <code>on_timeout</code>, or are dropped as <code><a href="#s-disconnect-reason">TIMEOUT</a></code> with no callback.</td></tr>
             <tr><td><code>wssl_set_max_number_of_output_chunks(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_output_chunks</code>, default <a href="#d-output-chunks"><code>16</code></a></td><td>Queue check on every send: a client over the limit is dropped (<code><a href="#s-disconnect-reason">TOO_MUCH_OUTPUT_CHUNKS</a></code>).</td></tr>
             <tr><td><code>wssl_set_max_number_of_received_multi_frames(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_received_multi_frames</code>, default <a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message check: too many continuation frames drop the client (<code><a href="#s-disconnect-reason">TOO_MUCH_RECEIVED_MULTI_FRAMES</a></code>).</td></tr>
             <tr><td><code>wssl_set_max_number_of_header_fields(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_header_fields</code>, default <a href="#d-header-fields"><code>64</code></a></td><td>Header parsing: one field too many drops the client (<code><a href="#s-disconnect-reason">BAD_HEADER</a></code>).</td></tr>
@@ -760,6 +770,7 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
           <div class="sig">#define WSSL_PRINT_OCTET      "02" PRIx8  // wssl_octet_t -&gt; two hex digits
 #define WSSL_PRINT_SIZE       "zu"        // wssl_size_t
 #define WSSL_PRINT_SSIZE      "zd"        // wssl_ssize_t
+#define WSSL_PRINT_MSECONDS PRIu64        // wssl_mseconds_t
 #define WSSL_PRINT_ID_PREFIX  PRIu32      // <a href="#s-id">wssl_id_prefix_t</a>
 #define WSSL_PRINT_ID_SUFFIX  PRIu32      // <a href="#s-id">wssl_id_suffix_t</a>
 #define WSSL_PRINT_FRAME_SIZE PRIu64      // wssl_frame_size_t</div>
