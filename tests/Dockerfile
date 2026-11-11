@@ -10,7 +10,7 @@ RUN apt-get install -y --no-install-recommends \
     openssl                                    \
     pkg-config                                 \
     python3                                    \
-    python3-pip                                \
+    python3-pip
 
 RUN rm -r -f /var/lib/apt/lists/*
 
