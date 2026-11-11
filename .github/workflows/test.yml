@@ -21,7 +21,8 @@ jobs:
     outputs:
       docker-id: 1
     steps:
-      - run: true
+      - name: No-op
+        run: true
 
   test:
     needs: setup
@@ -35,6 +36,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v5
-      - run: make
-      - run: make test
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Build
+        run: make
+      - name: Test
+        run: make test
