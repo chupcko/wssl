@@ -9,3 +9,4 @@
 -dodati i model sa forkovima, gde se svaki klijent otvori u svom forku i tu radi ...
 -Makefile glavni sredi da hvata i tests
 -Sredi kompajliranje u tests
+-Multi primer sva tri servisa u jednom fajlu sa tri wssl_t

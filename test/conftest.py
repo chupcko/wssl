@@ -52,7 +52,7 @@ def echo_server() :
 @pytest.fixture(scope='session')
 def kick_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'kick_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'kick_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -68,7 +68,7 @@ def kick_server() :
 @pytest.fixture(scope='session')
 def timeout_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'timeout_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'timeout_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -84,7 +84,7 @@ def timeout_server() :
 @pytest.fixture(scope='session')
 def reset_timeout_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'reset_timeout_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'reset_timeout_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -100,7 +100,7 @@ def reset_timeout_server() :
 @pytest.fixture(scope='session')
 def ping_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'ping_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'ping_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -116,7 +116,7 @@ def ping_server() :
 @pytest.fixture(scope='session')
 def ping_nocb_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'ping_nocb_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'ping_nocb_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -132,7 +132,7 @@ def ping_nocb_server() :
 @pytest.fixture(scope='session')
 def ping_manual_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'ping_manual_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'ping_manual_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )
@@ -148,7 +148,7 @@ def ping_manual_server() :
 @pytest.fixture(scope='session')
 def timeout_nocb_server() :
   proc = subprocess.Popen(
-    [os.path.join(REPO_ROOT, 'tests', 'timeout_nocb_server.e')],
+    [os.path.join(REPO_ROOT, 'test', 'timeout_nocb_server.e')],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
   )

@@ -39,12 +39,12 @@ wssl_result_t wssl_check_timeouts
 
   CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_in_wait_header)
   {
-    TRY_CALL(wssl_check_client_timeout(wssl, wssl_client_chain_get_entry_from_wssl_chain_link(client_link), now_in_mseconds));
+    CALL_ALLWAYS_PASS_FUNCTION(wssl_check_client_timeout(wssl, wssl_client_chain_get_entry_from_wssl_chain_link(client_link), now_in_mseconds));
   }
 
   CHAIN_FOR_EACH_LINK_SAFE_FORWARD(client_link, client_link_next, &wssl->clients_in_frame_processing)
   {
-    TRY_CALL(wssl_check_client_timeout(wssl, wssl_client_chain_get_entry_from_wssl_chain_link(client_link), now_in_mseconds));
+    CALL_ALLWAYS_PASS_FUNCTION(wssl_check_client_timeout(wssl, wssl_client_chain_get_entry_from_wssl_chain_link(client_link), now_in_mseconds));
   }
 
   PASS;

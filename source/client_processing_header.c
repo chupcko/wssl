@@ -126,8 +126,7 @@ wssl_result_t wssl_client_processing_header
   }
 
   wssl_chunk_t* chunk;
-  TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
-  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
+  CALL_ALLWAYS_PASS_FUNCTION_THEN_PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
 
   if(pass)
   {

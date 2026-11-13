@@ -191,4 +191,15 @@ do                                                              \
 }                                                               \
 while(false)                                                    \
 
+#define CALL_ALLWAYS_PASS_FUNCTION_THEN_PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(what_client, ...) \
+do                                                                                                   \
+{                                                                                                    \
+  (__VA_ARGS__);                                                                                     \
+  if(wssl_client_is_marked_for_disconnecting(what_client))                                           \
+  {                                                                                                  \
+    PASS;                                                                                            \
+  }                                                                                                  \
+}                                                                                                    \
+while(false)                                                                                         \
+
 #endif

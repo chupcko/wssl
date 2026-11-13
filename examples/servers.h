@@ -34,35 +34,20 @@ int servers_parse_stack
 {
   if(strcmp(text, "ipv4") == 0)
   {
-    configuration->ipv6 = false;
-    configuration->ipv6_dual_stack = false;
+    wssl_server_configuration_set_ipv6(configuration, false);
+    wssl_server_configuration_set_ipv6_dual_stack(configuration, false);
   }
   else if(strcmp(text, "ipv6") == 0)
   {
-    configuration->ipv6 = true;
-    configuration->ipv6_dual_stack = false;
+    wssl_server_configuration_set_ipv6(configuration, true);
+    wssl_server_configuration_set_ipv6_dual_stack(configuration, false);
   }
   else if(strcmp(text, "ipv6-dual-stack") == 0)
   {
-    configuration->ipv6 = true;
-    configuration->ipv6_dual_stack = true;
+    wssl_server_configuration_set_ipv6(configuration, true);
+    wssl_server_configuration_set_ipv6_dual_stack(configuration, true);
   }
   else
-  {
-    return -1;
-  }
-  return 0;
-}
-
-int servers_copy_text
-(
-  char*       destination,
-  const char* source,
-  size_t      destination_size
-)
-{
-  int result = snprintf(destination, destination_size, "%s", source);
-  if(result < 0 || result >= (int)destination_size)
   {
     return -1;
   }
@@ -129,18 +114,15 @@ int servers_read_configurations
       fclose(file);
       return -1;
     }
-    if(servers_copy_text(configuration->ip, ip, sizeof(configuration->ip)) != 0)
-    {
-      fprintf(stderr, "%s:%d: bad ip '%s'\n", file_name, line_number, ip);
-      fclose(file);
-      return -1;
-    }
-    if(servers_parse_port(port_text, &configuration->port) != 0)
+    wssl_server_configuration_set_ip(configuration, ip);
+    int port;
+    if(servers_parse_port(port_text, &port) != 0)
     {
       fprintf(stderr, "%s:%d: bad port '%s'\n", file_name, line_number, port_text);
       fclose(file);
       return -1;
     }
+    wssl_server_configuration_set_port(configuration, port);
     if(ssl != NULL)
     {
       if(strcmp(ssl, "ssl") != 0 || certificate_file == NULL || private_key_file == NULL)
@@ -149,17 +131,7 @@ int servers_read_configurations
         fclose(file);
         return -1;
       }
-      if
-      (
-        servers_copy_text(configuration->certificate_file, certificate_file, sizeof(configuration->certificate_file)) != 0 ||
-        servers_copy_text(configuration->private_key_file, private_key_file, sizeof(configuration->private_key_file)) != 0
-      )
-      {
-        fprintf(stderr, "%s:%d: bad certificate file names\n", file_name, line_number);
-        fclose(file);
-        return -1;
-      }
-      configuration->ssl = true;
+      wssl_server_configuration_enable_ssl(configuration, certificate_file, private_key_file);
     }
 
     server_count++;

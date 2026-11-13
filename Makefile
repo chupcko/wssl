@@ -10,7 +10,7 @@ deb: all
 debug: clean source-debug examples-debug
 
 .PHONY: clean
-clean: source-clean examples-clean tests-clean
+clean: source-clean examples-clean test-clean
 	rm -r -f out core
 
 define GENERATE_GOALS_CORE =
@@ -38,8 +38,8 @@ $(GOALS):
 
 .PHONY: test
 test:
-	$(MAKE) -C tests test
+	$(MAKE) -C test test
 
-.PHONY: tests-clean
-tests-clean:
-	$(MAKE) -C tests clean
+.PHONY: test-clean
+test-clean:
+	$(MAKE) -C test clean

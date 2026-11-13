@@ -158,7 +158,7 @@ wssl_result_t wssl_loop
       }
     }
 
-    TRY_CALL(wssl_check_timeouts(wssl));
+    CALL_ALLWAYS_PASS_FUNCTION(wssl_check_timeouts(wssl));
     TRY_CALL(wssl_check_pings(wssl));
 
     if

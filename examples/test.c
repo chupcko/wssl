@@ -18,12 +18,12 @@ int main(int arguments_count, char* arguments_value[])
   wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
   if(arguments_count == 3)
   {
-    WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 6011));
-    WSSL_TRY_CALL(wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]));
+    wssl_server_configuration_set_port(&server_configuration, 6011);
+    wssl_server_configuration_enable_ssl(&server_configuration, arguments_value[1], arguments_value[2]);
   }
   else
   {
-    WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 6001));
+    wssl_server_configuration_set_port(&server_configuration, 6001);
   }
   WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
   WSSL_TRY_CALL(wssl_loop_init_signals());

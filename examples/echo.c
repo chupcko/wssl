@@ -23,8 +23,8 @@ int main(int arguments_count, char* arguments_value[])
     case 1:
     {
       wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
-      WSSL_TRY_CALL(wssl_server_configuration_set_port(&server_configuration, 5001));
-      WSSL_TRY_CALL(wssl_server_add(&wssl, &server_configuration));
+      wssl_server_configuration_set_port(&server_configuration, 5001);
+      wssl_server_add(&wssl, &server_configuration);
       break;
     }
     case 2:

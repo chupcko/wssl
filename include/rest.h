@@ -192,30 +192,33 @@ do                                                                              
   wssl_result_t result = (__VA_ARGS__);                                                          \
   if(wssl_result_is_not_ok(result))                                                              \
   {                                                                                              \
-    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, what_disconnect_reason);                \
+    wssl_client_mark_for_disconnecting(what_client, what_disconnect_reason);                     \
+    PASS;                                                                                        \
   }                                                                                              \
 }                                                                                                \
 while(false)                                                                                     \
 
-#define TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(what_client, what_callback_result)             \
-do                                                                                                        \
-{                                                                                                         \
-  wssl_callback_result_e callback_result = (what_callback_result);                                        \
-  switch(callback_result)                                                                                 \
-  {                                                                                                       \
-    case WSSL_CALLBACK_RESULT_DISCONNECT:                                                                 \
-    {                                                                                                     \
-      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);      \
-      break;                                                                                              \
-    }                                                                                                     \
-    case WSSL_CALLBACK_RESULT_ERROR:                                                                      \
-    {                                                                                                     \
-      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
-      break;                                                                                              \
-    }                                                                                                     \
-  }                                                                                                       \
-}                                                                                                         \
-while(false)                                                                                              \
+#define TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(what_client, what_callback_result)        \
+do                                                                                                   \
+{                                                                                                    \
+  wssl_callback_result_e callback_result = (what_callback_result);                                   \
+  switch(callback_result)                                                                            \
+  {                                                                                                  \
+    case WSSL_CALLBACK_RESULT_DISCONNECT:                                                            \
+    {                                                                                                \
+      wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);      \
+      PASS;                                                                                          \
+      break;                                                                                         \
+    }                                                                                                \
+    case WSSL_CALLBACK_RESULT_ERROR:                                                                 \
+    {                                                                                                \
+      wssl_client_mark_for_disconnecting(what_client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR); \
+      PASS;                                                                                          \
+      break;                                                                                         \
+    }                                                                                                \
+  }                                                                                                  \
+}                                                                                                    \
+while(false)                                                                                         \
 
 #define TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING(what_client, what_callback_result)                  \
 do                                                                                                   \
