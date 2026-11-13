@@ -7,15 +7,16 @@ wssl_result_t wssl_check_client_ping
   _WSSL_IN_     wssl_mseconds_t now_in_mseconds
 )
 {
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
+
   if(now_in_mseconds-client->last_ping_in_mseconds >= client->wssl->ping_interval_in_mseconds)
   {
     if(client->wssl->on_send_ping_frame_callback != WSSL_CALLBACK_NONE)
     {
       TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_send_ping_frame_callback)(client));
     }
-    TRY_CALL(wssl_client_send_ping_frame(client));
-    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
     client->last_ping_in_mseconds = now_in_mseconds;
+    TRY_CALL(wssl_client_send_ping_frame(client));
   }
 
   PASS;

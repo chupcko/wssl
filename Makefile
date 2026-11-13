@@ -1,45 +1,25 @@
 .DEFAULT_GOAL := all
 .PHONY: all
-all: source- examples-
-
-.PHONY: deb
-deb: all
-	./tools/make_deb
+all:
+	$(MAKE) -C source
+	$(MAKE) -C examples
 
 .PHONY: debug
-debug: clean source-debug examples-debug
+debug: clean
+	$(MAKE) -C source debug
+	$(MAKE) -C examples debug
 
 .PHONY: clean
-clean: source-clean examples-clean test-clean
-	rm -r -f out core
-
-define GENERATE_GOALS_CORE =
-  GOALS += $(1)-$(2:all=)
-endef
-define GENERATE_GOALS =
-  $(foreach goal,all debug clean,$(eval $(call GENERATE_GOALS_CORE,$(1),$(goal))))
-endef
-$(foreach dir,source examples,$(call GENERATE_GOALS,$(dir)))
-
-define GENERATE_RULES_CORE =
-  $(1)-$(2:all=): source-$(2:all=)
-endef
-define GENERATE_RULES =
-  $(foreach goal,all debug,$(eval $(call GENERATE_RULES_CORE,$(1),$(goal))))
-endef
-$(call GENERATE_RULES,examples)
-
-GET_DIR = $(word 1,$(subst -, ,$(1)))
-GET_GOAL = $(word 2,$(subst -, ,$(1)))
-
-.PHONY: $(GOALS)
-$(GOALS):
-	$(MAKE) -C $(call GET_DIR,$@) $(call GET_GOAL,$@)
+clean: 
+	$(MAKE) -C source clean
+	$(MAKE) -C examples clean
+	$(MAKE) -C test clean
+	rm -rf out core
 
 .PHONY: test
 test:
 	$(MAKE) -C test test
 
-.PHONY: test-clean
-test-clean:
-	$(MAKE) -C test clean
+.PHONY: deb
+deb: all
+	./tools/make_deb

@@ -14,8 +14,8 @@ wssl_result_t wssl_check_client_timeout
     {
       MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TIMEOUT);
     }
-    TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*wssl->on_timeout_callback)(client, client->state));
     client->last_receive_in_mseconds = now_in_mseconds;
+    TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING(client, (*wssl->on_timeout_callback)(client, client->state));
   }
 
   PASS;

@@ -8,9 +8,8 @@ wssl_result_t wssl_client_send_ping
 {
   PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
-  TRY_CALL(wssl_client_send_ping_frame(client));
-  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
-
   client->last_ping_in_mseconds = wssl_now_in_mseconds();
+  TRY_CALL(wssl_client_send_ping_frame(client));
+
   PASS;
 }
