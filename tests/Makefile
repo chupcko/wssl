@@ -1,9 +1,12 @@
+PYTHON := python3
+
 WSSL_DIR := ../out
 
 WSSL_INCLUDE = $(WSSL_DIR)/wssl.h
 WSSL_LIBRARY = $(WSSL_DIR)/libwssl.a
 
 SOURCES := $(wildcard *_server.c)
+OBJECTS = $(SOURCES:.c=.o)
 TARGETS = $(SOURCES:.c=.e)
 
 COMPILER := gcc
@@ -14,25 +17,21 @@ LIBRARIES := $(or $(shell pkg-config --libs openssl 2>/dev/null),-lssl -lcrypto)
 
 .DEFAULT_GOAL := all
 .PHONY: all
-all: $(WSSL_LIBRARY) $(TARGETS)
-
-$(WSSL_LIBRARY):
-	$(MAKE) -C ..
-
-$(WSSL_INCLUDE): $(WSSL_LIBRARY)
-
-PYTHON ?= python3
-
-.PHONY: test
-test: all
-	$(PYTHON) -m pytest . -q
+all: $(TARGETS)
 
 .PHONY: clean
 clean:
 	rm -f $(TARGETS) core
 
+.PHONY: test
+test: all
+	$(PYTHON) -m pytest . -q
+
 .SECONDARY:
 .SUFFIXES:
 
-%.e: %.c $(WSSL_INCLUDE)
-	$(COMPILER) $(COMPILER_FLAGS) -o $@ $< $(WSSL_LIBRARY) $(LIBRARIES)
+%.o: %.c $(WSSL_INCLUDE) $(INCLUDES)
+	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
+
+%.e: %.o $(WSSL_LIBRARY)
+	$(LINKER) $(LINKER_FLAGS) -o $@ $< $(WSSL_LIBRARY) $(LIBRARIES)

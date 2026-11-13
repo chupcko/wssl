@@ -117,8 +117,11 @@ wssl_result_t wssl_client_add
 
   client->state = WSSL_CLIENT_STATE_WAIT_METHOD;
   client->disconnect_reason = WSSL_CLIENT_DISCONNECT_REASON_NONE;
-  client->last_receive_in_mseconds = wssl_now_in_mseconds();
-  client->last_ping_in_mseconds = wssl_now_in_mseconds();
+  wssl_mseconds_t now_in_mseconds = wssl_now_in_mseconds();
+  client->last_receive_in_mseconds = now_in_mseconds;
+  client->last_ping_in_mseconds = now_in_mseconds;
+  client->last_pong_in_mseconds = now_in_mseconds;
+  client->ping_in_progress = false;
 
   wssl_header_init(&client->header);
   wssl_frame_init(&client->frame);

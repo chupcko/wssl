@@ -7,6 +7,7 @@ _INCLUDE_BEGIN_
 #define WSSL_NULL                   NULL
 #define WSSL_IP_SIZE_IN_CHAR        64
 #define WSSL_FILE_PATH_SIZE_IN_CHAR 4096
+#define WSSL_PING_CONTEXT_SIZE      16
 
 typedef uint8_t wssl_octet_t;
 #define WSSL_PRINT_OCTET "02" PRIx8

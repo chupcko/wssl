@@ -30,6 +30,9 @@ typedef struct wssl_client_t
   wssl_size_t                     number_of_received_multi_frames;
   wssl_mseconds_t                 last_receive_in_mseconds;
   wssl_mseconds_t                 last_ping_in_mseconds;
+  wssl_mseconds_t                 last_pong_in_mseconds;
+  bool                            ping_in_progress;
+  wssl_octet_t                    ping_context[WSSL_PING_CONTEXT_SIZE];
 } wssl_client_t;
 
 static inline
@@ -140,7 +143,7 @@ bool wssl_client_disconnect_reason_is_error
     disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED &&
     disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_CLOSED &&
     disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_REQUESTED &&
-    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_STOPED;
+    disconnect_reason != WSSL_CLIENT_DISCONNECT_REASON_STOPPED;
 }
 
 static inline
@@ -154,7 +157,7 @@ bool wssl_client_disconnect_reason_is_not_error
     disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_DISCONNECTED ||
     disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_CLOSED ||
     disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_REQUESTED ||
-    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_STOPED;
+    disconnect_reason == WSSL_CLIENT_DISCONNECT_REASON_STOPPED;
 }
 
 static inline
@@ -191,7 +194,7 @@ do                                                              \
 }                                                               \
 while(false)                                                    \
 
-#define CALL_ALLWAYS_PASS_FUNCTION_THEN_PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(what_client, ...) \
+#define CALL_ALWAYS_PASS_FUNCTION_THEN_PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(what_client, ...) \
 do                                                                                                   \
 {                                                                                                    \
   (__VA_ARGS__);                                                                                     \

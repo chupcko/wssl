@@ -52,6 +52,16 @@ wssl_result_t wssl_client_processing_frame
     }
     case FRAME_OPCODE_PONG:
     {
+      if
+      (
+        client->ping_in_progress == true &&
+        client->frame.payload_size == WSSL_PING_CONTEXT_SIZE &&
+        memcmp(client->frame.payload, client->ping_context, WSSL_PING_CONTEXT_SIZE) == 0
+      )
+      {
+        client->last_pong_in_mseconds = wssl_now_in_mseconds();
+        client->ping_in_progress = false;
+      }
       if(client->wssl->on_receive_pong_frame_callback != WSSL_CALLBACK_NONE)
       {
         TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_receive_pong_frame_callback)(client, client->frame.payload, client->frame.payload_size));

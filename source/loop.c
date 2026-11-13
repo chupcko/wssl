@@ -105,7 +105,7 @@ wssl_result_t wssl_loop
   _WSSL_MODIFY_ wssl_t* wssl
 )
 {
-  wssl_ssize_t events_number;
+  wssl_ssize_t number_of_events;
   struct epoll_event events[EPOLL_EVENTS_SIZE];
   wssl_ssize_t event_index;
   wssl_epoll_data_t* epoll_data;
@@ -116,14 +116,14 @@ wssl_result_t wssl_loop
 
   LOOP
   {
-    events_number = (wssl_ssize_t)epoll_wait
+    number_of_events = (wssl_ssize_t)epoll_wait
     (
       wssl->epoll_descriptor,
       events,
       EPOLL_EVENTS_SIZE,
       (int)wssl->sleep_in_mseconds
     );
-    if(events_number < 0)
+    if(number_of_events < 0)
     {
       if(errno != EINTR)
       {
@@ -132,7 +132,7 @@ wssl_result_t wssl_loop
     }
     else
     {
-      for(event_index = 0; event_index < events_number; event_index++)
+      for(event_index = 0; event_index < number_of_events; event_index++)
       {
         epoll_data = (wssl_epoll_data_t*)events[event_index].data.ptr;
         switch(epoll_data->type)
@@ -158,8 +158,7 @@ wssl_result_t wssl_loop
       }
     }
 
-    CALL_ALLWAYS_PASS_FUNCTION(wssl_check_timeouts(wssl));
-    TRY_CALL(wssl_check_pings(wssl));
+    TRY_CALL(wssl_check_clients(wssl));
 
     if
     (

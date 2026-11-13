@@ -10,7 +10,7 @@ wssl_result_t wssl_chunk_add
 {
   if(client->number_of_output_chunks > client->wssl->max_number_of_output_chunks)
   {
-    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_OUTPUT_CHUNKS);
+    MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_TOO_MANY_OUTPUT_CHUNKS);
   }
 
   *chunk = (wssl_chunk_t*)malloc

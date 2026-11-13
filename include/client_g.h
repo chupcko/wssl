@@ -31,11 +31,12 @@
   what_call(NO_MEMORY,                      "No memory"                     ) \
   what_call(CALLBACK_ERROR,                 "Callback error"                ) \
   what_call(FRAME_NOT_MASKED,               "Frame not masked"              ) \
-  what_call(TOO_MUCH_OUTPUT_CHUNKS,         "Too much output chunks"        ) \
-  what_call(TOO_MUCH_RECEIVED_MULTI_FRAMES, "Too much received multi frames") \
+  what_call(TOO_MANY_OUTPUT_CHUNKS,         "Too many output chunks"        ) \
+  what_call(TOO_MANY_RECEIVED_MULTI_FRAMES, "Too many received multi frames") \
   what_call(REQUESTED,                      "Requested"                     ) \
-  what_call(STOPED,                         "Stopped"                       ) \
+  what_call(STOPPED,                        "Stopped"                       ) \
   what_call(TIMEOUT,                        "Timeout"                       ) \
+  what_call(PONG_TIMEOUT,                   "Pong timeout"                  ) \
 
 _INCLUDE_BEGIN_
 

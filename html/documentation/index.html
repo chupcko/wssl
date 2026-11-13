@@ -287,7 +287,7 @@ bool on_tick(<a href="#s-wssl-t">wssl_t</a>* wssl)
   // broadcast "room:suffix = LEAVE"
   }
 }</div>
-          <p><code>LEAVE</code> goes out only on clean exits (<code>is_not_error</code> covers <code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPED</code>); error drops stay silent. <code>on_disconnect</code> returns <code>void</code>, unlike the frame callbacks.</p>
+          <p><code>LEAVE</code> goes out only on clean exits (<code>is_not_error</code> covers <code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPPED</code>); error drops stay silent. <code>on_disconnect</code> returns <code>void</code>, unlike the frame callbacks.</p>
         </section>
         <section id="ex-dump">
           <h2>Example: dump <span class="tag">examples/dump.c</span></h2>
@@ -355,6 +355,8 @@ else                       // port 6001 plain</div>
             <tr><td><code>buffer_size_in_octets</code></td><td><a href="#d-buffer-size"><code>4096</code></a></td><td>Per-client input buffer size.</td></tr>
             <tr><td><code>sleep_in_mseconds</code></td><td><a href="#d-sleep"><code>1000</code></a></td><td>Idle sleep between loop iterations; also the <code>on_tick</code> period.</td></tr>
             <tr><td><code>timeout_in_mseconds</code></td><td><a href="#d-timeout"><code>0</code></a></td><td>Silence limit per client; <code>0</code> disables the check.</td></tr>
+        <tr><td><code>ping_interval_in_mseconds</code></td><td><a href="#d-ping"><code>0</code></a></td><td>Keepalive ping period per client; <code>0</code> disables pinging.</td></tr>
+        <tr><td><code>pong_timeout_in_mseconds</code></td><td><a href="#d-pong"><code>0</code></a></td><td>Deadline for the pong answer; <code>0</code> disables the check, late clients are dropped.</td></tr>
             <tr><td><code>max_number_of_output_chunks</code></td><td><a href="#d-output-chunks"><code>16</code></a></td><td>Queue limit per client; over it the client is dropped.</td></tr>
             <tr><td><code>max_number_of_received_multi_frames</code></td><td><a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message limit before the client is dropped.</td></tr>
             <tr><td><code>max_number_of_header_fields</code></td><td><a href="#d-header-fields"><code>64</code></a></td><td>Cap on HTTP header fields per connection.</td></tr>
@@ -373,6 +375,7 @@ else                       // port 6001 plain</div>
             <tr id="d-sleep"><td><code><a href="#s-defaults">WSSL_DEFAULT_SLEEP_IN_MSECONDS</a></code></td><td><code>1000</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.sleep_in_mseconds</code>.</td></tr>
             <tr id="d-timeout"><td><code><a href="#s-defaults">WSSL_DEFAULT_TIMEOUT_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.timeout_in_mseconds</code>; <code>0</code> disables the check.</td></tr>
             <tr id="d-ping"><td><code><a href="#s-defaults">WSSL_DEFAULT_PING_INTERVAL_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.ping_interval_in_mseconds</code>; <code>0</code> disables pinging.</td></tr>
+        <tr id="d-pong"><td><code><a href="#s-defaults">WSSL_DEFAULT_PONG_TIMEOUT_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.pong_timeout_in_mseconds</code>; <code>0</code> disables the check.</td></tr>
             <tr id="d-output-chunks"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS</a></code></td><td><code>16</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_output_chunks</code>.</td></tr>
             <tr id="d-multi-frames"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES</a></code></td><td><code>8</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_received_multi_frames</code>.</td></tr>
             <tr id="d-header-fields"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS</a></code></td><td><code>64</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_header_fields</code>.</td></tr>
@@ -432,6 +435,10 @@ else                       // port 6001 plain</div>
   <a href="#s-client-state">wssl_client_state_e</a> state;
   <a href="#s-disconnect-reason">wssl_client_disconnect_reason_e</a> disconnect_reason;
   <a href="#m-macros">wssl_mseconds_t</a> last_receive_in_mseconds;  // monotonic clock of last received byte
+  <a href="#m-macros">wssl_mseconds_t</a> last_ping_in_mseconds;     // monotonic clock of last sent ping
+  <a href="#m-macros">wssl_mseconds_t</a> last_pong_in_mseconds;     // monotonic clock of last matched pong
+  bool ping_in_progress;                        // a ping is waiting for its pong
+  <a href="#m-macros">wssl_octet_t</a> ping_context[16];              // random context of the outstanding ping
   /* ... output queue, ssl state ... */
 } wssl_client_t;</div>
           <p>The callback argument. Read <code>header</code>, <code>ip</code>, <code>port</code>, <code>id</code> freely; never close <code>socket_descriptor</code> or free the struct yourself. Use <code><a href="#f-mark-disconnect">wssl_client_mark_for_disconnecting</a>()</code> to drop the connection and <code>connection_extra_data</code> for per-connection state.</p>
@@ -550,12 +557,13 @@ WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER / _BAD_FRAME_OPCODE
 WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY
 WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR
 WSSL_CLIENT_DISCONNECT_REASON_FRAME_NOT_MASKED
-WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_OUTPUT_CHUNKS
-WSSL_CLIENT_DISCONNECT_REASON_TOO_MUCH_RECEIVED_MULTI_FRAMES
+WSSL_CLIENT_DISCONNECT_REASON_TOO_MANY_OUTPUT_CHUNKS
+WSSL_CLIENT_DISCONNECT_REASON_TOO_MANY_RECEIVED_MULTI_FRAMES
 WSSL_CLIENT_DISCONNECT_REASON_REQUESTED
-WSSL_CLIENT_DISCONNECT_REASON_STOPED
-WSSL_CLIENT_DISCONNECT_REASON_TIMEOUT</div>
-          <p>Passed to <code>on_disconnect</code>. <code><a href="#f-client-names">wssl_client_disconnect_reason_is_error</a>()</code> is false for clean shutdowns (<code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPED</code>). Name via <code><a href="#f-client-names">wssl_client_get_disconnect_reason_name</a>()</code>.</p>
+WSSL_CLIENT_DISCONNECT_REASON_STOPPED
+WSSL_CLIENT_DISCONNECT_REASON_TIMEOUT
+WSSL_CLIENT_DISCONNECT_REASON_PONG_TIMEOUT</div>
+          <p>Passed to <code>on_disconnect</code>. <code><a href="#f-client-names">wssl_client_disconnect_reason_is_error</a>()</code> is false for clean shutdowns (<code>NONE</code>, <code>DISCONNECTED</code>, <code>CLOSED</code>, <code>REQUESTED</code>, <code>STOPPED</code>). Name via <code><a href="#f-client-names">wssl_client_get_disconnect_reason_name</a>()</code>.</p>
         </section>
         <section id="s-callback-result">
           <h2>wssl_callback_result_e <span class="tag">enum</span></h2>
@@ -597,7 +605,7 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
           <p>Receives one ping with its payload. The library answers with a pong carrying the same payload right after your callback returns (unless the callback scheduled a drop), so you only need this for observation (latency logging, activity tracking).</p>
           <h3 id="cb-pong">on_receive_pong_frame</h3>
           <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_receive_pong_frame(<a href="#s-client-t">wssl_client_t</a>* client, <a href="#m-macros">wssl_octet_t</a>* data, <a href="#m-macros">wssl_size_t</a> data_size);</div>
-          <p>Receives one pong with its payload. Nothing happens automatically; use it to measure round-trip time or confirm the peer is alive.</p>
+          <p>Receives one pong with its payload. The pong is recorded against <code>pong_timeout_in_mseconds</code> even with no callback registered; use the callback to measure round-trip time or confirm the peer is alive.</p>
           <h3 id="cb-tick">on_tick</h3>
           <div class="sig">bool on_tick(struct <a href="#s-wssl-t">wssl_t</a>* wssl);</div>
           <p>Receives the library instance once per loop pass, with no client context (reach state via <code>global_extra_data</code> and clients via <code>for_each</code>). Return <code>true</code> to keep looping, <code>false</code> to stop the loop after this pass. While the loop is idle each pass blocks up to <code>sleep_in_mseconds</code> in <code>epoll_wait</code>, so that value sets the idle tick period; the time example uses 500 ms.</p>
@@ -606,7 +614,7 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
           <p>Receives a client that sent nothing for <code>timeout_in_mseconds</code>, plus the state it was stuck in. Return <code>OK</code> to forgive it and restart its clock, <code>DISCONNECT</code> / <code>ERROR</code> to drop it like any other callback. With no callback registered the library always drops the client as <code><a href="#s-disconnect-reason">TIMEOUT</a></code>. Disabled while the timeout is <code>0</code>.</p>
           <h3 id="cb-send-ping">on_send_ping_frame</h3>
           <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> on_send_ping_frame(<a href="#s-client-t">wssl_client_t</a>* client);</div>
-          <p>Asks whether to send this client its periodic empty ping frame. Fires once <code>ping_interval_in_mseconds</code> passed since the last ping; return <code>OK</code> to send it and restart the ping clock, <code>DISCONNECT</code> / <code>ERROR</code> to drop the client. With no callback registered the library sends the ping on its own. Disabled while the interval is <code>0</code>. The peer answers with a pong, which counts as received data against <code>timeout_in_mseconds</code> — that is how a silent listener proves the connection is alive.</p>
+          <p>Asks whether to send this client its periodic ping frame. Fires once <code>ping_interval_in_mseconds</code> passed since the last ping and no ping is still unanswered; return <code>OK</code> to send it and restart the ping clock, <code>DISCONNECT</code> / <code>ERROR</code> to drop the client. With no callback registered the library sends the ping on its own. Disabled while the interval is <code>0</code>. Every ping carries a fresh 16-byte random context that the peer must echo back; only a matching pong counts as the answer. The peer answers with a pong, which counts as received data against <code>timeout_in_mseconds</code> — that is how a silent listener proves the connection is alive. If the answer does not arrive within <code>pong_timeout_in_mseconds</code>, the client is dropped as <code><a href="#s-disconnect-reason">PONG_TIMEOUT</a></code>.</p>
           <h3 id="cb-foreach">for_each callback</h3>
           <div class="sig"><a href="#s-callback-result">wssl_callback_result_e</a> for_client(<a href="#s-client-t">wssl_client_t</a>* client, void* local_extra_data);</div>
           <p>Not registered on the instance: you pass it to <code><a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>()</code>, which invokes it once per connected client with your <code>local_extra_data</code> pointer. The same three-way return applies per client (<code>OK</code> continues, <code>DISCONNECT</code> / <code>ERROR</code> schedule that client's drop), and the iteration always visits the remaining clients.</p>
@@ -632,8 +640,9 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
             <tr><td><code>wssl_set_sleep_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_ssize_t</a>)</code></td><td>Field <code>sleep_in_mseconds</code>, default <a href="#d-sleep"><code>1000</code></a></td><td><code>epoll_wait</code> timeout inside <code><a href="#f-loop">wssl_loop</a></code>; <code>on_tick</code> runs once per loop pass, so about one tick per interval while idle.</td></tr>
             <tr><td><code>wssl_set_timeout_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>timeout_in_mseconds</code>, default <a href="#d-timeout"><code>0</code></a></td><td>Silence limit per client in milliseconds; <code>0</code> disables the check. Expired clients go to <code>on_timeout</code>, or are dropped as <code><a href="#s-disconnect-reason">TIMEOUT</a></code> with no callback.</td></tr>
             <tr><td><code>wssl_set_ping_interval_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>ping_interval_in_mseconds</code>, default <a href="#d-ping"><code>0</code></a></td><td>Keepalive period per client in milliseconds; <code>0</code> disables pinging. Due clients go to <code>on_send_ping_frame</code>, or are pinged directly with no callback.</td></tr>
-            <tr><td><code>wssl_set_max_number_of_output_chunks(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_output_chunks</code>, default <a href="#d-output-chunks"><code>16</code></a></td><td>Queue check on every send: a client over the limit is dropped (<code><a href="#s-disconnect-reason">TOO_MUCH_OUTPUT_CHUNKS</a></code>).</td></tr>
-            <tr><td><code>wssl_set_max_number_of_received_multi_frames(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_received_multi_frames</code>, default <a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message check: too many continuation frames drop the client (<code><a href="#s-disconnect-reason">TOO_MUCH_RECEIVED_MULTI_FRAMES</a></code>).</td></tr>
+        <tr><td><code>wssl_set_pong_timeout_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>pong_timeout_in_mseconds</code>, default <a href="#d-pong"><code>0</code></a></td><td>Deadline per client for the pong answer in milliseconds; <code>0</code> disables the check. A client with an unanswered ping past the deadline is dropped as <code><a href="#s-disconnect-reason">PONG_TIMEOUT</a></code>.</td></tr>
+            <tr><td><code>wssl_set_max_number_of_output_chunks(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_output_chunks</code>, default <a href="#d-output-chunks"><code>16</code></a></td><td>Queue check on every send: a client over the limit is dropped (<code><a href="#s-disconnect-reason">TOO_MANY_OUTPUT_CHUNKS</a></code>).</td></tr>
+            <tr><td><code>wssl_set_max_number_of_received_multi_frames(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_received_multi_frames</code>, default <a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message check: too many continuation frames drop the client (<code><a href="#s-disconnect-reason">TOO_MANY_RECEIVED_MULTI_FRAMES</a></code>).</td></tr>
             <tr><td><code>wssl_set_max_number_of_header_fields(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_header_fields</code>, default <a href="#d-header-fields"><code>64</code></a></td><td>Header parsing: one field too many drops the client (<code><a href="#s-disconnect-reason">BAD_HEADER</a></code>).</td></tr>
           </table>
           <h3>Callbacks</h3>
@@ -742,7 +751,7 @@ void wssl_server_configuration_enable_ssl(<a href="#s-server-config">wssl_server
         <section id="f-client-send-ping">
           <h2>wssl_client_send_ping</h2>
           <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_client_send_ping(<a href="#s-client-t">wssl_client_t</a>* client);</div>
-          <p>Sends an empty ping frame right away, regardless of <code>ping_interval_in_mseconds</code>. Never fires <code><a href="#cb-send-ping">on_send_ping_frame</a></code> — that callback belongs to the periodic gate only — but it does restart the periodic ping clock.</p>
+          <p>Sends a ping frame right away, regardless of <code>ping_interval_in_mseconds</code>. The frame carries a fresh 16-byte random context, exactly like a periodic one, and restarts the periodic ping clock. Never fires <code><a href="#cb-send-ping">on_send_ping_frame</a></code> — that callback belongs to the periodic gate only — and is skipped while a previous ping is still unanswered.</p>
         </section>
         <section id="f-for-each">
           <h2>wssl_for_each_client_in_frame_processing_call</h2>

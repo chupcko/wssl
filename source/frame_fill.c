@@ -34,7 +34,7 @@ void wssl_frame_fill
     wssl_size_t i;
     for(i = 0; i < WSSL_FRAME_MASKING_KEY_SIZE; i++)
     {
-      frame->masking_key[i] = (wssl_octet_t)(rand_r(&wssl->random_seed)&0xff);
+      frame->masking_key[i] = wssl_random_octet(wssl);
     }
   }
 }

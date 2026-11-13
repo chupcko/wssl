@@ -10,6 +10,7 @@ typedef struct wssl_t
   wssl_ssize_t                               sleep_in_mseconds;
   wssl_mseconds_t                            timeout_in_mseconds;
   wssl_mseconds_t                            ping_interval_in_mseconds;
+  wssl_mseconds_t                            pong_timeout_in_mseconds;
   wssl_size_t                                max_number_of_output_chunks;
   wssl_size_t                                max_number_of_received_multi_frames;
   wssl_size_t                                max_number_of_header_fields;
@@ -42,6 +43,7 @@ typedef struct wssl_t
   .sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,                                        \
   .timeout_in_mseconds                 = WSSL_DEFAULT_TIMEOUT_IN_MSECONDS,                                      \
   .ping_interval_in_mseconds           = WSSL_DEFAULT_PING_INTERVAL_IN_MSECONDS,                                \
+  .pong_timeout_in_mseconds            = WSSL_DEFAULT_PONG_TIMEOUT_IN_MSECONDS,                                 \
   .max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,                              \
   .max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,                      \
   .max_number_of_header_fields         = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,                              \
@@ -80,6 +82,7 @@ void wssl_init
   wssl->sleep_in_mseconds                   = WSSL_DEFAULT_SLEEP_IN_MSECONDS,
   wssl->timeout_in_mseconds                 = WSSL_DEFAULT_TIMEOUT_IN_MSECONDS,
   wssl->ping_interval_in_mseconds           = WSSL_DEFAULT_PING_INTERVAL_IN_MSECONDS,
+  wssl->pong_timeout_in_mseconds            = WSSL_DEFAULT_PONG_TIMEOUT_IN_MSECONDS,
   wssl->max_number_of_output_chunks         = WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS,
   wssl->max_number_of_received_multi_frames = WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES,
   wssl->max_number_of_header_fields         = WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS,
@@ -142,7 +145,18 @@ void wssl_generate_random_seed
   _WSSL_MODIFY_ wssl_t* wssl
 )
 {
-  wssl->random_seed = (unsigned int)time(NULL);
+  struct timespec moment;
+  clock_gettime(CLOCK_REALTIME, &moment);
+  wssl->random_seed = (unsigned int)(moment.tv_sec^moment.tv_nsec);
+}
+
+static inline
+wssl_octet_t wssl_random_octet
+(
+  _WSSL_MODIFY_ wssl_t* wssl
+)
+{
+  return (wssl_octet_t)(rand_r(&wssl->random_seed)&0xff);
 }
 
 static inline

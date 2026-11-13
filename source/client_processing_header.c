@@ -105,95 +105,104 @@ bool wssl_client_processing_header_check
   return true;
 }
 
+static inline
+wssl_result_t wssl_client_send_bad_request
+(
+  _WSSL_MODIFY_ wssl_client_t* client,
+  _WSSL_MODIFY_ wssl_chunk_t*  chunk
+)
+{
+  wssl_buffer_printf
+  (
+    &chunk->buffer,
+    (
+      "HTTP/1.1 400 Bad Request\r\n"
+      "Server: %s\r\n"
+      "\r\n"
+      "Bad Request\n"
+    ),
+    client->wssl->server_name
+  );
+  TRY_CALL(wssl_client_do_send(client));
+
+  PASS;
+}
+
 _FUNCTION_
 wssl_result_t wssl_client_processing_header
 (
   _WSSL_MODIFY_ wssl_client_t* client
 )
 {
-  wssl_callback_result_e header_callback_result = WSSL_CALLBACK_RESULT_OK;
-  if(client->wssl->on_receive_header_callback != WSSL_CALLBACK_NONE)
-  {
-    header_callback_result = (*client->wssl->on_receive_header_callback)(client);
-    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
-  }
+  wssl_chunk_t* chunk;
+  CALL_ALWAYS_PASS_FUNCTION_THEN_PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
 
   wssl_string_t* sec_websocket_key;
-  bool pass;
-  if(header_callback_result == WSSL_CALLBACK_RESULT_OK)
+  if(wssl_client_processing_header_check(client, &sec_websocket_key) != true)
   {
-    pass = wssl_client_processing_header_check(client, &sec_websocket_key);
-  }
-
-  wssl_chunk_t* chunk;
-  CALL_ALLWAYS_PASS_FUNCTION_THEN_PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client, wssl_chunk_add(client, client->wssl->buffer_size_in_octets, &chunk));
-
-  if(pass)
-  {
-    char handshake_result[HANDSHAKE_RESULT_SIZE];
-    wssl_size_t handshake_result_length;
-    TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS
-    (
-      client,
-      WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY,
-      wssl_handshake
-      (
-        sec_websocket_key->data,
-        sec_websocket_key->data_length,
-        handshake_result,
-        HANDSHAKE_RESULT_SIZE,
-        &handshake_result_length
-      )
-    );
-    wssl_buffer_printf
-    (
-      &chunk->buffer,
-      (
-        "HTTP/1.1 101 Web Socket Protocol Handshake\r\n"
-        "Upgrade: websocket\r\n"
-        "Connection: Upgrade\r\n"
-        "Sec-WebSocket-Accept: %s\r\n"
-        "Server: %s\r\n"
-        "\r\n"
-      ),
-      handshake_result,
-      client->wssl->server_name
-    );
-  }
-  else
-  {
-    wssl_buffer_printf
-    (
-      &chunk->buffer,
-      (
-        "HTTP/1.1 400 Bad Request\r\n"
-        "Server: %s\r\n"
-        "\r\n"
-        "Bad Request\n"
-      ),
-      client->wssl->server_name
-    );
-  }
-
-  TRY_CALL(wssl_client_do_send(client));
-  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
-
-  if(pass != true)
-  {
-    if(header_callback_result == WSSL_CALLBACK_RESULT_DISCONNECT)
-    {
-      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
-    }
-    if(header_callback_result == WSSL_CALLBACK_RESULT_ERROR)
-    {
-      MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR);
-    }
+    TRY_CALL(wssl_client_send_bad_request(client, chunk));
     MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_BAD_HEADER);
   }
+
+  if(client->wssl->on_receive_header_callback != WSSL_CALLBACK_NONE)
+  {
+    wssl_callback_result_e header_callback_result = (*client->wssl->on_receive_header_callback)(client);
+    PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
+
+    if(header_callback_result != WSSL_CALLBACK_RESULT_OK)
+    {
+      TRY_CALL(wssl_client_send_bad_request(client, chunk));
+      switch(header_callback_result)
+      {
+        case WSSL_CALLBACK_RESULT_DISCONNECT:
+        {
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_REQUESTED);
+          break;
+        }
+        case WSSL_CALLBACK_RESULT_ERROR:
+        {
+          MARK_CLIENT_FOR_DISCONNECTING_THEN_PASS(client, WSSL_CLIENT_DISCONNECT_REASON_CALLBACK_ERROR);
+          break;
+        }
+      }
+    }
+  }
+
+  char handshake_result[HANDSHAKE_RESULT_SIZE];
+  wssl_size_t handshake_result_length;
+  TRY_CALL_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS
+  (
+    client,
+    WSSL_CLIENT_DISCONNECT_REASON_NO_MEMORY,
+    wssl_handshake
+    (
+      sec_websocket_key,
+      handshake_result,
+      HANDSHAKE_RESULT_SIZE,
+      &handshake_result_length
+    )
+  );
+  wssl_buffer_printf
+  (
+    &chunk->buffer,
+    (
+      "HTTP/1.1 101 Web Socket Protocol Handshake\r\n"
+      "Upgrade: websocket\r\n"
+      "Connection: Upgrade\r\n"
+      "Sec-WebSocket-Accept: %s\r\n"
+      "Server: %s\r\n"
+      "\r\n"
+    ),
+    handshake_result,
+    client->wssl->server_name
+  );
+  TRY_CALL(wssl_client_do_send(client));
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
 
   client->state = WSSL_CLIENT_STATE_WAIT_FRAME;
   wssl_client_chain_delete_link(&client->wssl_chain_link);
   wssl_client_chain_add_link_backward(&client->wssl->clients_in_frame_processing, &client->wssl_chain_link);
+ 
   if(client->wssl->on_start_receiving_frames_callback != WSSL_CALLBACK_NONE)
   {
     TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_start_receiving_frames_callback)(client));
