@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Clean
+        run: make clean
       - name: Build
         run: make
       - name: Test

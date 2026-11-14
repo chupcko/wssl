@@ -38,6 +38,9 @@ int main(int arguments_count, char* arguments_value[])
   wssl_set_timeout_in_mseconds(&wssl, 10000);
   wssl_set_on_timeout_callback(&wssl, &on_timeout);
 
+  wssl_set_ping_interval_in_mseconds(&wssl, 5000);
+  wssl_set_pong_timeout_in_mseconds(&wssl, 2000);
+
   switch(arguments_count)
   {
     case 1:

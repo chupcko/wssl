@@ -1,6 +1,25 @@
 #include "main.h"
 
 static inline
+wssl_result_t wssl_check_client_pong
+(
+  _WSSL_MODIFY_ wssl_client_t*  client,
+  _WSSL_IN_     wssl_mseconds_t now_in_mseconds
+)
+{
+  if
+  (
+    client->ping_in_progress == true &&
+    now_in_mseconds-client->last_ping_in_mseconds >= client->wssl->pong_timeout_in_mseconds
+  )
+  {
+    wssl_client_mark_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_PONG_TIMEOUT);
+  }
+
+  PASS;
+}
+
+static inline
 wssl_result_t wssl_check_client_timeout
 (
   _WSSL_MODIFY_ wssl_t*         wssl,
@@ -8,6 +27,8 @@ wssl_result_t wssl_check_client_timeout
   _WSSL_IN_     wssl_mseconds_t now_in_mseconds
 )
 {
+  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
+
   if(now_in_mseconds-client->last_receive_in_mseconds >= wssl->timeout_in_mseconds)
   {
     if(wssl->on_timeout_callback == WSSL_CALLBACK_NONE)
@@ -41,27 +62,6 @@ wssl_result_t wssl_check_client_ping
       TRY_CALLBACK_ELSE_MARK_FOR_DISCONNECTING_THEN_PASS(client, (*client->wssl->on_send_ping_frame_callback)(client));
     }
     TRY_CALL(wssl_client_send_ping_frame(client));
-  }
-
-  PASS;
-}
-
-static inline
-wssl_result_t wssl_check_client_pong
-(
-  _WSSL_MODIFY_ wssl_client_t*  client,
-  _WSSL_IN_     wssl_mseconds_t now_in_mseconds
-)
-{
-  PASS_IF_CLIENT_IS_MARKED_FOR_DISCONNECTING(client);
-
-  if
-  (
-    client->ping_in_progress == true &&
-    now_in_mseconds-client->last_ping_in_mseconds >= client->wssl->pong_timeout_in_mseconds
-  )
-  {
-    wssl_client_mark_for_disconnecting(client, WSSL_CLIENT_DISCONNECT_REASON_PONG_TIMEOUT);
   }
 
   PASS;
@@ -101,6 +101,11 @@ wssl_result_t wssl_check_clients
   {
     client = wssl_client_chain_get_entry_from_wssl_chain_link(client_link);
 
+    if(wssl->pong_timeout_in_mseconds != 0)
+    {
+      CALL_ALWAYS_PASS_FUNCTION(wssl_check_client_pong(client, now_in_mseconds));
+    }
+
     if(wssl->timeout_in_mseconds != 0)
     {
       CALL_ALWAYS_PASS_FUNCTION(wssl_check_client_timeout(wssl, client, now_in_mseconds));
@@ -109,11 +114,6 @@ wssl_result_t wssl_check_clients
     if(wssl->ping_interval_in_mseconds != 0 && client->ping_in_progress != true)
     {
       TRY_CALL(wssl_check_client_ping(client, now_in_mseconds));
-    }
-
-    if(wssl->pong_timeout_in_mseconds != 0)
-    {
-      CALL_ALWAYS_PASS_FUNCTION(wssl_check_client_pong(client, now_in_mseconds));
     }
   }
 

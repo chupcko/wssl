@@ -62,7 +62,7 @@ def test_no_pong_kills_silent_client(ping_pong_timeout_server) :
   host, port = ping_pong_timeout_server
   _, sock = helpers.ws_handshake(host, port)
   # never answers pings; drain the periodic pings until the
-  # pong deadline (600ms) kills the client, long before the
+  # pong deadline (2s) kills the client, long before the
   # 5000ms silence timeout could
   sock.settimeout(0.5)
   end = time.time() + 5
@@ -86,7 +86,7 @@ def test_answered_pings_keep_client_alive(ping_pong_timeout_server) :
     helpers.send_frame(sock, 0xA, payload)
     time.sleep(0.2)
   #$
-  # every answer arrived inside the 600ms pong deadline
+  # every answer arrived inside the 2s pong deadline
   assert_alive(sock)
   sock.close()
 #$

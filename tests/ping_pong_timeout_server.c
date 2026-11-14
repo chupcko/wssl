@@ -27,7 +27,7 @@ int main(void)
   wssl_set_on_timeout_callback(&wssl, &on_timeout);
   wssl_set_ping_interval_in_mseconds(&wssl, 200);
   wssl_set_on_send_ping_frame_callback(&wssl, &on_send_ping_frame);
-  wssl_set_pong_timeout_in_mseconds(&wssl, 600);
+  wssl_set_pong_timeout_in_mseconds(&wssl, 2000);
 
   wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
   wssl_server_configuration_set_port(&server_configuration, 6011);

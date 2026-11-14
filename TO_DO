@@ -1,10 +1,8 @@
--interni alarm za klijente
+-univerzalna greska, novi makroi, videti sta da se radi sa konekcijom, da se ne prekida loop, takodje sta kada nema resursa
+-logovanje
+-interni alarm za klijente da se okine kada istekne
 -dodaj epoll strukturu za nove stvari globalno i po klijentima
--proveri gramatiku imena
 -napravi deb pakete dobro
 -rasporedi sve oko testa lepo
--odluci da li greske na klijentu prekidaju loop
--resi vrtenje accept petlje kad ponestane resursa (EMFILE/ENFILE/ENOMEM)
 -dodati i model sa forkovima, gde se svaki klijent otvori u svom forku i tu radi ...
 -sredi kompajliranje u tests
--ubaci logove
