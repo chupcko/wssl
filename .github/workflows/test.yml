@@ -19,7 +19,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      docker-id: 1
+      docker-id: 2
     steps:
       - name: No-op
         run: true
