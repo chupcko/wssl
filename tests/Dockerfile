@@ -6,6 +6,7 @@ RUN apt-get install -y --no-install-recommends \
     build-essential                            \
     dpkg-dev                                   \
     fakeroot                                   \
+    libluajit-5.1-dev                          \
     libssl-dev                                 \
     openssl                                    \
     pkg-config                                 \

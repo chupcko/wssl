@@ -149,6 +149,11 @@ make clean      # removes out/, objects and example binaries</div>
           <div class="sig">cc -std=c99 -O3 -Werror -Iout -o app.e app.c out/libwssl.a -lssl -lcrypto</div>
           <p>Include path must point at <code>out/</code> so that <code>#include "wssl.h"</code> resolves to the generated single header, not to <code>include/</code> internals.</p>
           <p>Whoever uses <code>wssl.h</code> must define <code>_POSIX_C_SOURCE</code> on their own, before any system header; recommended value is <code>200809L</code>, the one the library itself uses. Without it the monotonic clock the timeout machinery runs on is not visible.</p>
+          <h3>Prerequisites</h3>
+          <p>Ubuntu packages for build, TLS, deb and tests — one pull and you are done:</p>
+          <div class="sig">sudo apt update && sudo apt install -y build-essential dpkg-dev fakeroot libluajit-5.1-dev libssl-dev openssl pkg-config python3 python3-pytest</div>
+          <p><code>pytest</code> must be 8 or newer (<code>tests/requirements.txt</code>); on older Ubuntu releases without a new enough <code>python3-pytest</code> use <code>pip install pytest</code> instead. The Docker test image installs the same set — see <code>tests/Dockerfile</code>, built by the <code>docker</code> workflow; after changing it, rebuild the image and bump the id the <code>test</code> job reads.</p>
+          <p><code>libluajit-5.1-dev</code> is needed for the planned LuaJIT example (headers plus link library); its runtime <code>libluajit-5.1-2</code> comes along automatically and belongs in the deb <code>Depends</code> once the example ships.</p>
         </section>
         <section id="g-quickstart">
           <h2>Quick start (echo)</h2>

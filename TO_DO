@@ -1,5 +1,4 @@
 -univerzalna greska, novi makroi, videti sta da se radi sa konekcijom, da se ne prekida loop, takodje sta kada nema resursa
--logovanje
 -interni alarm za klijente da se okine kada istekne
 -dodaj epoll strukturu za nove stvari globalno i po klijentima
 -napravi deb pakete dobro
