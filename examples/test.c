@@ -15,6 +15,9 @@ int main(int arguments_count, char* arguments_value[])
 
   WSSL_DECLARE(wssl);
 
+  wssl_set_syslog_server(&wssl, "/dev/log");
+  wssl_logging_start(&wssl);
+
   wssl_server_configuration_t server_configuration = WSSL_SERVER_CONFIGURATION_IPV6_DUAL_STACK;
   if(arguments_count == 3)
   {

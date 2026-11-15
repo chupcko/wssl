@@ -1,11 +1,9 @@
-PYTHON := python3
-
 WSSL_DIR := ../out
 
 WSSL_INCLUDE = $(WSSL_DIR)/wssl.h
 WSSL_LIBRARY = $(WSSL_DIR)/libwssl.a
 
-SOURCES := $(wildcard *_server.c)
+SOURCES := $(wildcard *.c)
 OBJECTS = $(SOURCES:.c=.o)
 TARGETS = $(SOURCES:.c=.e)
 
@@ -21,11 +19,11 @@ all: $(TARGETS)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGETS) core
+	rm -f $(OBJECTS) $(TARGETS) core
 
 .PHONY: test
 test: all
-	$(PYTHON) -m pytest . -q
+	python3 -m pytest . -v
 
 .SECONDARY:
 .SUFFIXES:

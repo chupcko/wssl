@@ -30,6 +30,7 @@
             <li><a href="#g-lifecycle">Event loop and callbacks</a></li>
             <li><a href="#g-servers">Servers and TLS</a></li>
             <li><a href="#g-sending">Sending data</a></li>
+            <li><a href="#g-logging">Logging</a></li>
             <li><a href="#g-examples">Bundled examples</a></li>
           </ul>
         </div>
@@ -61,6 +62,8 @@
             <li><a href="#s-client-state"><code>wssl_client_state_e</code></a></li>
             <li><a href="#s-disconnect-reason"><code>wssl_client_disconnect_reason_e</code></a></li>
             <li><a href="#s-callback-result"><code>wssl_callback_result_e</code></a></li>
+            <li><a href="#s-logging-t"><code>wssl_logging_t</code></a></li>
+            <li><a href="#s-logging-level"><code>wssl_logging_level_e</code></a></li>
           </ul>
         </div>
         <div class="nav-group">
@@ -107,6 +110,9 @@
             <li><a href="#f-mark-disconnect"><code>wssl_client_mark_for_disconnecting</code></a></li>
             <li><a href="#f-reset-timeout"><code>wssl_client_reset_timeout</code></a></li>
             <li><a href="#f-header-value"><code>wssl_header_get_field_value</code></a></li>
+            <li><a href="#f-logging-start"><code>wssl_logging_start</code></a></li>
+            <li><a href="#f-logging"><code>wssl_logging</code></a></li>
+            <li><a href="#f-logging-end"><code>wssl_logging_end</code></a></li>
             <li><a href="#m-macros"><code>useful macros</code></a></li>
           </ul>
         </div>
@@ -202,6 +208,11 @@ int main(void)
 <a href="#f-client-send-string">wssl_client_send_string</a>(client, &amp;<a href="#m-macros">WSSL_MAKE_STRING</a>(data, len));  // pointer + length, may be binary-safe
 <a href="#f-client-send-binary">wssl_client_send_binary</a>(client, octets, octet_count);           // raw octets</div>
           <p>To reach every connected WebSocket client, iterate with <code><a href="#f-for-each">wssl_for_each_client_in_frame_processing_call</a>()</code> (see <code>examples/chat.c</code> and <code>examples/time.c</code>). To drop a client, call <code><a href="#f-mark-disconnect">wssl_client_mark_for_disconnecting</a>()</code> instead of closing the socket yourself.</p>
+        </section>
+        <section id="g-logging">
+          <h2>Logging</h2>
+          <p>Two independent outputs, one level threshold. <code>stderr</code> receives every message when <code><a href="#f-setters">wssl_set_logging_to_stderr</a>()</code> is on (the default); it ignores the level entirely — stderr is the debugging channel, rarely watched in production. Syslog receives only messages at or below <code><a href="#s-logging-level">wssl_logging_level_e</a></code>.</p>
+          <p>Set the server with <code><a href="#f-setters">wssl_set_syslog_server</a>()</code>: a leading <code>/</code> means a unix socket (<code>/dev/log</code>) for the local daemon, otherwise <code>ip:port</code> for UDP, always in RFC 5424. Priority is the daemon facility (24) plus the level number. Then call <code><a href="#f-logging-start">wssl_logging_start</a>()</code> once before <code><a href="#f-loop">wssl_loop</a>()</code> and check the result — without it the syslog part stays off. <code><a href="#f-clean">wssl_clean</a>()</code> closes the channel last. If sending fails, the channel stays open (UDP heals itself when the server returns) and one <code>[ALERT] logging: syslog send failed</code> line goes to stderr.</p>
         </section>
         <section id="g-examples">
           <h2>Bundled examples</h2>
@@ -357,6 +368,11 @@ else                       // port 6001 plain</div>
             <tr><td><code>timeout_in_mseconds</code></td><td><a href="#d-timeout"><code>0</code></a></td><td>Silence limit per client; <code>0</code> disables the check.</td></tr>
         <tr><td><code>ping_interval_in_mseconds</code></td><td><a href="#d-ping"><code>0</code></a></td><td>Keepalive ping period per client; <code>0</code> disables pinging.</td></tr>
         <tr><td><code>pong_timeout_in_mseconds</code></td><td><a href="#d-pong"><code>0</code></a></td><td>Deadline for the pong answer; <code>0</code> disables the check, late clients are dropped.</td></tr>
+        <tr><td><code>logging_to_stderr</code></td><td><a href="#d-logging-stderr"><code>true</code></a></td><td>Every message also goes to <code>stderr</code> as <code>[LEVEL] where: message</code>; the level threshold does not apply.</td></tr>
+        <tr><td><code>syslog_server</code></td><td><a href="#d-syslog-server"><code>NULL</code></a></td><td>Syslog target: <code>/dev/log</code> (unix socket) or <code>ip:port</code> (UDP, RFC 5424); <code>NULL</code> disables syslog.</td></tr>
+        <tr><td><code>syslog_ident</code></td><td><a href="#d-syslog-ident"><code>NULL</code></a></td><td>Application name in the packet; <code>NULL</code> falls back to <code>server_name</code>.</td></tr>
+        <tr><td><code>logging_level</code></td><td><a href="#d-logging-level"><code>ERROR</code></a></td><td>Syslog threshold: only levels at or below it are sent.</td></tr>
+        <tr><td><code>logging</code></td><td>closed, no ident, empty hostname</td><td>Resolved runtime state (<code><a href="#s-logging-t">wssl_logging_t</a></code>), filled by <code><a href="#f-logging-start">wssl_logging_start</a>()</code>; no setter.</td></tr>
             <tr><td><code>max_number_of_output_chunks</code></td><td><a href="#d-output-chunks"><code>16</code></a></td><td>Queue limit per client; over it the client is dropped.</td></tr>
             <tr><td><code>max_number_of_received_multi_frames</code></td><td><a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message limit before the client is dropped.</td></tr>
             <tr><td><code>max_number_of_header_fields</code></td><td><a href="#d-header-fields"><code>64</code></a></td><td>Cap on HTTP header fields per connection.</td></tr>
@@ -376,6 +392,10 @@ else                       // port 6001 plain</div>
             <tr id="d-timeout"><td><code><a href="#s-defaults">WSSL_DEFAULT_TIMEOUT_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.timeout_in_mseconds</code>; <code>0</code> disables the check.</td></tr>
             <tr id="d-ping"><td><code><a href="#s-defaults">WSSL_DEFAULT_PING_INTERVAL_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.ping_interval_in_mseconds</code>; <code>0</code> disables pinging.</td></tr>
         <tr id="d-pong"><td><code><a href="#s-defaults">WSSL_DEFAULT_PONG_TIMEOUT_IN_MSECONDS</a></code></td><td><code>0</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.pong_timeout_in_mseconds</code>; <code>0</code> disables the check.</td></tr>
+        <tr id="d-logging-stderr"><td><code><a href="#s-defaults">WSSL_DEFAULT_LOGGING_TO_STDERR</a></code></td><td><code>true</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.logging_to_stderr</code>.</td></tr>
+        <tr id="d-syslog-server"><td><code><a href="#s-defaults">WSSL_DEFAULT_SYSLOG_SERVER</a></code></td><td><code>NULL</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.syslog_server</code>; <code>NULL</code> disables syslog.</td></tr>
+        <tr id="d-syslog-ident"><td><code><a href="#s-defaults">WSSL_DEFAULT_SYSLOG_IDENT</a></code></td><td><code>NULL</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.syslog_ident</code>; <code>NULL</code> falls back to <code>server_name</code>.</td></tr>
+        <tr id="d-logging-level"><td><code><a href="#s-defaults">WSSL_DEFAULT_LOGGING_LEVEL</a></code></td><td><code>ERROR</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.logging_level</code>; stderr ignores it.</td></tr>
             <tr id="d-output-chunks"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_OUTPUT_CHUNKS</a></code></td><td><code>16</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_output_chunks</code>.</td></tr>
             <tr id="d-multi-frames"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_RECEIVED_MULTI_FRAMES</a></code></td><td><code>8</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_received_multi_frames</code>.</td></tr>
             <tr id="d-header-fields"><td><code><a href="#s-defaults">WSSL_DEFAULT_MAX_NUMBER_OF_HEADER_FIELDS</a></code></td><td><code>64</code></td><td><code><a href="#s-wssl-t">wssl_t</a>.max_number_of_header_fields</code>.</td></tr>
@@ -572,6 +592,28 @@ WSSL_CALLBACK_RESULT_DISCONNECT  // clean disconnect of this client
 WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
           <p>Return type of every frame callback. <code>on_disconnect</code> returns <code>void</code>; <code>on_tick</code> returns <code>bool</code> (<code>true</code> = keep running).</p>
         </section>
+        <section id="s-logging-t">
+          <h2>wssl_logging_t <span class="tag">struct</span></h2>
+          <div class="sig">typedef struct wssl_logging_t
+{
+  int   descriptor;
+  char* ident;
+  char  hostname[WSSL_LOGGING_HOSTNAME_SIZE_IN_CHAR];
+} wssl_logging_t;</div>
+          <p>Resolved runtime logging state, filled once by <code><a href="#f-logging-start">wssl_logging_start</a>()</code>. <code>ident</code> is <code>syslog_ident</code> or falls back to <code>server_name</code>; <code>hostname</code> comes from <code>gethostname()</code> (<code>"-"</code> on failure). Later setting changes are not picked up — restart logging to apply them. Read it via <code><a href="#s-wssl-t">wssl_t</a>.logging</code>; there is no setter for the struct itself.</p>
+        </section>
+        <section id="s-logging-level">
+          <h2>wssl_logging_level_e <span class="tag">enum</span></h2>
+          <div class="sig">WSSL_LOGGING_LEVEL_EMERGENCY  // 0
+WSSL_LOGGING_LEVEL_ALERT       // 1
+WSSL_LOGGING_LEVEL_CRITICAL    // 2
+WSSL_LOGGING_LEVEL_ERROR       // 3
+WSSL_LOGGING_LEVEL_WARNING     // 4
+WSSL_LOGGING_LEVEL_NOTICE      // 5
+WSSL_LOGGING_LEVEL_INFO        // 6
+WSSL_LOGGING_LEVEL_DEBUG       // 7</div>
+          <p>Severity order matches syslog 0-7, most severe first. Only messages at or below the configured level reach syslog; <code>stderr</code> receives every level when enabled. Name via <code>wssl_logging_level_get_name()</code>.</p>
+        </section>
         <section id="s-callbacks">
           <h2>Callbacks</h2>
           <p>Register each callback with its matching <code>wssl_set_on_*_callback()</code>. Unset callbacks equal <code><a href="#m-macros">WSSL_CALLBACK_NONE</a></code> and are skipped. They fire in lifecycle order: connect, header, start-of-frames, then one per frame, plus disconnect at the end and tick once per loop pass.</p>
@@ -641,6 +683,10 @@ WSSL_CALLBACK_RESULT_ERROR       // error disconnect of this client</div>
             <tr><td><code>wssl_set_timeout_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>timeout_in_mseconds</code>, default <a href="#d-timeout"><code>0</code></a></td><td>Silence limit per client in milliseconds; <code>0</code> disables the check. Expired clients go to <code>on_timeout</code>, or are dropped as <code><a href="#s-disconnect-reason">TIMEOUT</a></code> with no callback.</td></tr>
             <tr><td><code>wssl_set_ping_interval_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>ping_interval_in_mseconds</code>, default <a href="#d-ping"><code>0</code></a></td><td>Keepalive period per client in milliseconds; <code>0</code> disables pinging. Due clients go to <code>on_send_ping_frame</code>, or are pinged directly with no callback.</td></tr>
         <tr><td><code>wssl_set_pong_timeout_in_mseconds(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_mseconds_t</a>)</code></td><td>Field <code>pong_timeout_in_mseconds</code>, default <a href="#d-pong"><code>0</code></a></td><td>Deadline per client for the pong answer in milliseconds; <code>0</code> disables the check. A client with an unanswered ping past the deadline is dropped as <code><a href="#s-disconnect-reason">PONG_TIMEOUT</a></code>.</td></tr>
+        <tr><td><code>wssl_set_logging_to_stderr(<a href="#s-wssl-t">wssl_t</a>*, bool)</code></td><td>Field <code>logging_to_stderr</code>, default <a href="#d-logging-stderr"><code>true</code></a></td><td>Every message also goes to <code>stderr</code>; the level threshold does not apply there.</td></tr>
+        <tr><td><code>wssl_set_syslog_server(<a href="#s-wssl-t">wssl_t</a>*, char*)</code></td><td>Field <code>syslog_server</code>, default <a href="#d-syslog-server"><code>NULL</code></a></td><td>Syslog target: path for a unix socket, <code>ip:port</code> for UDP; opened by <code><a href="#f-logging-start">wssl_logging_start</a>()</code>.</td></tr>
+        <tr><td><code>wssl_set_syslog_ident(<a href="#s-wssl-t">wssl_t</a>*, char*)</code></td><td>Field <code>syslog_ident</code>, default <a href="#d-syslog-ident"><code>NULL</code></a></td><td>Application name in the syslog packet; <code>NULL</code> falls back to <code>server_name</code>.</td></tr>
+        <tr><td><code>wssl_set_logging_level(<a href="#s-wssl-t">wssl_t</a>*, <a href="#s-logging-level">wssl_logging_level_e</a>)</code></td><td>Field <code>logging_level</code>, default <a href="#d-logging-level"><code>ERROR</code></a></td><td>Syslog threshold; <code>stderr</code> output ignores it.</td></tr>
             <tr><td><code>wssl_set_max_number_of_output_chunks(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_output_chunks</code>, default <a href="#d-output-chunks"><code>16</code></a></td><td>Queue check on every send: a client over the limit is dropped (<code><a href="#s-disconnect-reason">TOO_MANY_OUTPUT_CHUNKS</a></code>).</td></tr>
             <tr><td><code>wssl_set_max_number_of_received_multi_frames(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_received_multi_frames</code>, default <a href="#d-multi-frames"><code>8</code></a></td><td>Fragmented message check: too many continuation frames drop the client (<code><a href="#s-disconnect-reason">TOO_MANY_RECEIVED_MULTI_FRAMES</a></code>).</td></tr>
             <tr><td><code>wssl_set_max_number_of_header_fields(<a href="#s-wssl-t">wssl_t</a>*, <a href="#m-macros">wssl_size_t</a>)</code></td><td>Field <code>max_number_of_header_fields</code>, default <a href="#d-header-fields"><code>64</code></a></td><td>Header parsing: one field too many drops the client (<code><a href="#s-disconnect-reason">BAD_HEADER</a></code>).</td></tr>
@@ -774,6 +820,21 @@ void wssl_server_configuration_enable_ssl(<a href="#s-server-config">wssl_server
           <h2>wssl_header_get_field_value</h2>
           <div class="sig"><a href="#s-string">wssl_string_t</a>* wssl_header_get_field_value(const <a href="#s-header">wssl_header_t</a>* header, const char* key);</div>
           <p>Returns the value of a header field, or <code>NULL</code> when absent. Returned pointer points into the header; do not free it. Useful for routing on <code>uri</code> or checking <code>Origin</code> / protocol headers in <code>on_receive_header</code>.</p>
+        </section>
+        <section id="f-logging-start">
+          <h2>wssl_logging_start</h2>
+          <div class="sig"><a href="#s-result">wssl_result_t</a> wssl_logging_start(<a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Opens the syslog channel from <code>syslog_server</code>: a leading <code>/</code> means a unix socket (<code>/dev/log</code>) for the local daemon, otherwise <code>ip:port</code> over UDP with IPv6 tried first. No server configured is not an error. Call once before <code><a href="#f-loop">wssl_loop</a>()</code> and check the result with <code><a href="#f-try-call">WSSL_TRY_CALL</a></code>; already open is a no-op.</p>
+        </section>
+        <section id="f-logging">
+          <h2>wssl_logging</h2>
+          <div class="sig">void wssl_logging(<a href="#s-wssl-t">wssl_t</a>* wssl, <a href="#s-logging-level">wssl_logging_level_e</a> level, char* where, char* message);</div>
+          <p>Logs one message: always to <code>stderr</code> when enabled (format <code>[LEVEL] where: message</code>), plus to syslog as RFC 5424 when the level passes the threshold and the channel is open. A failed send prints <code>[ALERT] logging: syslog send failed</code> on <code>stderr</code> and keeps the channel open.</p>
+        </section>
+        <section id="f-logging-end">
+          <h2>wssl_logging_end</h2>
+          <div class="sig">void wssl_logging_end(<a href="#s-wssl-t">wssl_t</a>* wssl);</div>
+          <p>Closes the syslog channel. Called last by <code><a href="#f-clean">wssl_clean</a>()</code>; call it yourself only to stop syslog output early.</p>
         </section>
         <section id="m-macros">
           <h2>Useful macros</h2>

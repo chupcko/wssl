@@ -13,9 +13,9 @@
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/un.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <limits.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -28,6 +28,7 @@ _INCLUDE_BEGIN_
 
 #include <sys/epoll.h>
 #include <inttypes.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -44,9 +45,11 @@ _INCLUDE_END_
 #define LOOP for(;;)
 
 #include "version.h"
+#include "logging_g.h"
 #include "configurations.h"
 #include "debug.h"
 #include "base.h"
+#include "logging.h"
 #include "chain_g.h"
 #include "chain.h"
 #include "result_g.h"

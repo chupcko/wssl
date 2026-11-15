@@ -6,8 +6,11 @@ _INCLUDE_BEGIN_
 #define WSSL_NO_DESCRIPTOR          (-1)
 #define WSSL_NULL                   NULL
 #define WSSL_IP_SIZE_IN_CHAR        64
-#define WSSL_FILE_PATH_SIZE_IN_CHAR 4096
+#define WSSL_FILE_PATH_SIZE_IN_CHAR PATH_MAX
+#define WSSL_HOSTNAME_SIZE_IN_CHAR  HOST_NAME_MAX
 #define WSSL_PING_CONTEXT_SIZE      16
+#define WSSL_TIMESTAMP_SIZE_IN_CHAR 32
+#define WSSL_MAX_PORT_NUMBER 65535
 
 typedef uint8_t wssl_octet_t;
 #define WSSL_PRINT_OCTET "02" PRIx8
@@ -114,5 +117,9 @@ typedef wssl_octet_t wssl_sha1_result_t[SHA1_RESULT_SIZE_IN_OCTETS];
 #define INDENT_SIZE_IN_CHAR 2
 #define INDENT_FORMAT       "%*s"
 #define INDENT(what_level)  (int)((what_level)*INDENT_SIZE_IN_CHAR), ""
+
+#define SYSLOG_FACILITY_DAEMON       3
+#define SYSLOG_DAEMON_FACILITY       (SYSLOG_FACILITY_DAEMON*8)
+#define SYSLOG_PACKET_SIZE_IN_OCTETS 2048
 
 #endif

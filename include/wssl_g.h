@@ -36,6 +36,10 @@ MAKE_WSSL_SET(wssl_on_receive_pong_frame_callback_f*,     on_receive_pong_frame_
 MAKE_WSSL_SET(wssl_on_tick_callback_f*,                   on_tick_callback                   )
 MAKE_WSSL_SET(wssl_on_timeout_callback_f*,                on_timeout_callback                )
 MAKE_WSSL_SET(wssl_on_send_ping_frame_callback_f*,        on_send_ping_frame_callback        )
+MAKE_WSSL_SET(bool,                                       logging_to_stderr                )
+MAKE_WSSL_SET(char*,                                      syslog_server                      )
+MAKE_WSSL_SET(char*,                                      syslog_ident                       )
+MAKE_WSSL_SET(wssl_logging_level_e,                       logging_level                      )
 
 _INCLUDE_END_
 

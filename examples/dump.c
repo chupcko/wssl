@@ -115,6 +115,9 @@ int main(int arguments_count, char* arguments_value[])
 
   WSSL_DECLARE(wssl);
 
+  wssl_set_syslog_server(&wssl, "/dev/log");
+  wssl_logging_start(&wssl);
+
   if(signal(SIGTERM, &on_end) == SIG_ERR)
   {
     ERROR("Cannot signal with %d:\"%s\"", errno, strerror(errno));

@@ -28,6 +28,11 @@ typedef struct wssl_t
   wssl_on_tick_callback_f*                   on_tick_callback;
   wssl_on_timeout_callback_f*                on_timeout_callback;
   wssl_on_send_ping_frame_callback_f*        on_send_ping_frame_callback;
+  bool                                       logging_to_stderr;
+  char*                                      syslog_server;
+  char*                                      syslog_ident;
+  wssl_logging_level_e                       logging_level;
+  wssl_logging_t                             logging;
   unsigned int                               random_seed;
   wssl_id_t                                  next_client_id;
   wssl_server_chain_t                        servers;
@@ -61,6 +66,11 @@ typedef struct wssl_t
   .on_tick_callback                    = WSSL_CALLBACK_NONE,                                                    \
   .on_timeout_callback                 = WSSL_CALLBACK_NONE,                                                    \
   .on_send_ping_frame_callback         = WSSL_CALLBACK_NONE,                                                    \
+  .logging_to_stderr                   = WSSL_DEFAULT_LOGGING_TO_STDERR,                                        \
+  .syslog_server                       = WSSL_DEFAULT_SYSLOG_SERVER,                                            \
+  .syslog_ident                        = WSSL_DEFAULT_SYSLOG_IDENT,                                             \
+  .logging_level                       = WSSL_DEFAULT_LOGGING_LEVEL,                                            \
+  .logging                             = WSSL_LOGGING_INIT_VALUE,                                               \
   .random_seed                         = 0,                                                                     \
   .next_client_id                      = WSSL_ID_INIT_VALUE,                                                    \
   .servers                             = WSSL_CHAIN_ROOT_INIT_VALUE(what_name.servers),                         \
@@ -100,6 +110,13 @@ void wssl_init
   wssl->on_tick_callback                    = WSSL_CALLBACK_NONE;
   wssl->on_timeout_callback                 = WSSL_CALLBACK_NONE;
   wssl->on_send_ping_frame_callback         = WSSL_CALLBACK_NONE;
+  wssl->logging_to_stderr                   = WSSL_DEFAULT_LOGGING_TO_STDERR;
+  wssl->syslog_server                       = WSSL_DEFAULT_SYSLOG_SERVER;
+  wssl->syslog_ident                        = WSSL_DEFAULT_SYSLOG_IDENT;
+  wssl->logging_level                       = WSSL_DEFAULT_LOGGING_LEVEL;
+  wssl->logging.descriptor             = WSSL_NO_DESCRIPTOR;
+  wssl->logging.ident                  = WSSL_NULL;
+  wssl->logging.hostname[0]            = '\0';
   wssl->random_seed                         = 0;
   wssl_id_init(&wssl->next_client_id);
   wssl_server_chain_root_init(&wssl->servers);

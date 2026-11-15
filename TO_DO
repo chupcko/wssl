@@ -5,4 +5,4 @@
 -napravi deb pakete dobro
 -rasporedi sve oko testa lepo
 -dodati i model sa forkovima, gde se svaki klijent otvori u svom forku i tu radi ...
--sredi kompajliranje u tests
+-proveriti port na server_start

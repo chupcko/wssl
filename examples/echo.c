@@ -16,6 +16,9 @@ int main(int arguments_count, char* arguments_value[])
 {
   WSSL_DECLARE(wssl);
 
+  wssl_set_syslog_server(&wssl, "/dev/log");
+  wssl_logging_start(&wssl);
+
   wssl_set_on_receive_text_frame_callback(&wssl, &on_receive_text_frame);
 
   switch(arguments_count)

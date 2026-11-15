@@ -17,5 +17,7 @@ wssl_result_t wssl_clean
   WSSL_ASSERT(wssl_client_chain_is_empty(&wssl->clients_in_frame_processing));
   WSSL_ASSERT(wssl_client_chain_is_empty(&wssl->clients_marked_for_disconnecting));
 
+  wssl_logging_end(wssl);
+
   PASS;
 }

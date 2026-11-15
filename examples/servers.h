@@ -18,7 +18,7 @@ int servers_parse_port
 {
   char* end = NULL;
   long value = strtol(text, &end, 10);
-  if(end == text || *end != '\0' || value < 1 || value > 65535)
+  if(end == text || *end != '\0' || value < 1 || value > WSSL_MAX_PORT_NUMBER)
   {
     return -1;
   }
